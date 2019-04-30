@@ -26,16 +26,33 @@ public class MainActivity extends AppCompatActivity {
     // Replace below with your own subscription key
     private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
     // Replace below with your own service region (e.g., "westus").
-    private static String serviceRegion = "westus";
+    private static String serviceRegion = "francecentral";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Note: we need to request the permissions
+        /*// Note: we need to request the permissions
         int requestCode = 5; // unique code for the permission request
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
+        */
+
+
+        // Initialize SpeechSDK and request required permissions.
+        try {
+            // a unique number within the application to allow
+            // correlating permission request responses with the request.
+            int permissionRequestId = 5;
+
+            // Request permissions needed for speech recognition
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, INTERNET}, permissionRequestId);
+        }
+        catch (Exception ex) {
+            Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
+            TextView recognizedTextView = (TextView) this.findViewById(R.id.hello);
+            recognizedTextView.setText("Could not initialize SpeeckSDK: " + ex.toString());
+        }
     }
 
     public void onSpeechButtonClicked(View v) {
@@ -54,13 +71,17 @@ public class MainActivity extends AppCompatActivity {
             // Note: this will block the UI thread, so eventually, you want to
             //        register for the event (see full samples)
             SpeechRecognitionResult result = task.get();
+            if (result == null ) {
+                txt.setText("result == null");
+            }
             assert(result != null);
 
             if (result.getReason() == ResultReason.RecognizedSpeech) {
-                txt.setText(result.toString());
+                txt.setText("Mon texte = "+result.getText());
+                //txt.setText(result.toString());
             }
             else {
-                txt.setText("TEST Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
+                txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
             }
 
             reco.close();
