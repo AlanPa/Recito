@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConnectionActivity">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/Id_Input_Connection"
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="178dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/Id_User_Connection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="180dp"
+            android:fontFamily="sans-serif"
+            android:hint="Identifiant"
+            android:textSize="16dp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/Title_Connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Veuillez vous connectez"
+        android:textColor="#B71C1C"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="96dp"
+        tools:layout_editor_absoluteY="45dp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="395dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="250dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/Password_User_Connection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="180dp"
+            android:hint="Mot de passe"
+            android:inputType="textWebPassword"
+            android:textSize="16dp" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/Connection_Button_Connection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="180dp"
+        android:background="#B71C1C"
+        android:text="Connexion"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="115dp"
+        tools:layout_editor_absoluteY="483dp" />
+</android.support.constraint.ConstraintLayout>
