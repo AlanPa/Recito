@@ -11,6 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="600dp">
 
+        <TextView
+            android:id="@+id/TexteDit_Reciter"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="71dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:text="Le texte que vous allez dire va s'afficher ici." />
+
     </TableLayout>
 
     <TextView
@@ -27,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/Tour_Reciter"
         android:src="@drawable/ic_mic_black_50dp"
+        android:onClick="onSpeechToTextButtonClicked"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="75dp"
         android:backgroundTint="@android:color/transparent"/>
