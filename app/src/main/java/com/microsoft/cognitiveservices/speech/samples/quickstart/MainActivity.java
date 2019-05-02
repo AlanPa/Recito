@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+            config.setSpeechRecognitionLanguage("fr-FR");
+
             assert(config != null);
 
             SpeechRecognizer reco = new SpeechRecognizer(config);
