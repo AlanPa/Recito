@@ -26,13 +26,16 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import android.view.View;
 
 public class ReciterTexte extends AppCompatActivity {
+
     // Replace below with your own subscription key
     private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
     // Replace below with your own service region (e.g., "westus").
     private static String serviceRegion = "francecentral";
 
-    private String currentText = null;
+    public static final String SCORE_KEY="score_key";
+    private int score;
     private int nbErreurs;
+    private String currentText = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +98,16 @@ public class ReciterTexte extends AppCompatActivity {
 
 
 
-    public void AfficherRésultatSimple(View view) {
 
-        Intent intent = new Intent(ReciterTexte.this, ResultatSimple.class);
-        //// Passer à l'activity suivante les données pour les résultats (cf dans TextManagerActivity)
-        //intent.putExtra(MODIFIED_TEXT, modified_Text_ID);
-        startActivity(intent);
+    public void AfficherResultatSimple(View view) {
+
+        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, score);
+        setResult(RESULT_OK,ResultatSimpleActivity);
+        finish();
+        startActivity(ResultatSimpleActivity);
+
+
     }
 
 
@@ -136,6 +143,8 @@ public class ReciterTexte extends AppCompatActivity {
 
     }
 
+    // Modifier de manière à ne pas prendre en compte les suppr/ajouts comme deux erreurs
+    // enlever ponctuation
     private String editResult(String resultLine){
         String newResult="";
 
@@ -173,6 +182,7 @@ public class ReciterTexte extends AppCompatActivity {
 
         String resFautes = "<br/><br/> Il y a eu "+nbAjouts+" ajouts de mots, et "+nbOublis+" oublis.";
         nbErreurs = nbAjouts+nbOublis;
+        score = nbErreurs;
         return newResult+resFautes;
     }
 

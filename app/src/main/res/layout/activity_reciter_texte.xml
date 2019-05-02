@@ -62,7 +62,7 @@
         android:layout_below="@id/Tour_Reciter"
         android:layout_toRightOf="@id/Mic_Button_Reciter"
         style="@style/Bouton"
-        android:onClick="AfficherRésultatSimple"
+        android:onClick="AfficherResultatSimple"
         android:text="Terminer"/>
 
 
