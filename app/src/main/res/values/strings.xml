@@ -1,3 +1,45 @@
 <resources>
     <string name="app_name">Recito</string>
+
+    //Connection_page_____________________________________________________________
+    <string name="page_title_Connection">Veuillez vous connecter</string>
+    <string name="login_hint_Connection">Identifiant</string>
+    <string name="password_hint_Connection">Mot de passe</string>
+    <string name="connecion_bouton_label_Connection">Connexion</string>
+
+    //Connection_page_____________________________________________________________
+
+    //Sign_Up_Page________________________________________________________________
+    <string name="page_title_Sign_Up">Création de compte</string>
+    <string name="login_label_Sign_Up">Identifiant:</string>
+    <string name="login_hint_Sign_Up">anonyme123</string>
+    <string name="mail_label_Sign_Up">Email:</string>
+    <string name="mail_hint_Sign_Up">abc@xyz.com</string>
+    <string name="password_label_Sign_Up">Mot de passe:</string>
+    <string name="password_hint_Sign_Up">123456789abc_</string>
+    <string name="verification_password_label_Sign_Up">Vérification mdp:</string>
+    <string name="verification_password_hint_Sign_Up">123456789abc_</string>
+    <string name="validation_bouton_label_Sign_Up">Valider</string>
+
+
+    //Sign_Up_Page_________________________________________________________________
+
+    //Menu_________________________________________________________________________
+    <string name="library_item_Menu">Bibliothèque</string>
+    <string name="score_item_Menu">Score</string>
+    <string name="groupes_item_Menu">Groupes</string>
+    <string name="friends_item_Menu">Amis</string>
+    <string name="main_menu_item_Menu">Menu</string>
+    <string name="deconnexion_item_Menu">Déconnection</string>
+    <string name="help_item_Menu">Aide</string>
+    <string name="about_item_Menu">A propos</string>
+
+    //Menu_________________________________________________________________________
+
+    //Item_Text____________________________________________________________________
+    <string name="text_Item_Text">Pas de texte</string>
+    <string name="start_bouton_Item_Text">Réviser le texte</string>
+
+    //Item_Text____________________________________________________________________
+
 </resources>
