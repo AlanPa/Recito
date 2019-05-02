@@ -3,6 +3,7 @@
     package="com.microsoft.cognitiveservices.speech.samples.quickstart">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -12,10 +13,11 @@
         android:roundIcon="@mipmap/recito_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ReciterTexte"></activity>
-        <activity android:name=".Accueil"/>
+        <activity android:name=".LoadPdfActivity"></activity>
+        <activity android:name=".ReciterTexte" />
+        <activity android:name=".Accueil" />
         <activity android:name=".LibraryActivity" />
-        <activity android:name=".CreateAccountActivity"/>
+        <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ConnectionActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ResultatSimple" />
