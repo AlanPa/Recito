@@ -10,9 +10,10 @@
         android:id="@+id/Table_ReciterTexte"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/Tour_Reciter"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:layout_above="@id/Tour_Reciter">
+        android:layout_marginTop="-11dp"
+        android:layout_marginBottom="11dp">
 
         <TextView
             android:id="@+id/TexteDit_Reciter"
@@ -23,6 +24,15 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:text="Le texte que vous allez dire va s'afficher ici." />
+        <TextView
+            android:id="@+id/Correction_Reciter"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="71dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:text="Ici bientôt la correction." />
 
     </TableLayout>
 
@@ -54,6 +64,21 @@
         style="@style/Bouton"
         android:onClick="AfficherRésultatSimple"
         android:text="Terminer"/>
+
+
+    <Button
+        android:id="@+id/Bouton_Test"
+        style="@style/Bouton"
+        android:layout_width="211dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Tour_Reciter"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="-57dp"
+        android:layout_toRightOf="@id/Mic_Button_Reciter"
+        android:onClick="compareTexts"
+        android:layout_marginRight="65dp"
+        android:text="Comparer" />
 
 
 

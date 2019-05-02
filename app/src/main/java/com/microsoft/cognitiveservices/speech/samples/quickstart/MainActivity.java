@@ -14,11 +14,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.difflib.algorithm.DiffException;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import static android.Manifest.permission.*;
@@ -101,6 +108,48 @@ public class MainActivity extends AppCompatActivity {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
             assert(false);
         }
+    }
+
+/*
+    public void testComputeDiff(){
+
+        //build simple lists of the lines of the two testfiles
+        List<String> original = Files.readAllLines(new File(ORIGINAL).toPath());
+        List<String> revised = Files.readAllLines(new File(RIVISED).toPath());
+
+//compute the patch: this is the diffutils part
+        Patch<String> patch = DiffUtils.diff(original, revised);
+
+//simple output the computed patch to console
+        for (Delta<String> delta : patch.getDeltas()) {
+            System.out.println(delta);
+        }
+
+    }
+    */
+
+
+    public void test(){
+        //create a configured DiffRowGenerator
+        DiffRowGenerator generator = DiffRowGenerator.create()
+                .showInlineDiffs(true)
+                .mergeOriginalRevised(true)
+                .inlineDiffByWord(true)
+                .oldTag(f -> "~")      //introduce markdown style for strikethrough
+                .newTag(f -> "**")     //introduce markdown style for bold
+                .build();
+
+        //compute the differences for two test texts.
+        List<DiffRow> rows = null;
+        try {
+            rows = generator.generateDiffRows(
+                    Arrays.asList("---------- This is a test senctence."),
+                    Arrays.asList("---------- This is a test for diffutils."));
+        } catch (DiffException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(rows.get(0).getOldLine());
     }
 }
 // </code>

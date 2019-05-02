@@ -8,11 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.difflib.algorithm.DiffException;
+import com.github.difflib.text.DiffRow;
+import com.github.difflib.text.DiffRowGenerator;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import static android.Manifest.permission.INTERNET;
@@ -24,6 +29,9 @@ public class ReciterTexte extends AppCompatActivity {
     private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
     // Replace below with your own service region (e.g., "westus").
     private static String serviceRegion = "francecentral";
+    //private String currentText = "Ceci est un texte";
+    private String currentText = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,15 @@ public class ReciterTexte extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if( RESULT_OK == resultCode){
+
+            long id = data.getIntExtra(TextManagerActivity.CURRENT_TEXT_ID,-1);
+            currentText = data.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+        }
+    }
 
     public void onSpeechToTextButtonClicked(View v) {
         TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
@@ -85,8 +102,44 @@ public class ReciterTexte extends AppCompatActivity {
             assert(false);
         }
     }
+
+
+
     public void AfficherRésultatSimple(View view) {
+
         Intent intent = new Intent(ReciterTexte.this, ResultatSimple.class);
+        //// Passer à l'activity suivante les données pour les résultats (cf dans TextManagerActivity)
+        //intent.putExtra(MODIFIED_TEXT, modified_Text_ID);
         startActivity(intent);
     }
+
+
+
+    public void compareTexts(View v){
+        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
+        TextView correction = (TextView) this.findViewById(R.id.Correction_Reciter);
+
+        //create a configured DiffRowGenerator
+        DiffRowGenerator generator = DiffRowGenerator.create()
+                .showInlineDiffs(true)
+                .mergeOriginalRevised(true)
+                .inlineDiffByWord(true)
+                .oldTag(f -> "~")      //introduce markdown style for strikethrough
+                .newTag(f -> "**")     //introduce markdown style for bold
+                .build();
+
+        //compute the differences for two test texts.
+        List<DiffRow> rows = null;
+        try {
+            rows = generator.generateDiffRows(
+                    Arrays.asList(txt.getText().toString()),
+                    Arrays.asList(currentText));
+        } catch (DiffException e) {
+            e.printStackTrace();
+        }
+
+        correction.setText(rows.get(0).getOldLine());
+
+    }
+
 }

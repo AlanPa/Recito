@@ -14,8 +14,9 @@ import java.util.Locale;
 
 public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
-    private static final String CURRENT_TEXT_ID="current_text_id";
-    private String currentText="Ceci est un texte à lire par l'application. (PS : ça fonctionne !!)";
+    public static final String CURRENT_TEXT_ID="current_text_id";
+    public static final String CURRENT_TEXT_KEY="current_text_key";
+    private String currentText="Ceci est un texte à lire par l'application";
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
@@ -50,7 +51,10 @@ public class TextManagerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
-                startActivityForResult(ReciteTexteActivity,RECITE_TEXT_ACTIVITY);
+                ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
+                setResult(RESULT_OK,ReciteTexteActivity);
+                finish();
+                startActivity(ReciteTexteActivity);
             }
         });
 
