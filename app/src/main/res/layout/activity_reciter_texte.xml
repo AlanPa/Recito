@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReciterTexte">
+
+    <TableLayout
+        android:id="@+id/Table_ReciterTexte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/Tour_Reciter"
+        style="@style/texte"
+        android:layout_below=""
+        android:text="A votre tour"/>
+
+    <TextView
+        android:id="@+id/Score_ResultatSimple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/100"
+        android:layout_below="@id/Titre_ResultatSimple"
+        style="@style/texte"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:textSize="40dp"/>
+
+    <ProgressBar
+        android:id="@+id/ProgressBar_ResultatSimple"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/Score_ResultatSimple"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_marginBottom="40dp"
+        android:indeterminate="false"
+        android:progress="50"
+        android:max="100"
+        android:progressDrawable="@drawable/custom_progress"/>
+    <Button
+        android:id="@+id/VoirDetail_Button_ResultatSimple"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/ProgressBar_ResultatSimple"
+        android:layout_marginBottom="20dp"
+        style="@style/Bouton"
+        android:text="Détails résultat"/>
+
+    <Button
+        android:id="@+id/Reessayer_Button_ResultatSimple"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/VoirDetail_Button_ResultatSimple"
+        style="@style/Bouton"
+        android:text="Réessayer"
+        android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/Terminer_Button_ResultatSimple"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Reessayer_Button_ResultatSimple"
+        style="@style/Bouton"
+        android:text="Terminer"/>
+
+
+
+</RelativeLayout>

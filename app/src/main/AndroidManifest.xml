@@ -12,10 +12,12 @@
         android:roundIcon="@mipmap/recito_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ReciterTexte"></activity>
+        <activity android:name=".Accueil" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ConnectionActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".Accueil">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ResultatSimple">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
