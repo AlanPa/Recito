@@ -16,8 +16,8 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     private static final String CURRENT_TEXT_ID="current_text_id";
     private String currentText="Ceci est un texte à lire par l'application. (PS : ça fonctionne !!)";
-    private TextView currentTextView=null; // Equivalent EditText ed1
-    private Button startReciteButton=null; // Equivalent b1
+    private TextView currentTextView=null;
+    private Button startReciteButton=null;
     private Button readReciteButton=null;
     private long currentTextID=-1;
     private TextToSpeech tts;
@@ -27,7 +27,7 @@ public class TextManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_manager);
 
-        currentTextView = findViewById(R.id.Text_Item_Text); // equivalent EditText ed1
+        currentTextView = findViewById(R.id.Text_Item_Text);
         startReciteButton = findViewById(R.id.Start_Button_Item_Text);
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
 
