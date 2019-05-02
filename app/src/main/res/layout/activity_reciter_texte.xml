@@ -18,7 +18,7 @@
             android:id="@+id/TexteDit_Reciter"
             style="@style/texte"
             android:layout_width="367dp"
-            android:layout_height="71dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"

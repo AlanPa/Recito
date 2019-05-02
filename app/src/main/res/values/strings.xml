@@ -52,4 +52,13 @@
 
     //Item_Text____________________________________________________________________
 
+    //Load_Text_Page_______________________________________________________________
+    <string name="title_load_page">Selectionner votre texte</string>
+    <string name="label_for_load_page">Choisissez le fichier: </string>
+    <string name="hint_for_load_page">format pdf</string>
+    <string name="content_description_image_button_for_load_page">Browse the document tree to choose a pdf file</string>
+    <string name="button_for_load_page">Valider</string>
+
+    //Load_Text_Page_______________________________________________________________
+
 </resources>
