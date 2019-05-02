@@ -29,4 +29,9 @@ public class ResultatSimple extends AppCompatActivity {
         Intent intent = new Intent(ResultatSimple.this, LibraryActivity.class);
         startActivity(intent);
     }
+
+    public void VoirResultatDetaille(View view) {
+        Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
+        startActivity(intent);
+    }
 }
