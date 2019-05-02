@@ -13,7 +13,7 @@ public class Accueil extends AppCompatActivity {
         setContentView(R.layout.activity_accueil);
     }
 
-    public void ConnexionButtonClicked(View view) {
+    public void SeConnecterButtonClicked(View view) {
         Intent intent = new Intent(Accueil.this, ConnectionActivity.class);
         startActivity(intent);
     }

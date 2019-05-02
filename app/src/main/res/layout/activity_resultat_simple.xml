@@ -51,12 +51,14 @@
         android:layout_below="@id/VoirDetail_Button_ResultatSimple"
         style="@style/Bouton"
         android:text="Réessayer"
+        android:onClick="ReessayerRecitation"
         android:layout_marginBottom="20dp"/>
     <Button
         android:id="@+id/Terminer_Button_ResultatSimple"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/Reessayer_Button_ResultatSimple"
         style="@style/Bouton"
+        android:onClick="RetournerBibliotheque"
         android:text="Terminer"/>
 
 

@@ -80,6 +80,7 @@
         android:background="#B71C1C"
         android:text="@string/connecion_bouton_label_Connection"
         android:textColor="#FFFFFF"
+        android:onClick="ConnexionButtonClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

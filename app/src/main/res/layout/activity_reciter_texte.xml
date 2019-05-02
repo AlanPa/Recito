@@ -9,7 +9,10 @@
     <TableLayout
         android:id="@+id/Table_ReciterTexte"
         android:layout_width="match_parent"
-        android:layout_height="600dp">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:layout_above="@id/Tour_Reciter">
 
     </TableLayout>
 
@@ -18,17 +21,17 @@
         style="@style/texte"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="10dp"
-        android:layout_below="@id/Table_ReciterTexte"
+        android:layout_above="@id/Mic_Button_Reciter"
         android:text="A votre tour"/>
 
     <ImageButton
         android:id="@+id/Mic_Button_Reciter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/Tour_Reciter"
         android:src="@drawable/ic_mic_black_50dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="75dp"
+        android:layout_alignParentBottom="true"
         android:backgroundTint="@android:color/transparent"/>
 
 
@@ -38,6 +41,7 @@
         android:layout_below="@id/Tour_Reciter"
         android:layout_toRightOf="@id/Mic_Button_Reciter"
         style="@style/Bouton"
+        android:onClick="AfficherRésultatSimple"
         android:text="Terminer"/>
 
 
