@@ -1,0 +1,34 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                          https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <pluginGroups>
+        <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+    </pluginGroups>
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>http://40.89.191.130</sonar.host.url>
+                <sonar.login>admin</sonar.login>
+                <sonar.password>KfSI5kcGtzXy</sonar.password>
+            </properties>
+        </profile>
+     </profiles>
+
+	<servers>
+		<server>
+		   <id>azure-auth</id>
+		   <configuration>
+		       <client>d6cb4a77-684b-4147-966a-3e4a9a48235f</client>
+		       <tenant>a6f85915-b650-4614-abc2-2b6573e1701e</tenant>
+		       <key>Recito@h4213</key>
+		       <environment>AZURE</environment>
+		   </configuration>
+		</server>
+	</servers>
+</settings>
