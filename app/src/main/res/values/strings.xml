@@ -39,6 +39,7 @@
     //Item_Text____________________________________________________________________
     <string name="text_Item_Text">Pas de texte</string>
     <string name="start_bouton_Item_Text">Réviser le texte</string>
+    <string name="read_bouton_Item_Text">Lecture</string>
 
     //Item_Text____________________________________________________________________
 

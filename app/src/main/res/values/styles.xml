@@ -1,11 +1,31 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">#B71C1C</item>
+        <item name="colorPrimaryDark">#B71C1C</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="texte">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+    <style name="titre">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#B71C1C</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:layout_marginTop">60dp</item>
+    </style>
+    <style name="Bouton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:width">180dp</item>
+        <item name="android:background">#B71C1C</item>
     </style>
 
 </resources>

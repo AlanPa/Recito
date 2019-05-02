@@ -10,15 +10,31 @@
         android:id="@+id/Start_Button_Item_Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         android:width="180dp"
         android:background="#B71C1C"
         android:text="@string/start_bouton_Item_Text"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/Read_Button_Item_Text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text" />
+
+    <Button
+        android:id="@+id/Read_Button_Item_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="8dp"
+        android:width="180dp"
+        android:background="#646262"
+        android:text="@string/read_bouton_Item_Text"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/Start_Button_Item_Text"
+        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -42,9 +58,9 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="30dp"
-        android:text="@string/text_Item_Text"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/Connection_Button_Connection"
+        android:text="@string/text_Item_Text"
+        app:layout_constraintBottom_toTopOf="@+id/Start_Button_Item_Text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
