@@ -1,6 +1,8 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
+import android.support.v7.app.AppCompatActivity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -10,6 +12,9 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Locale;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +38,7 @@ public class TextManagerActivity extends AppCompatActivity {
     private Button startReciteButton=null;
     private Button readReciteButton=null;
     private String currentTextID="test";
-
+    private TextToSpeech tts;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,15 @@ public class TextManagerActivity extends AppCompatActivity {
         currentTextView.setText(currentText);
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.FRENCH);
+                }
+            }
+        });
+
         startReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,10 +76,21 @@ public class TextManagerActivity extends AppCompatActivity {
         readReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Partie Clementine avec la lecture du currentTexte;
+                String toSpeak = currentTextView.getText().toString();
+                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+                tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
     }
+
+    public void onPause(){
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
+    }
+
     private class FetchTask extends AsyncTask<String, Void, String> {
 
         @Override

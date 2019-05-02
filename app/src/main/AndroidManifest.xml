@@ -14,14 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LoadPdfActivity"></activity>
-        <activity android:name=".ReciterTexte" />
-        <activity android:name=".Accueil" />
+        <activity android:name=".ReciterTexte"/>s
+        <activity android:name=".TextManagerActivity"/>
         <activity android:name=".LibraryActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ConnectionActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".ResultatSimple" />
-        <activity android:name=".TextManagerActivity">
+        <activity android:name=".Accueil">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
