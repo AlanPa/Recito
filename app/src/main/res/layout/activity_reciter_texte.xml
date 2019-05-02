@@ -22,7 +22,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:text="Le texte que vous allez dire va s'afficher ici." />
+            android:text="@string/MessagePreventif_Reciter" />
 
     </TableLayout>
 
@@ -53,7 +53,7 @@
         android:layout_toRightOf="@id/Mic_Button_Reciter"
         style="@style/Bouton"
         android:onClick="AfficherRésultatSimple"
-        android:text="Terminer"/>
+        android:text="@string/Terminer_button_Reciter"/>
 
 
 

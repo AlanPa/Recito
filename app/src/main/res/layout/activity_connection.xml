@@ -33,17 +33,14 @@
 
     <TextView
         android:id="@+id/Title_Connection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="@string/page_title_Connection"
-        android:textColor="#B71C1C"
-        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/Id_Input_Connection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/titre"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -72,18 +69,15 @@
 
     <Button
         android:id="@+id/Connection_Button_Connection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:layout_marginBottom="200dp"
-        android:width="180dp"
         android:background="#B71C1C"
         android:text="@string/connecion_bouton_label_Connection"
-        android:textColor="#FFFFFF"
         android:onClick="ConnexionButtonClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        style="@style/Bouton"/>
 </android.support.constraint.ConstraintLayout>

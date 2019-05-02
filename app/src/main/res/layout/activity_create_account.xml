@@ -8,31 +8,24 @@
 
     <Button
         android:id="@+id/Validation_Button_Sign_Up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:width="180dp"
-        android:background="#B71C1C"
         android:text="@string/validation_bouton_label_Sign_Up"
-        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6"
+        style="@style/Bouton"/>
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="130dp"
         android:text="@string/page_title_Sign_Up"
-        android:textColor="#B71C1C"
-        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/titre"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/textInputLayout2"
@@ -63,15 +56,13 @@
 
         <TextView
             android:id="@+id/Login_Label_Sign_Up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/login_label_Sign_Up"
-            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/texte"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -104,15 +95,14 @@
 
         <TextView
             android:id="@+id/Email_Label_Sign_Up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/mail_label_Sign_Up" />
+            tools:text="@string/mail_label_Sign_Up"
+            style="@style/texte"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -143,15 +133,14 @@
 
         <TextView
             android:id="@+id/Password_Label_Sign_Up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="TextView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/password_label_Sign_Up" />
+            tools:text="@string/password_label_Sign_Up"
+            style="@style/texte"/>
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -190,7 +179,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/verification_password_label_Sign_Up" />
+            tools:text="@string/verification_password_label_Sign_Up"
+            android:fontFamily="sans-serif"/>
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

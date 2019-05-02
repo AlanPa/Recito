@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/Titre_ResultatSimple"
         style="@style/titre"
-        android:text="Votre score"
+        android:text="@string/titre_Score_ResultatSimple"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"/>
 
@@ -31,7 +31,7 @@
             android:id="@+id/ScoreMax_ResultatSimple"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="/100"
+            android:text="@string/bareme_Reciter"
             style="@style/texte"
             android:layout_centerHorizontal="true"
             android:textSize="40dp"/>
@@ -79,14 +79,14 @@
         android:layout_below="@id/ProgressBar_ResultatSimple"
         android:layout_marginBottom="20dp"
         style="@style/Bouton"
-        android:text="Détails résultat"/>
+        android:text="@string/Details_button_ResultatSimple"/>
 
     <Button
         android:id="@+id/Reessayer_Button_ResultatSimple"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/VoirDetail_Button_ResultatSimple"
         style="@style/Bouton"
-        android:text="Réessayer"
+        android:text="@string/Reessayer_button_ResultatSimple"
         android:onClick="ReessayerRecitation"
         android:layout_marginBottom="20dp"/>
     <Button
@@ -95,7 +95,7 @@
         android:layout_below="@id/Reessayer_Button_ResultatSimple"
         style="@style/Bouton"
         android:onClick="RetournerBibliotheque"
-        android:text="Terminer"/>
+        android:text="@string/Terminer_button_ResultatSimple"/>
 
 
 

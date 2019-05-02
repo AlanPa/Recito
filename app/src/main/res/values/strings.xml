@@ -40,6 +40,15 @@
     <string name="text_Item_Text">Ceci est un texte à lire par l\'application. (PS : ça fonctionne !!)</string>
     <string name="start_bouton_Item_Text">Réviser le texte</string>
     <string name="read_bouton_Item_Text">Lecture</string>
+    <string name="seConnecter_bouton_label_Accueil">Se connecter</string>
+    <string name="incription_bouton_label_Accueil">S\'inscrire</string>
+    <string name="MessagePreventif_Reciter">Le texte que vous allez dire va s\'afficher ici.</string>
+    <string name="Terminer_button_Reciter">Terminer</string>
+    <string name="titre_Score_ResultatSimple">Votre score</string>
+    <string name="bareme_Reciter">/100</string>
+    <string name="Details_button_ResultatSimple">Détails résultat</string>
+    <string name="Reessayer_button_ResultatSimple">Réessayer</string>
+    <string name="Terminer_button_ResultatSimple">Terminer</string>
 
     //Item_Text____________________________________________________________________
 
