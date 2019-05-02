@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class ResultatSimple extends AppCompatActivity {
+    private String resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +18,8 @@ public class ResultatSimple extends AppCompatActivity {
 
         Intent currentIntent = getIntent();
         int score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
+        resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
+
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
 
 
@@ -41,6 +44,9 @@ public class ResultatSimple extends AppCompatActivity {
 
     public void VoirResultatDetaille(View view) {
         Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
+        intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
+        setResult(RESULT_OK,intent);
+        finish();
         startActivity(intent);
     }
 }

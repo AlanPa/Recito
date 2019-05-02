@@ -16,7 +16,9 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
+   // private String title="Votre texte à apprendre :";
     private String currentText="Ceci est un texte à lire par l'application";
+   // private TextView titleText=null;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
@@ -29,12 +31,16 @@ public class TextManagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_text_manager);
 
         currentTextView = findViewById(R.id.Text_Item_Text);
+        //titleText = findViewById(R.id.Title_Item_Text);
+
         startReciteButton = findViewById(R.id.Start_Button_Item_Text);
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
 
         //Je remplis le currentText
 
         currentTextView.setText(currentText);
+        //titleText.setText(title);
+
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {

@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".ReciterTexte">
 
+
+
     <TableLayout
         android:id="@+id/Table_ReciterTexte"
         android:layout_width="match_parent"
@@ -14,7 +16,17 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="-11dp"
         android:layout_marginBottom="11dp">
-
+        <TextView
+            android:id="@+id/Correction_Reciter"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Le texte que vous avez prononcé :" />
         <TextView
             android:id="@+id/TexteDit_Reciter"
             style="@style/texte"
@@ -23,18 +35,12 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:text="Le texte que vous allez dire va s'afficher ici." />
-        <TextView
-            android:id="@+id/Correction_Reciter"
-            style="@style/texte"
-            android:layout_width="367dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:text="Ici bientôt la correction." />
+            android:textStyle="italic"
+            android:text="Cliquez sur enregistrer, parlez et attendez quelques secondes." />
+
 
     </TableLayout>
+
 
     <TextView
         android:id="@+id/Tour_Reciter"
@@ -66,19 +72,6 @@
         android:text="Terminer"/>
 
 
-    <Button
-        android:id="@+id/Bouton_Test"
-        style="@style/Bouton"
-        android:layout_width="211dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Tour_Reciter"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="-57dp"
-        android:layout_toRightOf="@id/Mic_Button_Reciter"
-        android:onClick="compareTexts"
-        android:layout_marginRight="65dp"
-        android:text="Comparer" />
 
 
 

@@ -33,8 +33,9 @@ public class ReciterTexte extends AppCompatActivity {
     private static String serviceRegion = "francecentral";
 
     public static final String SCORE_KEY="score_key";
+    public static final String RESULT_TEXT_KEY="result_text_key";
     private int score;
-    private int nbErreurs;
+    private String resultText;
     private String currentText = null;
 
     @Override
@@ -100,14 +101,14 @@ public class ReciterTexte extends AppCompatActivity {
 
 
     public void AfficherResultatSimple(View view) {
+        compareTexts(view);
 
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
         ResultatSimpleActivity.putExtra(SCORE_KEY, score);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,resultText);
         setResult(RESULT_OK,ResultatSimpleActivity);
         finish();
         startActivity(ResultatSimpleActivity);
-
-
     }
 
 
@@ -137,9 +138,8 @@ public class ReciterTexte extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        String newResult = editResult(rows.get(0).getOldLine());
-        correction.setText(Html.fromHtml(newResult));
+        resultText = editResult(rows.get(0).getOldLine());
+        correction.setText(Html.fromHtml(resultText));
 
     }
 
@@ -181,8 +181,7 @@ public class ReciterTexte extends AppCompatActivity {
         }
 
         String resFautes = "<br/><br/> Il y a eu "+nbAjouts+" ajouts de mots, et "+nbOublis+" oublis.";
-        nbErreurs = nbAjouts+nbOublis;
-        score = nbErreurs;
+        score = nbAjouts+nbOublis;
         return newResult+resFautes;
     }
 
