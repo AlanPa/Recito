@@ -1,21 +1,26 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Locale;
 
 public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     private static final String CURRENT_TEXT_ID="current_text_id";
-    private String currentText=null;
+    private String currentText="Ceci est un texte à lire par l'application. (PS : ça fonctionne !!)";
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
     private long currentTextID=-1;
+    private TextToSpeech tts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,15 @@ public class TextManagerActivity extends AppCompatActivity {
         currentTextView.setText(currentText);
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.FRENCH);
+                }
+            }
+        });
+
         startReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,8 +57,18 @@ public class TextManagerActivity extends AppCompatActivity {
         readReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Partie Clementine avec la lecture du currentTexte;
+                String toSpeak = currentTextView.getText().toString();
+                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+                tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
+    }
+
+    public void onPause(){
+        if(tts !=null){
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onPause();
     }
 }

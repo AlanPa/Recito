@@ -37,7 +37,7 @@
     //Menu_________________________________________________________________________
 
     //Item_Text____________________________________________________________________
-    <string name="text_Item_Text">Pas de texte</string>
+    <string name="text_Item_Text">Ceci est un texte à lire par l\'application. (PS : ça fonctionne !!)</string>
     <string name="start_bouton_Item_Text">Réviser le texte</string>
     <string name="read_bouton_Item_Text">Lecture</string>
 
