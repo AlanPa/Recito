@@ -4,6 +4,7 @@ import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -29,9 +30,9 @@ public class ReciterTexte extends AppCompatActivity {
     private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
     // Replace below with your own service region (e.g., "westus").
     private static String serviceRegion = "francecentral";
-    //private String currentText = "Ceci est un texte";
-    private String currentText = null;
 
+    private String currentText = null;
+    private int nbErreurs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +52,6 @@ public class ReciterTexte extends AppCompatActivity {
             Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
             TextView recognizedTextView = (TextView) this.findViewById(R.id.hello);
             recognizedTextView.setText("Could not initialize SpeeckSDK: " + ex.toString());
-        }
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if( RESULT_OK == resultCode){
-
-            long id = data.getIntExtra(TextManagerActivity.CURRENT_TEXT_ID,-1);
-            currentText = data.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
         }
     }
 
@@ -118,6 +108,8 @@ public class ReciterTexte extends AppCompatActivity {
     public void compareTexts(View v){
         TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
         TextView correction = (TextView) this.findViewById(R.id.Correction_Reciter);
+        Intent currentIntent = getIntent();
+        currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
         //create a configured DiffRowGenerator
         DiffRowGenerator generator = DiffRowGenerator.create()
@@ -125,7 +117,7 @@ public class ReciterTexte extends AppCompatActivity {
                 .mergeOriginalRevised(true)
                 .inlineDiffByWord(true)
                 .oldTag(f -> "~")      //introduce markdown style for strikethrough
-                .newTag(f -> "**")     //introduce markdown style for bold
+                .newTag(f -> "*")     //introduce markdown style for bold
                 .build();
 
         //compute the differences for two test texts.
@@ -138,8 +130,55 @@ public class ReciterTexte extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        correction.setText(rows.get(0).getOldLine());
+
+        String newResult = editResult(rows.get(0).getOldLine());
+        correction.setText(Html.fromHtml(newResult));
 
     }
 
+    private String editResult(String resultLine){
+        String newResult="";
+
+        char gras = '*';
+        char barre = '~';
+        boolean baliseOuvrante = true;
+        int nbOublis = 0;
+        int nbAjouts = 0;
+
+        for (int i=0; i < resultLine.length(); i++)
+        {
+            if (resultLine.charAt(i) == gras ) {
+                if (baliseOuvrante) {
+                    newResult += "<b>";
+                    nbOublis++;
+                } else {
+                    newResult += "</b>";
+                }
+                baliseOuvrante=!baliseOuvrante;
+            }
+            else if (resultLine.charAt(i) == barre) {
+                if (baliseOuvrante) {
+                    newResult += "<strike>";
+                    nbAjouts++;
+                } else {
+                    newResult += "</strike>";
+                }
+                baliseOuvrante=!baliseOuvrante;
+
+            }
+            else {
+                newResult += resultLine.charAt(i);
+            }
+        }
+
+        String resFautes = "<br/><br/> Il y a eu "+nbAjouts+" ajouts de mots, et "+nbOublis+" oublis.";
+        nbErreurs = nbAjouts+nbOublis;
+        return newResult+resFautes;
+    }
+
 }
+
+
+//////////// A faire : passer newResult et nbErreurs à l'activité suivante
+// Faire en sorte que ça soit au moment où on clique sur le bon bouton
+// Afficher la correction dans "détails sur la correction"
