@@ -29,7 +29,6 @@ public class ReciterTexte extends AppCompatActivity {
 
     // Replace below with your own subscription key
     private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
-    // Replace below with your own service region (e.g., "westus").
     private static String serviceRegion = "francecentral";
 
     public static final String SCORE_KEY="score_key";
