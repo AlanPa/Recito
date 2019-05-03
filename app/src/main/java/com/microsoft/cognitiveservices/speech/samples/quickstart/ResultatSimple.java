@@ -62,6 +62,9 @@ public class ResultatSimple extends AppCompatActivity {
 
     public void ReessayerRecitation(View view) {
         Intent intent = new Intent(ResultatSimple.this, ReciterTexte.class);
+        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        setResult(RESULT_OK,intent);
+        finish();
         startActivity(intent);
     }
 
