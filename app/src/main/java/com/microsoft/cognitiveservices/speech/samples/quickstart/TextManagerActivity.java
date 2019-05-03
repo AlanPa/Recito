@@ -33,12 +33,15 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
-    private String currentText="blalalala";
+   // private String title="Votre texte à apprendre :";
+    private String currentText="Maître corbeau sur un arbre perché tenait dans son bec un fromage.";
+   // private TextView titleText=null;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
-    private String currentTextID="test";
+    private long currentTextID=-1;
     private TextToSpeech tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +51,11 @@ public class TextManagerActivity extends AppCompatActivity {
         startReciteButton = findViewById(R.id.Start_Button_Item_Text);
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
 
-        //Je remplis le currentText
-        //getText("test");
-        new FetchTask().execute("http://localhost:4000/GetId?id=5", currentTextID);
 
+        //getText("test");
+        //new FetchTask().execute("http://localhost:4000/GetId?id=5", currentTextID);
+
+        //Je remplis le currentText
         currentTextView.setText(currentText);
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
@@ -67,9 +71,12 @@ public class TextManagerActivity extends AppCompatActivity {
         startReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent reciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
-                reciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
-                startActivity(reciteTexteActivity);
+                Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
+                ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
+                ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
+                setResult(RESULT_OK,ReciteTexteActivity);
+                finish();
+                startActivity(ReciteTexteActivity);
             }
         });
 

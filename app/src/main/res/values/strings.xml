@@ -37,7 +37,9 @@
     //Menu_________________________________________________________________________
 
     //Item_Text____________________________________________________________________
+
     <string name="text_Item_Text">Ceci est un texte à lire par l\'application. (PS : ça fonctionne !!)</string>
+    <string name="title_Item_Text">Texte à apprendre :</string>
     <string name="start_bouton_Item_Text">Réviser le texte</string>
     <string name="read_bouton_Item_Text">Lecture</string>
     <string name="seConnecter_bouton_label_Accueil">Se connecter</string>

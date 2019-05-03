@@ -13,30 +13,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/Score_ResultatSimple"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/Score_ResultatSimple"
+        android:text="0/100"
         android:layout_below="@id/Titre_ResultatSimple"
+        style="@style/texte"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp">
-        <TextView
-            android:id="@+id/ValScore_ResultatSimple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="44"
-            style="@style/texte"
-            android:textSize="40dp"/>
-        <TextView
-            android:id="@+id/ScoreMax_ResultatSimple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bareme_Reciter"
-            style="@style/texte"
-            android:layout_centerHorizontal="true"
-            android:textSize="40dp"/>
+        android:layout_marginBottom="20dp"
+        android:textSize="40dp"/>
 
-    </LinearLayout>
 
 
 
@@ -79,6 +66,7 @@
         android:layout_below="@id/ProgressBar_ResultatSimple"
         android:layout_marginBottom="20dp"
         style="@style/Bouton"
+        android:onClick="VoirResultatDetaille"
         android:text="@string/Details_button_ResultatSimple"/>
 
     <Button
