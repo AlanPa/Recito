@@ -67,10 +67,8 @@ public class ReciterTexte extends AppCompatActivity {
             config.setSpeechRecognitionLanguage("fr-FR");
 
             assert(config != null);
-
             SpeechRecognizer reco = new SpeechRecognizer(config);
             assert(reco != null);
-
             Future<SpeechRecognitionResult> task = reco.recognizeOnceAsync();
             assert(task != null);
 
@@ -84,12 +82,10 @@ public class ReciterTexte extends AppCompatActivity {
 
             if (result.getReason() == ResultReason.RecognizedSpeech) {
                 txt.setText(result.getText());
-                //txt.setText(result.toString());
             }
             else {
                 txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
             }
-
             reco.close();
         } catch (Exception ex) {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
@@ -140,13 +136,13 @@ public class ReciterTexte extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        return (editResult(rows.get(0).getOldLine()));
+        return (editToHtmlResult(rows.get(0).getOldLine()));
 
     }
 
     // Modifier de manière à ne pas prendre en compte les suppr/ajouts comme deux erreurs
     // enlever ponctuation
-    private String editResult(String resultLine){
+    private String editToHtmlResult(String resultLine){
         String newResult="";
 
         char gras = '*';
