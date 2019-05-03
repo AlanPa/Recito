@@ -104,6 +104,7 @@ public class ReciterTexte extends AppCompatActivity {
         Intent currentIntent = getIntent();
         currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
+        // Récupérer le résultat en html (et mise à jour du score en interne)
         resultText=compareTexts(view);
 
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
@@ -119,10 +120,6 @@ public class ReciterTexte extends AppCompatActivity {
 
     private String compareTexts(View v){
         TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter);
-
-        // Récupérer le texte original
-        //Intent currentIntent = getIntent();
-        //currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
         //create a configured DiffRowGenerator
         DiffRowGenerator generator = DiffRowGenerator.create()
@@ -145,11 +142,15 @@ public class ReciterTexte extends AppCompatActivity {
         }
 
         return (editToHtmlResult(rows.get(0).getOldLine()));
-
     }
 
-    // Modifier de manière à ne pas prendre en compte les suppr/ajouts comme deux erreurs
-    // enlever ponctuation
+
+    //////////////
+    // TODO Modifier de manière à ne pas prendre en compte les suppr/ajouts comme deux erreurs
+    // TODO Faire un pourcentage correct
+    // TODO Enlever ponctuation
+    //////////////
+
     private String editToHtmlResult(String resultLine){
         String newResult="";
 
@@ -191,8 +192,3 @@ public class ReciterTexte extends AppCompatActivity {
     }
 
 }
-
-
-//////////// A faire : passer newResult et nbErreurs à l'activité suivante
-// Faire en sorte que ça soit au moment où on clique sur le bon bouton
-// Afficher la correction dans "détails sur la correction"
