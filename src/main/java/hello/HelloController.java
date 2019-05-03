@@ -1,6 +1,9 @@
 package hello;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,29 +17,29 @@ public class HelloController {
 
     //Spring se lance sur localhost:8080
     @PostMapping("/Connexion")
-    Map<String, String> connexion() {
+    public Map<String, String> connexion() {
         Map<String,String> m=new HashMap<>();
         m.put("Status","Set");
         return m;
     }
 
     @GetMapping("/GetId")
-    Map<String, String> connexionGet(@RequestParam("id") int id) {
-        Map<String,String> m=new HashMap<>();
-        m.put("Status","Set");
+    public Map<String, Integer> connexionGet(@RequestParam("id") int id) {
+        Map<String,Integer> m=new HashMap<>();
+        m.put("Status",id);
         return m;
     }
 
 
     @PostMapping("/PostId")
-    Map<String, String> connexionPost(@RequestParam("id") int id) {
-        Map<String,String> m=new HashMap<>();
-        m.put("Status","Set");
+    public Map<String, Integer> connexionPost(@RequestParam("id") int id) {
+        Map<String,Integer> m=new HashMap<>();
+        m.put("Status",id);
         return m;
     }
 
     @PostMapping("/PostBody")
-    Map<String, String> checkBody(@RequestBody String s) {
+    public Map<String, String> checkBody(@RequestBody String s) {
         Map<String,String> m=new HashMap<>();
         m.put("Status","Set");
         m.put("body_receive",s);
@@ -44,10 +47,22 @@ public class HelloController {
     }
 
     @PostMapping("/RetrieveText")
-    Map<String, String> test() {
+    public Map<String, String> test() {
         Map<String,String> m=new HashMap<>();
         m.put("Status","Set");
         return m;
+    }
+
+    @PostMapping("/RetrieveFile")
+    public String testUpload(@RequestParam("file") MultipartFile file,
+                                   RedirectAttributes redirectAttributes) {
+
+        System.out.println("Size : "+file.getSize());
+        System.out.println("Message : "+file.getOriginalFilename());
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/";
     }
 
 }
