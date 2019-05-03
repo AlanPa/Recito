@@ -101,11 +101,12 @@ public class ReciterTexte extends AppCompatActivity {
 
 
     public void AfficherResultatSimple(View view) {
-        compareTexts(view);
+        resultText=compareTexts(view);
 
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
         ResultatSimpleActivity.putExtra(SCORE_KEY, score);
         ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,resultText);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
         setResult(RESULT_OK,ResultatSimpleActivity);
         finish();
         startActivity(ResultatSimpleActivity);
@@ -113,9 +114,10 @@ public class ReciterTexte extends AppCompatActivity {
 
 
 
-    public void compareTexts(View v){
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
-        TextView correction = (TextView) this.findViewById(R.id.Correction_Reciter);
+    private String compareTexts(View v){
+        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter);
+
+        // Récupérer le texte original
         Intent currentIntent = getIntent();
         currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
@@ -138,8 +140,7 @@ public class ReciterTexte extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        resultText = editResult(rows.get(0).getOldLine());
-        correction.setText(Html.fromHtml(resultText));
+        return (editResult(rows.get(0).getOldLine()));
 
     }
 
@@ -158,19 +159,19 @@ public class ReciterTexte extends AppCompatActivity {
         {
             if (resultLine.charAt(i) == gras ) {
                 if (baliseOuvrante) {
-                    newResult += "<b>";
+                    newResult += "<b> ";
                     nbOublis++;
                 } else {
-                    newResult += "</b>";
+                    newResult += "</b> ";
                 }
                 baliseOuvrante=!baliseOuvrante;
             }
             else if (resultLine.charAt(i) == barre) {
                 if (baliseOuvrante) {
-                    newResult += "<strike>";
+                    newResult += "<strike> ";
                     nbAjouts++;
                 } else {
-                    newResult += "</strike>";
+                    newResult += "</strike>" ;
                 }
                 baliseOuvrante=!baliseOuvrante;
 

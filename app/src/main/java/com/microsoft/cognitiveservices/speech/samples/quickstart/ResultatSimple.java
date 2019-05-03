@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 public class ResultatSimple extends AppCompatActivity {
     private String resultText;
+    private int score;
+    private String currentText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +19,9 @@ public class ResultatSimple extends AppCompatActivity {
         setContentView(R.layout.activity_resultat_simple);
 
         Intent currentIntent = getIntent();
-        int score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
+        score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
+        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
 
@@ -45,6 +48,9 @@ public class ResultatSimple extends AppCompatActivity {
     public void VoirResultatDetaille(View view) {
         Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
         intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
+        intent.putExtra(ReciterTexte.SCORE_KEY,score);
+        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+
         setResult(RESULT_OK,intent);
         finish();
         startActivity(intent);

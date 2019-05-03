@@ -17,7 +17,7 @@ public class TextManagerActivity extends AppCompatActivity {
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
    // private String title="Votre texte à apprendre :";
-    private String currentText="Ceci est un texte à lire par l'application";
+    private String currentText="Maître corbeau sur un arbre perché tenait dans son bec un fromage.";
    // private TextView titleText=null;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
