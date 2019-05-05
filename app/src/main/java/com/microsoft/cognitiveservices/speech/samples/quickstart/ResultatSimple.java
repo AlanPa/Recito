@@ -27,28 +27,24 @@ public class ResultatSimple extends AppCompatActivity {
         currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
-        scoreSur100.setText(score+" erreurs");
+        scoreSur100.setText(score+"%");
 
 
 
         ProgressBar progressBar = findViewById(R.id.ProgressBar_ResultatSimple);
         Drawable progressDrawable = progressBar.getProgressDrawable().mutate();
 
-        //TextView scoreUtilisateur = findViewById(R.id.ValScore_ResultatSimple);
-        //int leScore = Integer.valueOf(scoreUtilisateur.getText().toString());
-        int leScore = score;
-
-        progressBar.setProgress(leScore);
-        if(leScore < 25)
+        progressBar.setProgress(score);
+        if(score < 25)
         {
 
             progressDrawable.setColorFilter(Color.rgb(255, 87, 51), PorterDuff.Mode.SRC_IN);
         }
-        else if(leScore < 50)
+        else if(score < 50)
         {
             progressDrawable.setColorFilter(Color.rgb(255, 189, 51), PorterDuff.Mode.SRC_IN);
         }
-        else if(leScore < 75)
+        else if(score < 75)
         {
             progressDrawable.setColorFilter(Color.	rgb(219, 255, 51), PorterDuff.Mode.SRC_IN);
         }
