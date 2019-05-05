@@ -22,13 +22,13 @@
 
 	<servers>
 		<server>
-		   <id>azure-auth</id>
-		   <configuration>
-		       <client>d6cb4a77-684b-4147-966a-3e4a9a48235f</client>
-		       <tenant>a6f85915-b650-4614-abc2-2b6573e1701e</tenant>
-		       <key>Recito@h4213</key>
-		       <environment>AZURE</environment>
-		   </configuration>
+            <id>azure-auth</id>
+            <configuration>
+                <client>7352734d-0211-4247-8546-9bdb355dd44c</client>
+                <tenant>f3e5cecd-4974-4653-827d-82626ea5f9ce</tenant>
+                <key>Recito@h4213</key>
+                <environment>AZURE</environment>
+            </configuration>
 		</server>
 	</servers>
 </settings>
