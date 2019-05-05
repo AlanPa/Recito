@@ -96,10 +96,7 @@ public class ReciterTexte extends AppCompatActivity {
     }
 
 
-
-
     public void AfficherResultatSimple(View view) {
-
         // Récupérer le texte original
         Intent currentIntent = getIntent();
         currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
@@ -111,7 +108,7 @@ public class ReciterTexte extends AppCompatActivity {
         // Calculer un résultat complet
         Pair<Integer, String> fullResult = calculateFullResult(currentText,saidText);
 
-
+        // Passer à l'activité suivante
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
         ResultatSimpleActivity.putExtra(SCORE_KEY, fullResult.first);
         ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResult.second);
@@ -129,9 +126,10 @@ public class ReciterTexte extends AppCompatActivity {
         // Calculs nombres de mots
         int nbWordsOriginalText = countWordsInText(currentText);
         int nbWordsSaidText = countWordsInText(saidText);
-        int nbCorrects = calculateNumberCorrectWords(resultTextBeforeHTML);
         int nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML,'~');
-        int nbOublis = calculateNumberWrongWords(resultTextBeforeHTML,'*');
+        int nbCorrects = nbWordsSaidText-nbAjouts;
+        int nbOublis = nbWordsOriginalText-nbCorrects;
+
         String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots, vous en avez dit " + nbWordsSaidText+".<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
 
         int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
@@ -232,21 +230,6 @@ public class ReciterTexte extends AppCompatActivity {
             nbWords++;
         }
         return (nbWords);
-    }
-
-    // Donne le nombre de mots non compris entre les caractères marquant les erreurs
-    private int calculateNumberCorrectWords(String resultText){
-        boolean correctPart = true;
-        String goodWords="";
-        for (int i=0; i < resultText.length(); i++)
-        {
-            if(resultText.charAt(i) == '*' || resultText.charAt(i) == '~')
-                correctPart = !correctPart;
-            else if (correctPart && resultText.charAt(i)!='.' && resultText.charAt(i)!=','){
-                goodWords += resultText.charAt(i);
-            }
-        }
-        return countWordsInText(goodWords);
     }
 
     // Donne le nombre de mots compris entre deux caractères "limit" dans un String
