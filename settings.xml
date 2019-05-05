@@ -13,22 +13,22 @@
             </activation>
             <properties>
                 <!-- Optional URL to server. Default value is http://localhost:9000 -->
-                <sonar.host.url>http://40.89.191.130</sonar.host.url>
+                <sonar.host.url>http://20.188.39.120</sonar.host.url>
                 <sonar.login>admin</sonar.login>
-                <sonar.password>KfSI5kcGtzXy</sonar.password>
+                <sonar.password>iJuh1RKRR8Wd</sonar.password>
             </properties>
         </profile>
      </profiles>
 
 	<servers>
 		<server>
-		   <id>azure-auth</id>
-		   <configuration>
-		       <client>d6cb4a77-684b-4147-966a-3e4a9a48235f</client>
-		       <tenant>a6f85915-b650-4614-abc2-2b6573e1701e</tenant>
-		       <key>Recito@h4213</key>
-		       <environment>AZURE</environment>
-		   </configuration>
+            <id>azure-auth</id>
+            <configuration>
+                <client>7352734d-0211-4247-8546-9bdb355dd44c</client>
+                <tenant>f3e5cecd-4974-4653-827d-82626ea5f9ce</tenant>
+                <key>Recito@h4213</key>
+                <environment>AZURE</environment>
+            </configuration>
 		</server>
 	</servers>
 </settings>
