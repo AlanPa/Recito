@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Accueil">
+
+    <ImageView
+        android:id="@+id/Logo_Accueil"
+        android:layout_width="382dp"
+        android:layout_height="459dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/recito" />
+
+    <Button
+        android:id="@+id/Se_Connecter_Button_Accueil"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Logo_Accueil"
+        android:layout_marginBottom="20dp"
+        android:onClick="SeConnecterButtonClicked"
+        style="@style/Bouton"
+        android:text="@string/seConnecter_bouton_label_Accueil"/>
+
+    <Button
+        android:id="@+id/Incription_Button_Accueil"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Se_Connecter_Button_Accueil"
+        android:onClick="InscriptionButtonClicked"
+        style="@style/Bouton"
+        android:text="@string/incription_bouton_label_Accueil"/>/>
+
+</RelativeLayout>

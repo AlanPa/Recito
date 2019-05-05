@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.microsoft.cognitiveservices.speech.samples.quickstart">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/recito_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/recito_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".LoadPdfActivity"/>
+        <activity android:name=".ResultatDetaille"/>
+        <activity android:name=".ReciterTexte" />
+        <activity android:name=".TextManagerActivity" />
+        <activity android:name=".LibraryActivity" />
+        <activity android:name=".CreateAccountActivity" />
+        <activity android:name=".ConnectionActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ResultatSimple" />
+        <activity android:name=".Accueil">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

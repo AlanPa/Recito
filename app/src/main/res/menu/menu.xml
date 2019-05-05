@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Library_item_Menu"
+        android:title="@string/library_item_Menu"/>
+    <item
+        android:id="@+id/Score_item_Menu"
+        android:title="@string/score_item_Menu"/>
+    <item
+        android:id="@+id/Groupes_item_Menu"
+        android:title="@string/groupes_item_Menu"/>
+    <item
+        android:id="@+id/Friends_item_Menu"
+        android:title="@string/friends_item_Menu"/>
+
+</menu>

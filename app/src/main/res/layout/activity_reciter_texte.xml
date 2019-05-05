@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReciterTexte">
+
+
+
+    <TableLayout
+        android:id="@+id/Table_ReciterTexte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/Tour_Reciter"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-11dp"
+        android:layout_marginBottom="11dp">
+        <TextView
+            android:id="@+id/Correction_Reciter"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Le texte que vous avez prononcé :" />
+        <TextView
+            android:id="@+id/TexteDit_Reciter"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:textStyle="italic"
+            android:text="Cliquez sur enregistrer, parlez et attendez quelques secondes." />
+
+
+    </TableLayout>
+
+
+    <TextView
+        android:id="@+id/Tour_Reciter"
+        style="@style/texte"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@id/Mic_Button_Reciter"
+        android:text="A votre tour"/>
+
+    <ImageButton
+        android:id="@+id/Mic_Button_Reciter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mic_black_50dp"
+        android:onClick="onSpeechToTextButtonClicked"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="75dp"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@android:color/transparent"/>
+
+
+    <Button
+        android:id="@+id/ArreterRecitation_Button_Reciter"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Tour_Reciter"
+        android:layout_toRightOf="@id/Mic_Button_Reciter"
+        style="@style/Bouton"
+        android:onClick="AfficherResultatSimple"
+        android:text="@string/Terminer_button_Reciter"/>
+
+
+
+</RelativeLayout>
