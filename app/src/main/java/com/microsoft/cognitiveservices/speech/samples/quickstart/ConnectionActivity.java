@@ -39,7 +39,7 @@ public class ConnectionActivity extends AppCompatActivity {
         //String idClientInput = idClient.getText().toString();
         //String passwordClientInput = passwordClient.getText().toString();
         //temporaire
-        Intent intent = new Intent(ConnectionActivity.this, LoadPdfActivity.class);
+        Intent intent = new Intent(ConnectionActivity.this, LibraryActivity.class);
         startActivity(intent);
         //new FetchTask().execute("url", idClientInput,passwordClientInput);
     }
@@ -86,7 +86,7 @@ public class ConnectionActivity extends AppCompatActivity {
             if (s != "success") {
                 Toast.makeText(getApplicationContext(),"identifiant et/ou mot de passe est incorrecte",Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(ConnectionActivity.this, TextManagerActivity.class);
+                Intent intent = new Intent(ConnectionActivity.this, LibraryActivity.class);
                 intent.putExtra("idClient", idClient);
                 setResult(RESULT_OK, intent);
                 startActivity(intent);
