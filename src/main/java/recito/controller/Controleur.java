@@ -8,6 +8,8 @@ import recito.repositories.Client;
 import recito.repositories.ClientRepository;
 import recito.repositories.Texte;
 import recito.repositories.TexteRepository;
+import recito.request.CreateAccountRequest;
+import recito.request.SignInRequest;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
@@ -59,41 +61,41 @@ public class Controleur {
         return "Greetings from Spring Boot!";
     }
 
-    //Spring se lance sur localhost:8080
-    @PostMapping("/Connexion")
-    public Map<String, String> connexion() {
-        Map<String,String> m=new HashMap<>();
-        m.put("Status","Set");
+    @PostMapping("/signIn")
+    public Map<String, Object> connexion(@RequestBody SignInRequest requestInfo) {
+        Map<String,Object> m=new HashMap<>();
+        //TODO Implement login
+        if(requestInfo.getLogin()==null||requestInfo.getPasswordClient()==null){
+            return addErrorCustomMessage(m,"Check the fields of the JSON send, some fields are missing or have a null value !");
+        }
+        m.put("signIn",true);
         return m;
     }
 
-    @GetMapping("/GetId")
-    public Map<String, Integer> connexionGet(@RequestParam("id") int id) {
-        Map<String,Integer> m=new HashMap<>();
-        m.put("Status",id);
+    @PostMapping("/signOut")
+    public Map<String, Object> deconnexion() {
+        Map<String,Object> m=new HashMap<>();
+        boolean status=true;
+        //TODO Implement logout
+        m.put("logout",status);
         return m;
     }
 
+    @PostMapping("/createAccount")
+    public Map<String, Object> createUser(@RequestBody CreateAccountRequest creationInfo) {
+        Map<String,Object> m=new HashMap<>();
 
-    @PostMapping("/PostId")
-    public Map<String, Integer> connexionPost(@RequestParam("id") int id) {
-        Map<String,Integer> m=new HashMap<>();
-        m.put("Status",id);
-        return m;
-    }
+        if(creationInfo.getEmailClient()==null||
+                !creationInfo.getEmailClient().matches("/^[^\\W][a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\@[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\.[a-zA-Z]{2,4}$/")
+        ){
+            return addErrorCustomMessage(m,"Check the fields of the JSON send, the mail adress is invalid or null !");
+        }
 
-    @PostMapping("/PostBody")
-    public Map<String, String> checkBody(@RequestBody String s) {
-        Map<String,String> m=new HashMap<>();
-        m.put("Status","Set");
-        m.put("body_receive",s);
-        return m;
-    }
-
-    @PostMapping("/RetrieveText")
-    public Map<String, String> test() {
-        Map<String,String> m=new HashMap<>();
-        m.put("Status","Set");
+        if(creationInfo.getLoginClient()==null||creationInfo.getPasswordClient()==null){
+            return addErrorCustomMessage(m,"Check the fields of the JSON send, some fields are missing or have a null value !");
+        }
+        //Todo create user
+        m.put("create",true);
         return m;
     }
 
@@ -108,17 +110,33 @@ public class Controleur {
         try{
             String text=PdfExtractor.extract(file);
             m.put("Text", text);
+            //TODO create text
             //m.put("Language", PdfExtractor.getLanguage(text));
         }catch (IOException e){
-            LOG.error("File exception : "+e.getMessage());
-            m.put("Status","Error");
-            m.put("Message","File exception : "+e.getMessage());
-            return m;
+            return addErrorCustomMessage(m,e,"File exception : ");
         }
-
-
 
         return m;
     }
 
+    private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
+        LOG.error("An exception was encountered : "+e.getMessage());
+        m.put("Status","Error");
+        m.put("Message","An exception was encountered : "+e.getMessage());
+        return m;
+    }
+
+    private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
+        LOG.error(message);
+        m.put("Status","Error");
+        m.put("Message",message);
+        return m;
+    }
+
+    private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, Exception e, String header){
+        LOG.error(header+e.getMessage());
+        m.put("Status","Error");
+        m.put("Message",header+e.getMessage());
+        return m;
+    }
 }
