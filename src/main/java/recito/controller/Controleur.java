@@ -1,5 +1,6 @@
 package recito.controller;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import recito.request.CreateAccountRequest;
 import recito.request.SignInRequest;
 import recito.utils.PdfExtractor;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class Controleur {
@@ -32,17 +35,67 @@ public class Controleur {
     @GetMapping("/testSet")
     public String insertDataIntoDb(){
 
-        repositoryClient.deleteAll();
-        repositoryClient.save(new Client("Gasiuk", "reci"));
-        repositoryClient.save(new Client("Gasiuk2", "reci2"));
-        repositoryClient.save(new Client("Gasiuk3", "reci3"));
 
+        Texte t = new Texte("jdr", "texte du jdr");
+        Client c = new Client("Gasiuk", "reci","gasiuk.a@insa-lyon.fr");
+
+
+        repositoryClient.deleteAll();
         repositoryTexte.deleteAll();
-        repositoryTexte.save(new Texte("jdr", "texte du jdr"));
+
+        repositoryTexte.save(t);
+        c.addTexte(t);
+        repositoryClient.save(c);
+
+
+
 
         return "OK";
     }
 
+    @PostMapping("/GetProfil")
+    public Optional<Client> GetProfil(@RequestBody Map<String,Object> body){
+
+        if(body.get("idClient")!= null){
+            java.lang.Object o = body.get("idClient");
+            String os = (String)o;
+            return repositoryClient.findById(os);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @PostMapping("/InsertNewText")
+    public String InsertNewText(@RequestBody Map<String,Object> body){
+
+        if(body.get("title")!= null){
+            String o = (String)body.get("title");
+            if(body.get("text")!= null){
+                String ot = (String)body.get("text");
+                if(body.get("idClient")!= null){
+                    Client c = repositoryClient.findById((String)body.get("idClient")).get();
+                    //If texte doesn't exist
+                    Texte t = new Texte(o,ot);
+                    repositoryTexte.save(t);
+                    c.addTexte(t);
+                    repositoryClient.save(c);
+                    return "Ok";
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
     @GetMapping("/testGet")
     public Map<String,Object> getDataFromDb(){
 
@@ -115,7 +168,6 @@ public class Controleur {
         }catch (IOException e){
             return addErrorCustomMessage(m,e,"File exception : ");
         }
-
         return m;
     }
 
