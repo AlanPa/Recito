@@ -18,6 +18,7 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -36,10 +37,19 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String RESULT_TEXT_KEY="result_text_key";
     private String currentText = null;
 
+    // TODO private ArrayList<Pair<String, Integer>> fullOriginalTextList ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
+
+        /* TODO
+        Intent currentIntent = getIntent();
+        fullOriginalTextListString = currentIntent.getStringExtra(TextManagerActivity.FULL_TEXT_KEY);
+        fullOriginalTextList = toCorrectStructure(fullOriginalTextList);
+        */
 
         // Initialize SpeechSDK and request required permissions.
         try {
@@ -58,6 +68,12 @@ public class ReciterTexte extends AppCompatActivity {
     }
 
 
+    /* TODO
+    private ArrayList<Pair<String, Integer>> toCorrectStructure(String text){
+
+
+    }
+    */
 
     public void onSpeechToTextButtonClicked(View v) {
         TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
@@ -251,7 +267,7 @@ public class ReciterTexte extends AppCompatActivity {
 
     // Calcule un score en fonction du nombre de mots du texte original, du nombre de mots corrects, du nombre de mots ajoutés
     private int calculateScore(int nbWordsOriginalText, int nbCorrects, int nbAjouts){
-        int score = (int)(nbCorrects-nbAjouts)*100/nbWordsOriginalText;
+        int score = (int)(nbCorrects-nbAjouts/1.5)*100/nbWordsOriginalText;
         if (score<0){
             score = 0;
         }

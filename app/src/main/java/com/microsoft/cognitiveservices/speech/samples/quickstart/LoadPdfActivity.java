@@ -99,7 +99,17 @@ public class LoadPdfActivity extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
-        new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        if (pdfFile!=null) {
+            new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        }
+        else
+        {
+            String defaultText ="Maître corbeau sur un arbre perché tenait en son bec un fromage.";
+            Intent intent = new Intent(LoadPdfActivity.this, TextManagerActivity.class);
+            intent.putExtra("currentText", defaultText);
+            setResult(RESULT_OK,intent);
+            startActivity(intent);
+        }
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {

@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.google.gson.Gson;
@@ -38,14 +41,15 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
-   // private String title="Votre texte à apprendre :";
-    private String currentText="Maître corbeau sur un arbre perché tenait dans son bec un fromage.";
-   // private TextView titleText=null;
+    public static final String FULL_TEXT_KEY="full_text_key";
+    private String currentText;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
     private long currentTextID=-1;
     private TextToSpeech tts;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +60,24 @@ public class TextManagerActivity extends AppCompatActivity {
         startReciteButton = findViewById(R.id.Start_Button_Item_Text);
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
 
-        //Je remplis le currentText
+        //Je remplis le texte que l'utilisateur va devoir dire
         Intent curIntent = getIntent();
         currentText=curIntent.getStringExtra("currentText");
 
-
-        //new FetchTask().execute("http://localhost:4000/GetId?id=5", currentTextID);
+/*
+//TODO
+        // Création d'un tableau de paires de String/Integer
+        // First : une ligne de texte
+        // Second : qui doit lire ce texte (0 : l'user / 1 : Recito)
+        Pair<String, Integer> ligne1 = new Pair<>("Première phrase.",0);
+        Pair<String, Integer> ligne2 = new Pair<>("Deuxième phrase.",1);
+        Pair<String, Integer> ligne3 = new Pair<>("Troisième phrase.",0);
+        ArrayList<Pair<String, Integer>> fullOriginalTextList = new ArrayList<>();
+        fullOriginalTextList.add(ligne1);
+        fullOriginalTextList.add(ligne2);
+        fullOriginalTextList.add(ligne3);
+        /////////////
+*/
 
         currentTextView.setText(currentText);
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
@@ -81,6 +97,7 @@ public class TextManagerActivity extends AppCompatActivity {
                 Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
+                // TODO ReciteTexteActivity.putExtra(FULL_TEXT_KEY, fullOriginalTextList);
                 setResult(RESULT_OK,ReciteTexteActivity);
                 finish();
                 startActivity(ReciteTexteActivity);
