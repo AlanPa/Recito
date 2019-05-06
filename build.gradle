@@ -1,23 +1,33 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE")
+    }
+}
+
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
-group = 'org.springframework'
-version = '0.1.0'
+bootJar {
+    baseName = 'gs-gradle'
+    version =  '0.1.0'
+}
 
-description = """"""
+repositories {
+    mavenCentral()
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
-
-
-repositories {
-        
-     maven { url "https://repo.maven.apache.org/maven2" }
-}
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'2.1.4.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'2.1.4.RELEASE'
@@ -29,3 +39,4 @@ dependencies {
     compile group: 'com.squareup.okhttp', name: 'okhttp', version:'2.7.5'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'2.1.4.RELEASE'
 }
+
