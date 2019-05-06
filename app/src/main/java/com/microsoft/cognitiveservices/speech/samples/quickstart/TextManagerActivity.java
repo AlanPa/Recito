@@ -18,6 +18,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Locale;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import java.io.IOException;
 
 import okhttp3.FormBody;
@@ -33,12 +38,15 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
-    private String currentText="";
+   // private String title="Votre texte à apprendre :";
+    private String currentText="Maître corbeau sur un arbre perché tenait dans son bec un fromage.";
+   // private TextView titleText=null;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
-    private String currentTextID="test";
+    private long currentTextID=-1;
     private TextToSpeech tts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +78,12 @@ public class TextManagerActivity extends AppCompatActivity {
         startReciteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent reciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
-                reciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
-                startActivity(reciteTexteActivity);
+                Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
+                ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
+                ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
+                setResult(RESULT_OK,ReciteTexteActivity);
+                finish();
+                startActivity(ReciteTexteActivity);
             }
         });
 

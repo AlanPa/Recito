@@ -38,7 +38,10 @@ public class ConnectionActivity extends AppCompatActivity {
     public void ConnexionButtonClicked(View view) {
         String idClientInput = idClient.getText().toString();
         String passwordClientInput = passwordClient.getText().toString();
-        new FetchTask().execute("url", idClientInput,passwordClientInput);
+        //temporaire
+        Intent intent = new Intent(ConnectionActivity.this, LoadPdfActivity.class);
+        startActivity(intent);
+        //new FetchTask().execute("url", idClientInput,passwordClientInput);
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {

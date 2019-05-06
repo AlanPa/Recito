@@ -20,7 +20,7 @@
         android:layout_marginBottom="20dp"
         android:onClick="SeConnecterButtonClicked"
         style="@style/Bouton"
-        android:text="Se connecter"/>
+        android:text="@string/seConnecter_bouton_label_Accueil"/>
 
     <Button
         android:id="@+id/Incription_Button_Accueil"
@@ -28,6 +28,6 @@
         android:layout_below="@id/Se_Connecter_Button_Accueil"
         android:onClick="InscriptionButtonClicked"
         style="@style/Bouton"
-        android:text="S'inscrire"/>/>
+        android:text="@string/incription_bouton_label_Accueil"/>/>
 
 </RelativeLayout>

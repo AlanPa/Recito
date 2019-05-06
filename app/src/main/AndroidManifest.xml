@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/recito_launcher"
@@ -15,9 +14,10 @@
         android:roundIcon="@mipmap/recito_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoadPdfActivity"></activity>
-        <activity android:name=".ReciterTexte"/>
-        <activity android:name=".TextManagerActivity"/>
+        <activity android:name=".LoadPdfActivity"/>
+        <activity android:name=".ResultatDetaille"/>
+        <activity android:name=".ReciterTexte" />
+        <activity android:name=".TextManagerActivity" />
         <activity android:name=".LibraryActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".ConnectionActivity" />

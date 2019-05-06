@@ -8,29 +8,22 @@
 
     <Button
         android:id="@+id/Start_Button_Item_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
-        android:width="180dp"
-        android:background="#B71C1C"
         android:text="@string/start_bouton_Item_Text"
-        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Read_Button_Item_Text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text" />
+        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text"
+        style="@style/Bouton"/>
 
     <Button
         android:id="@+id/Read_Button_Item_Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Bouton"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
-        android:width="180dp"
         android:background="#646262"
         android:text="@string/read_bouton_Item_Text"
-        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Start_Button_Item_Text"
@@ -63,6 +56,7 @@
         app:layout_constraintBottom_toTopOf="@+id/Start_Button_Item_Text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        style="@style/texte"/>
 
 </android.support.constraint.ConstraintLayout>
