@@ -9,6 +9,7 @@ public class Client {
     private String id;
 
     private String nom;
+    // TODO set encryption with SHA256
     private String password;
 
     public Client() {}

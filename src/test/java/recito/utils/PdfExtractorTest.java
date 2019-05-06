@@ -37,7 +37,7 @@ public class PdfExtractorTest {
     public void getTextWithPdfCorrect() throws Exception {
         FileInputStream inputFile = new FileInputStream( "src/test/resources/correct.pdf");
         MockMultipartFile file = new MockMultipartFile("file", "NameOfTheFile.pdf", "application/pdf", inputFile);
-        assertThat(PdfExtractor.extract(file), equalTo("This is a correct pdf\n"));
+        assertThat(PdfExtractor.extract(file), equalTo("This is a correct pdf\r\n"));
     }
 
     @Test

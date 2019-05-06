@@ -1,5 +1,6 @@
 package recito.controller;
 
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import recito.repositories.Client;
 import recito.repositories.ClientRepository;
 import recito.repositories.Texte;
 import recito.repositories.TexteRepository;
+import recito.utils.CompareText;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
@@ -108,6 +110,7 @@ public class Controleur {
         try{
             String text=PdfExtractor.extract(file);
             m.put("Text", text);
+            // TODO add id of text in DB
             //m.put("Language", PdfExtractor.getLanguage(text));
         }catch (IOException e){
             LOG.error("File exception : "+e.getMessage());
@@ -115,10 +118,12 @@ public class Controleur {
             m.put("Message","File exception : "+e.getMessage());
             return m;
         }
-
-
-
         return m;
     }
 
+    @PostMapping("/RetrieveTextComparison")
+    public Pair<Integer,String> calculateFullResults(@RequestBody String originalText, @RequestBody String textRead){
+        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+        return res;
+    }
 }
