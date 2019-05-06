@@ -10,10 +10,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class ResultatSimple extends AppCompatActivity {
     private String resultText;
     private int score;
-    private String currentText;
+    private String currentText; //TODO DELETE?
+    private ArrayList<String> originalTextList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +27,9 @@ public class ResultatSimple extends AppCompatActivity {
         Intent currentIntent = getIntent();
         score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
-        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY); //TODO DELETE?
+        originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
         scoreSur100.setText(score+"%");
@@ -58,7 +63,8 @@ public class ResultatSimple extends AppCompatActivity {
 
     public void ReessayerRecitation(View view) {
         Intent intent = new Intent(ResultatSimple.this, ReciterTexte.class);
-        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);//TODO DELETE?
+        intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         setResult(RESULT_OK,intent);
         finish();
         startActivity(intent);
@@ -73,7 +79,8 @@ public class ResultatSimple extends AppCompatActivity {
         Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
         intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         intent.putExtra(ReciterTexte.SCORE_KEY,score);
-        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText); //TODO DELETE?
+        intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
 
         setResult(RESULT_OK,intent);
         finish();

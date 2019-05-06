@@ -39,6 +39,8 @@ public class ReciterTexte extends AppCompatActivity {
 
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
+    public static final String OTL_KEY = "originalTextList_key";
+    public static final String STL_KEY = "saidTextList_key";
     private String currentText = null;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
     private ArrayList<String> originalTextList;
@@ -220,29 +222,67 @@ public class ReciterTexte extends AppCompatActivity {
         //TODO : (Ici la méthode ne fait qu'avec une seule phrase)
 
 
+
+
         // Récupérer le texte original
         Intent currentIntent = getIntent();
-        currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+        currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY); //TODO delete ?
+        originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
 
         // Récupérer le texte dit par l'utilisateur
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter);
-        String saidText = txt.getText().toString();
+        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); //TODO delete ?
+        String saidText = txt.getText().toString();//TODO delete ?
+        saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
 
         // Calculer un résultat complet
-        Pair<Integer, String> fullResult = calculateFullResult(currentText,saidText);
+        Pair<Integer, String> fullResult = calculateSemiResult(currentText,saidText); //TODO delete?
+        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList,saidTextList);
 
         // Passer à l'activité suivante
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResult.first);
-        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResult.second);
-        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResultList.second);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText); //TODO delete?
+        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         setResult(RESULT_OK,ResultatSimpleActivity);
         finish();
         startActivity(ResultatSimpleActivity);
     }
 
+    private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
+        int nbWordsOriginalText = 0;
+        int nbWordsSaidText = 0;
+        int nbAjouts = 0;
+        int nbCorrects;
+        int nbOublis;
+        String fullTextResult = "";
+        String resultTextBeforeHTML;
 
-    private Pair<Integer, String> calculateFullResult(String originalText, String saidText){
+        for (int i = 0 ; i<sTL.size() ; i++) {
+            // Récupérer le résultat
+            resultTextBeforeHTML = compareTexts(oTL.get(i), sTL.get(i));
+
+            // Calculs nombres de mots
+            nbWordsOriginalText += countWordsInText(oTL.get(i));
+            nbWordsSaidText += countWordsInText(sTL.get(i));
+            nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML, '~');
+
+            // Ajout au texte du résultat détaillé
+            fullTextResult += editToHtmlResult(resultTextBeforeHTML)+"<br/><br/>";
+
+        }
+        nbCorrects = nbWordsSaidText-nbAjouts;
+        nbOublis = nbWordsOriginalText-nbCorrects;
+
+        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots.<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
+        fullTextResult += nbMots;
+
+        int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
+        Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
+        return fullResult;
+    }
+
+    private Pair<Integer, String> calculateSemiResult(String originalText, String saidText){
         // Récupérer le résultat
         String resultTextBeforeHTML=compareTexts(currentText,saidText);
 
