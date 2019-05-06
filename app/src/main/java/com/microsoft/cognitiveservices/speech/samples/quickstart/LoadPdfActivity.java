@@ -104,7 +104,13 @@ public class LoadPdfActivity extends AppCompatActivity {
         }
         else
         {
-            String defaultText ="Maître corbeau sur un arbre perché tenait en son bec un fromage.\nMaître renard par l'odeur alléché lui tint à peu près ce langage.";
+            String defaultText ="Maître corbeau sur un arbre perché tenait en son bec un fromage.\n" +
+                    "Maître renard par l'odeur alléché lui tint à peu près ce langage.\n" +
+                    "Ceci est la deuxième phrase.\n" +
+                    "C'est bien, tu connais ton texte.\n" +
+                    "Ceci est la troisième phrase.\n" +
+                    "Bravo !\n" +
+                    "Ceci est la quatrième phrase.";
             Intent intent = new Intent(LoadPdfActivity.this, TextManagerActivity.class);
             intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, defaultText);
             setResult(RESULT_OK,intent);
