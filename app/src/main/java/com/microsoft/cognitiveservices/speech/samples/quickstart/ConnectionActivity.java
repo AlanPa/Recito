@@ -36,8 +36,8 @@ public class ConnectionActivity extends AppCompatActivity {
         passwordClient = findViewById(R.id.Password_User_Connection);
     }
     public void ConnexionButtonClicked(View view) {
-        String idClientInput = idClient.getText().toString();
-        String passwordClientInput = passwordClient.getText().toString();
+        //String idClientInput = idClient.getText().toString();
+        //String passwordClientInput = passwordClient.getText().toString();
         //temporaire
         Intent intent = new Intent(ConnectionActivity.this, LoadPdfActivity.class);
         startActivity(intent);
