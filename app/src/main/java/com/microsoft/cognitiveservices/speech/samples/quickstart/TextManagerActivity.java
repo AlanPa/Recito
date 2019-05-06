@@ -62,7 +62,7 @@ public class TextManagerActivity extends AppCompatActivity {
 
         //Je remplis le texte que l'utilisateur va devoir dire
         Intent curIntent = getIntent();
-        currentText=curIntent.getStringExtra("currentText");
+        currentText=curIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
 /*
 //TODO

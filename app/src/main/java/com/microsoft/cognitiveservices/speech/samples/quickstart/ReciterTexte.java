@@ -36,8 +36,8 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
     private String currentText = null;
+    private ArrayList<Pair<String, Integer>> fullOriginalTextList;
 
-    // TODO private ArrayList<Pair<String, Integer>> fullOriginalTextList ;
 
 
     @Override
@@ -45,11 +45,10 @@ public class ReciterTexte extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
 
-        /* TODO
         Intent currentIntent = getIntent();
-        fullOriginalTextListString = currentIntent.getStringExtra(TextManagerActivity.FULL_TEXT_KEY);
-        fullOriginalTextList = toCorrectStructure(fullOriginalTextList);
-        */
+        fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
+        fullOriginalTextList = dialogLines(fullOriginalTextList);
+        printStruct(fullOriginalTextList);
 
         // Initialize SpeechSDK and request required permissions.
         try {
@@ -67,17 +66,64 @@ public class ReciterTexte extends AppCompatActivity {
         }
     }
 
-
-    /* TODO
+    // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist, avec des 0 = c'est l'utilisateur qui doit parler par défaut
     private ArrayList<Pair<String, Integer>> toCorrectStructure(String text){
+        String[] tabTexte = text.split("\n");
 
+        ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
+        Pair<String, Integer> toAdd ;
+        for (int i = 0 ; i<tabTexte.length ; i++){
+            // dans la structure de base, tout doit être lu par l'utilisateur
+            toAdd = new Pair (tabTexte[i],0);
+            fullText.add(toAdd);
+        }
+        return fullText;
+    }
+
+    // Fait en sorte d'indiquer que l'utilisateur devra parler une ligne sur deux
+    private ArrayList<Pair<String, Integer>> dialogLines(ArrayList<Pair<String, Integer>> text){
+        for (int i = 1 ; i<text.size() ; i=i+2){
+            Pair<String, Integer> toEdit = new Pair<>(text.get(i).first,1);
+            text.set(i,toEdit);
+        }
+        return text;
+    }
+
+    // Affiche la structure dans Logcat
+    private void printStruct(ArrayList<Pair<String, Integer>> text){
+        for (int i = 0 ; i<text.size() ; i++){
+            System.out.println("/////////////////STRUCTURE ELEM N°"+i+"///FIRST="+text.get(i).first+"|SECOND="+text.get(i).second);
+        }
+    }
+
+    private int indToRead = 0;
+    public void onSpeechToTextButtonClicked(View v) {
+
+        TextView writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter);
+
+        if (indToRead == 1) {
+            writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter2);
+        }
+        else if (indToRead == 2) {
+            writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter3);
+        }
+        String toWrite= "";
+        // Si c'est à l'utilisateur de parler, on enregistre
+        if (fullOriginalTextList.get(indToRead).second==0){
+            toWrite = "Vous : "+recordSpeechToText();
+        }
+        // Si c'est à Recito de parler, on parle et on écrit le texte
+        else {
+            toWrite = "Recito : "+fullOriginalTextList.get(indToRead).first;
+        }
+        writeHere.setText(toWrite);
+        indToRead++; // On passe à la réplique suivante
 
     }
-    */
 
-    public void onSpeechToTextButtonClicked(View v) {
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
 
+    public String recordSpeechToText(){
+        String textSaid="";
         try {
             SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
             config.setSpeechRecognitionLanguage("fr-FR");
@@ -94,23 +140,23 @@ public class ReciterTexte extends AppCompatActivity {
             //        register for the event (see full samples)
             SpeechRecognitionResult result = task.get();
             if (result == null ) {
-                txt.setText("result == null");
+                textSaid="result == null";
             }
             assert(result != null);
 
             if (result.getReason() == ResultReason.RecognizedSpeech) {
-                txt.setText(result.getText());
+                textSaid=result.getText();
             }
             else {
-                txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
+                textSaid = "Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString();
             }
             reco.close();
         } catch (Exception ex) {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
             assert(false);
         }
+        return textSaid;
     }
-
 
     public void AfficherResultatSimple(View view) {
         // Récupérer le texte original
