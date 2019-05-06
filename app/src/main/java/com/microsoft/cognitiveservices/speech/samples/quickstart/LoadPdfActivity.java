@@ -2,6 +2,7 @@ package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -49,7 +50,7 @@ public class LoadPdfActivity extends AppCompatActivity {
 
     public void onChooseFileButton(View view) {
 
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
         //intent.setType("text/*");
@@ -64,8 +65,17 @@ public class LoadPdfActivity extends AppCompatActivity {
         {
             if(data!=null)
             {
+                Context context = this.getApplicationContext();
+                String path = context.getExternalFilesDir(null).getPath();
                 uri =data.getData();
-                pathUri=uri.getPath();
+                if(uri.getPath().contains(path.split("/")[0]))
+                {
+                    pathUri=uri.getPath().substring(uri.getPath().indexOf(":")+1);
+                }
+                else
+                {
+                    pathUri=path.split("Android")[0].substring(1)+ uri.getPath().substring(uri.getPath().indexOf(":")+1);
+                }
                 String uriElements []= pathUri.split("/");
                 uriFileLabel.setText(uriElements[uriElements.length-1]);
             }
@@ -75,7 +85,7 @@ public class LoadPdfActivity extends AppCompatActivity {
     public void onValidationButton(View view) {
 
         try{
-            pdfFile = new File(uri.getPath().substring(pathUri.indexOf(":")+1));
+            pdfFile = new File(pathUri);
             /*BufferedReader br = new BufferedReader((new FileReader(pdfFile)));
             String line;
             while((line=br.readLine())!=null)
