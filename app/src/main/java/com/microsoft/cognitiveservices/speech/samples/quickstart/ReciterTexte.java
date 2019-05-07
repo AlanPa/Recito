@@ -59,6 +59,8 @@ public class ReciterTexte extends AppCompatActivity {
 
 
         Intent currentIntent = getIntent();
+        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+
         whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
         if (whoReads == null){
             whoReads = new ArrayList<>();
@@ -71,10 +73,10 @@ public class ReciterTexte extends AppCompatActivity {
             whoReads.add(0);
         }
 
-        fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
+        //fullOriginalTextList = toCorrectStructure(currentText);
         fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
 
-        fullOriginalTextList = dialogLines(fullOriginalTextList);
+        //fullOriginalTextList = dialogLines(fullOriginalTextList);
         nbLinesToRead = fullOriginalTextList.size()-1;
         //printStruct(fullOriginalTextList);
 
@@ -273,6 +275,7 @@ public class ReciterTexte extends AppCompatActivity {
             ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
             ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
             ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+            ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
             setResult(RESULT_OK, ResultatSimpleActivity);
             finish();
             startActivity(ResultatSimpleActivity);

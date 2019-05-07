@@ -14,6 +14,7 @@ public class ResultatDetaille extends AppCompatActivity {
     private String resultText;
     private int score;
     private ArrayList<String> originalTextList;
+    private String currentText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class ResultatDetaille extends AppCompatActivity {
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
         score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
         originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
         TextView correction = (TextView) this.findViewById(R.id.Correction_ResultatDetaille);
         correction.setText(Html.fromHtml(resultText));
@@ -35,6 +37,7 @@ public class ResultatDetaille extends AppCompatActivity {
         currentIntent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         currentIntent.putExtra(ReciterTexte.SCORE_KEY,score);
         currentIntent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
+        currentIntent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
 
         setResult(RESULT_OK,currentIntent);
         finish();
