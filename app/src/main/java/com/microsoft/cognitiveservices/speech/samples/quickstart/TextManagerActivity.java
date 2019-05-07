@@ -128,7 +128,7 @@ public class TextManagerActivity extends AppCompatActivity {
                 {
                     TableRow tr = (TableRow) currentTable.getChildAt(i);
                     TextView tv = (TextView) tr.getChildAt(0);
-                    if(tv.getBackground().getAlpha() == 100)
+                    if(tv.getBackground().getAlpha() == 99)
                     {
                         orderText.add(0);
                     }
