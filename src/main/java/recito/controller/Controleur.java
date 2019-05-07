@@ -156,7 +156,7 @@ public class Controleur {
         Client c=repositoryClient.findByNom(requestInfo.getLogin());
 
         m.put("signIn",false);
-        if(c!=null&&c.getPassword().equals(c.getEncodedString(requestInfo.getPasswordClient()))){
+        if(c!=null&&c.checkPassword(requestInfo.getPasswordClient())){
             m.put("signIn",true);
             m.put("client",c);
         }
