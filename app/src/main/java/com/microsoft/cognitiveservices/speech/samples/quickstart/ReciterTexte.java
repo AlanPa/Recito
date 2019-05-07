@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.microsoft.cognitiveservices.speech.ResultReason;
@@ -22,6 +25,7 @@ import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.Locale;
@@ -30,9 +34,11 @@ import java.util.concurrent.Future;
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.RECORD_AUDIO;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -42,23 +48,21 @@ import okhttp3.Response;
 import android.widget.Toast;
 
 public class ReciterTexte extends AppCompatActivity {
-    // Replace below with your own subscription key
-    private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
-    // Replace below with your own service region (e.g., "westus").
-    private static String serviceRegion = "francecentral";
-
+    private static String speechSubscriptionKey;
+    private static String serviceRegion;
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
     public static final String OTL_KEY = "originalTextList_key";
     public static final String STL_KEY = "saidTextList_key";
+    public static String idText;
     private String currentText = "";
     private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
     private ArrayList<String> originalTextList;
     private ArrayList<String> saidTextList;
-
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
     private int nbLinesToRead;
+    private boolean somethingHasBeenSaid = false;
 
     private TextToSpeech tts;
 
@@ -67,29 +71,49 @@ public class ReciterTexte extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
 
+        KeyTask keyTask = new KeyTask();
+        keyTask.execute();
 
-        Intent currentIntent = getIntent();
-        /*TODO ADD : whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
-        if (whoReads == null){
-            whoReads = new ArrayList<>();
-            whoReads.add(0);
-            whoReads.add(1);
-            whoReads.add(0);
-            whoReads.add(1);
-            whoReads.add(0);
-            whoReads.add(1);
-            whoReads.add(0);
+        String response = "no response";
+        try {
+            response = keyTask.get();
+            JSONObject jsonObject = new JSONObject(response);
+            speechSubscriptionKey = jsonObject.get("speechSubscriptionKey").toString();
+            serviceRegion = jsonObject.get("serviceRegion").toString();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        */
-        fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
-        //TODO ADD : fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
 
-        fullOriginalTextList = dialogLines(fullOriginalTextList);
+        // Récupérer le texte à dire et qui doit le dire
+        Intent currentIntent = getIntent();
+        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+        whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+        fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
+
+        // Nombre de lignes à lire au total dans le texte
         nbLinesToRead = fullOriginalTextList.size()-1;
-        //printStruct(fullOriginalTextList);
 
+        // Initialisation des textes qu'il va falloir comparer
         originalTextList = new ArrayList<>();
         saidTextList = new ArrayList<>();
+
+        // Initialisation du bouton
+        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
+        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
+
+        // Si la première phrase est à dire par l'utilisateur
+        if (fullOriginalTextList.get(0).second == 0){
+            // Mettre le micro
+            mettreBouton(1);
+        }
+        // Si elle est à dire par Recito
+        else {
+            mettreBouton(2);
+        }
 
         // Initialize SpeechSDK and request required permissions.
         try {
@@ -106,7 +130,6 @@ public class ReciterTexte extends AppCompatActivity {
             recognizedTextView.setText("Could not initialize SpeechSDK: " + ex.toString());
         }
 
-
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -117,20 +140,8 @@ public class ReciterTexte extends AppCompatActivity {
         });
     }
 
-    // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist, avec des 0 = c'est l'utilisateur qui doit parler par défaut
-    private ArrayList<Pair<String, Integer>> toCorrectStructure(String text){
-        String[] tabTexte = text.split("\n");
-
-        ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
-        Pair<String, Integer> toAdd ;
-        for (int i = 0 ; i<tabTexte.length ; i++){
-            // dans la structure de base, tout doit être lu par l'utilisateur
-            toAdd = new Pair (tabTexte[i],0);
-            fullText.add(toAdd);
-        }
-        return fullText;
-    }
-
+    // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist en indiquant qui parle
+    // 0 : utilisateur | 1 : Recito
     private ArrayList<Pair<String, Integer>> toCorrectStructure(String text,ArrayList<Integer> quiDoitLire){
         String[] tabTexte = text.split("\n");
         ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
@@ -143,26 +154,7 @@ public class ReciterTexte extends AppCompatActivity {
         return fullText;
     }
 
-    // Fait en sorte d'indiquer que l'utilisateur devra parler une ligne sur deux
-    private ArrayList<Pair<String, Integer>> dialogLines(ArrayList<Pair<String, Integer>> text){
-        for (int i = 1 ; i<text.size() ; i=i+2){
-            Pair<String, Integer> toEdit = new Pair<>(text.get(i).first,1);
-            text.set(i,toEdit);
-        }
-        return text;
-    }
-
-    // Affiche la structure dans Logcat
-    private void printStruct(ArrayList<Pair<String, Integer>> text){
-        for (int i = 0 ; i<text.size() ; i++){
-            System.out.println("/////////////////STRUCTURE ELEM N°"+i+"///FIRST="+text.get(i).first+"|SECOND="+text.get(i).second);
-        }
-    }
-
     public void onSpeechToTextButtonClicked(View v) {
-        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
-        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
-
         if (indToRead<fullOriginalTextList.size()) {
             TextView writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter);
 
@@ -187,11 +179,11 @@ public class ReciterTexte extends AppCompatActivity {
 
                 saidTextList.add(said);
                 originalTextList.add(fullOriginalTextList.get(indToRead).first);
+                somethingHasBeenSaid = true;
 
                 // Si la prochaine phrase est à dire par Recito, on change le bouton
                 if(indToRead+1 < fullOriginalTextList.size() && fullOriginalTextList.get(indToRead+1).second!=0){
-                   bouton.setImageResource(R.drawable.ic_play_arrow_black_50dp);
-                   texteBouton.setText("Appuyez pour entendre\nla phrase suivante");
+                   mettreBouton(2);
                 }
             }
             // Si c'est à Recito de parler, on parle et on écrit le texte
@@ -204,19 +196,36 @@ public class ReciterTexte extends AppCompatActivity {
 
                 // Si la prochaine phrase est à dire par l'utilisateur, on change le bouton
                 if (indToRead+1 < fullOriginalTextList.size() && fullOriginalTextList.get(indToRead+1).second==0){
-                    texteBouton.setText("C'est à vous");
-                    bouton.setImageResource(R.drawable.ic_mic_black_50dp);
+                    mettreBouton(1);
                 }
             }
             writeHere.setText(toWrite);
             indToRead++; // On passe à la réplique suivante
+
             if (indToRead == fullOriginalTextList.size()){
-                texteBouton.setText("C'est terminé");
+                mettreBouton(0);
             }
         }
     }
 
-    public String recordSpeechToText(){
+    // 0 c'est terminé / 1 mettre micro / 2 mettre play
+    private void mettreBouton(int etat){
+        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
+        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
+
+        if (etat == 0)
+            texteBouton.setText("C'est terminé");
+        else if (etat==1){
+            texteBouton.setText("C'est à vous");
+            bouton.setImageResource(R.drawable.ic_mic_black_50dp);
+        }
+        else if (etat==2){
+            bouton.setImageResource(R.drawable.ic_play_arrow_black_50dp);
+            texteBouton.setText("Appuyez pour entendre\nla phrase suivante");
+        }
+    }
+
+    private String recordSpeechToText(){
         String textSaid="";
         try {
             SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
@@ -254,7 +263,7 @@ public class ReciterTexte extends AppCompatActivity {
 
     public void AfficherResultatSimple(View view) {
 
-        if (indToRead == 0) {
+        if (!somethingHasBeenSaid) {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
@@ -268,9 +277,8 @@ public class ReciterTexte extends AppCompatActivity {
             if (saidTextList == null) {
                 saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
             }
-
             // Calculer un résultat complet
-            //Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
+
             CompareTask txtComparison = new CompareTask();
 
             Map<String,Object> m=new HashMap<>();
@@ -299,6 +307,8 @@ public class ReciterTexte extends AppCompatActivity {
             ResultatSimpleActivity.putExtra(SCORE_KEY, score);
             ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, text);
             ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+            ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
+            ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
             setResult(RESULT_OK, ResultatSimpleActivity);
             finish();
             startActivity(ResultatSimpleActivity);
@@ -316,15 +326,62 @@ public class ReciterTexte extends AppCompatActivity {
             OkHttpClient client = new OkHttpClient();
             String stringUrl = "https://recitoback.azurewebsites.net/RetrieveTextComparison";
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(mapList);
+            String json = "";
+            JSONObject jo=new JSONObject();
+            JSONObject textId = new JSONObject();
+
+            try{
+                textId.put("idText", idText);
+                for(Map<String, Object> m: mapList){
+                    for(String s : m.keySet()){
+                        List<String> ls=(List<String>)m.get(s);
+                        JSONArray ja=new JSONArray();
+                        for(String stringList : ls){
+                            ja.put(stringList);
+                        }
+                        jo.put(s,ja);
+                    }
+                }
+                json=jo.toString();
+            }catch(JSONException je){
+                return je.getMessage();
+            }
+
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+            // TODO add param : idText
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
                     .url(stringUrl)
-                    .addHeader("Content-type","application/json")
                     .post(body)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                return response.message();
+            } catch (IOException e) {
+                //return "error in http post text comparison results request";
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
+    private static class KeyTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            OkHttpClient client = new OkHttpClient();
+            String stringUrl = "https://recitoback.azurewebsites.net/RetrieveSpeechKey";
+
+            Request request = new Request.Builder()
+                    .url(stringUrl)
                     .build();
             try {
                 Response response = client.newCall(request).execute();
@@ -332,7 +389,8 @@ public class ReciterTexte extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(jsonTest);
                 return jsonObject.toString();
             } catch (IOException | JSONException e) {
-                return "error in http post request";
+                //return "error in http get speech subscription key request";
+                return e.getMessage();
             }
         }
 
