@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -72,16 +73,20 @@ public class ReciterTexte extends AppCompatActivity {
         originalTextList = new ArrayList<>();
         saidTextList = new ArrayList<>();
 
+        TextView textClue = (TextView) this.findViewById(R.id.TexteDit_Reciter);
         // Initialisation du bouton
         // Si la première phrase est à dire par l'utilisateur
         if (fullOriginalTextList.get(0).second == 0){
             // Mettre le bouton micro
             mettreBouton(1);
+            textClue.setText("Appuyez sur l'icone microphone et dites votre première réplique, pour commencer votre répétition.");
+
         }
         // Si elle est à dire par Recito
         else {
             // Mettre le bouton play
             mettreBouton(2);
+            textClue.setText("Appuyez sur l'icone play, pour que la première phrase soit dite et pour commencer votre répétition.");
         }
 
         // Initialize SpeechSDK and request required permissions.
@@ -143,8 +148,9 @@ public class ReciterTexte extends AppCompatActivity {
             String toWrite;
             // Si c'est à l'utilisateur de parler, on enregistre et on stocke ce qui est dit et l'original
             if (fullOriginalTextList.get(indToRead).second == 0) {
+                //Toast.makeText(getApplicationContext(), "Enregistrement en cours",Toast.LENGTH_SHORT).show();
                 String said = recordSpeechToText();
-                toWrite = "Vous : " + said;
+                toWrite = "<i>Vous : " + said+"</i>";
 
                 saidTextList.add(said);
                 originalTextList.add(fullOriginalTextList.get(indToRead).first);
@@ -160,7 +166,6 @@ public class ReciterTexte extends AppCompatActivity {
                 String textADire = fullOriginalTextList.get(indToRead).first;
                 toWrite = "Recito : " + textADire;
                 // Recito doit parler
-                Toast.makeText(getApplicationContext(), textADire,Toast.LENGTH_SHORT).show();
                 tts.speak(textADire, TextToSpeech.QUEUE_FLUSH, null);
 
                 // Si la prochaine phrase est à dire par l'utilisateur, on change le bouton
@@ -168,7 +173,7 @@ public class ReciterTexte extends AppCompatActivity {
                     mettreBouton(1);
                 }
             }
-            writeHere.setText(toWrite);
+            writeHere.setText(Html.fromHtml(toWrite));
             indToRead++; // On passe à la réplique suivante
 
             if (indToRead == fullOriginalTextList.size()){
