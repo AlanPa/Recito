@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Read_Button_Item_Text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text"
+        app:layout_constraintTop_toBottomOf="@+id/Table_Text"
         style="@style/Bouton"/>
 
     <Button
@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/Start_Button_Item_Text"
-        app:layout_constraintTop_toBottomOf="@+id/Text_Item_Text" />
+        app:layout_constraintTop_toBottomOf="@+id/Table_Text" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -43,8 +43,9 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/Text_Item_Text"
+
+    <TableLayout
+        android:id="@+id/Table_Text"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -52,11 +53,11 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="30dp"
         android:scrollbars="vertical"
-        android:text="@string/text_Item_Text"
         app:layout_constraintBottom_toTopOf="@+id/Start_Button_Item_Text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        style="@style/texte"/>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>

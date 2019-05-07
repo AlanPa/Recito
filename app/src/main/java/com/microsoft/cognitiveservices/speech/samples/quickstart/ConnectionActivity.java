@@ -39,7 +39,7 @@ public class ConnectionActivity extends AppCompatActivity {
         //String idClientInput = idClient.getText().toString();
         //String passwordClientInput = passwordClient.getText().toString();
         //temporaire
-        Intent intent = new Intent(ConnectionActivity.this, LoadPdfActivity.class);
+        Intent intent = new Intent(ConnectionActivity.this, TextManagerActivity.class);
         startActivity(intent);
         //new FetchTask().execute("url", idClientInput,passwordClientInput);
     }
