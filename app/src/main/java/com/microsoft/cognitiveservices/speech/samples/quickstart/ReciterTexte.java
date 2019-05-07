@@ -1,13 +1,14 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.github.difflib.algorithm.DiffException;
@@ -18,13 +19,16 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.RECORD_AUDIO;
 import android.view.View;
+import android.widget.Toast;
 
 public class ReciterTexte extends AppCompatActivity {
     // Replace below with your own subscription key
@@ -34,12 +38,48 @@ public class ReciterTexte extends AppCompatActivity {
 
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
+    public static final String OTL_KEY = "originalTextList_key";
+    public static final String STL_KEY = "saidTextList_key";
     private String currentText = null;
+    private ArrayList<Integer> whoReads;
+    private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
+    private ArrayList<String> originalTextList;
+    private ArrayList<String> saidTextList;
+
+    private int indToRead = 0; // Pour l'enregistrement phrase par phrase
+    private int nbLinesToRead;
+
+    private TextToSpeech tts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
+
+
+        Intent currentIntent = getIntent();
+        /*TODO ADD : whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+        if (whoReads == null){
+            whoReads = new ArrayList<>();
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+        }
+        */
+        fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
+        //TODO ADD : fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
+
+        fullOriginalTextList = dialogLines(fullOriginalTextList);
+        nbLinesToRead = fullOriginalTextList.size()-1;
+        //printStruct(fullOriginalTextList);
+
+        originalTextList = new ArrayList<>();
+        saidTextList = new ArrayList<>();
 
         // Initialize SpeechSDK and request required permissions.
         try {
@@ -55,13 +95,125 @@ public class ReciterTexte extends AppCompatActivity {
             TextView recognizedTextView = (TextView) this.findViewById(R.id.hello);
             recognizedTextView.setText("Could not initialize SpeeckSDK: " + ex.toString());
         }
+
+
+        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.FRENCH);
+                }
+            }
+        });
+
+
+
+    }
+
+    // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist, avec des 0 = c'est l'utilisateur qui doit parler par défaut
+    private ArrayList<Pair<String, Integer>> toCorrectStructure(String text){
+        String[] tabTexte = text.split("\n");
+
+        ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
+        Pair<String, Integer> toAdd ;
+        for (int i = 0 ; i<tabTexte.length ; i++){
+            // dans la structure de base, tout doit être lu par l'utilisateur
+            toAdd = new Pair (tabTexte[i],0);
+            fullText.add(toAdd);
+        }
+        return fullText;
+    }
+
+    private ArrayList<Pair<String, Integer>> toCorrectStructure(String text,ArrayList<Integer> quiDoitLire){
+        String[] tabTexte = text.split("\n");
+        ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
+        Pair<String, Integer> toAdd ;
+        for (int i = 0 ; i<tabTexte.length ; i++){
+            // dans la structure de base, tout doit être lu par l'utilisateur
+            toAdd = new Pair (tabTexte[i],quiDoitLire.get(i));
+            fullText.add(toAdd);
+        }
+        return fullText;
+    }
+
+    // Fait en sorte d'indiquer que l'utilisateur devra parler une ligne sur deux
+    private ArrayList<Pair<String, Integer>> dialogLines(ArrayList<Pair<String, Integer>> text){
+        for (int i = 1 ; i<text.size() ; i=i+2){
+            Pair<String, Integer> toEdit = new Pair<>(text.get(i).first,1);
+            text.set(i,toEdit);
+        }
+        return text;
+    }
+
+    // Affiche la structure dans Logcat
+    private void printStruct(ArrayList<Pair<String, Integer>> text){
+        for (int i = 0 ; i<text.size() ; i++){
+            System.out.println("/////////////////STRUCTURE ELEM N°"+i+"///FIRST="+text.get(i).first+"|SECOND="+text.get(i).second);
+        }
     }
 
 
-
     public void onSpeechToTextButtonClicked(View v) {
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); // 'hello' is the ID of your text view
+        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
+        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
 
+
+        if (indToRead<fullOriginalTextList.size()) {
+            TextView writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter);
+
+            if (indToRead == 1) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter2);
+            } else if (indToRead == 2) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter3);
+            } else if (indToRead == 3) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter4);
+            } else if (indToRead == 4) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter5);
+            } else if (indToRead == 5) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter6);
+            } else if (indToRead == 6) {
+                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter7);
+            }
+            String toWrite = "";
+            // Si c'est à l'utilisateur de parler, on enregistre et on stocke ce qui est dit et l'original
+            if (fullOriginalTextList.get(indToRead).second == 0) {
+                String said = recordSpeechToText();
+                toWrite = "Vous : " + said;
+
+                saidTextList.add(said);
+                originalTextList.add(fullOriginalTextList.get(indToRead).first);
+
+                // Si la prochaine phrase est à dire par Recito, on change le bouton
+                if(indToRead+1 < fullOriginalTextList.size() && fullOriginalTextList.get(indToRead+1).second!=0){
+                   bouton.setImageResource(R.drawable.ic_play_arrow_black_50dp);
+                   texteBouton.setText("Appuyez pour entendre\nla phrase suivante");
+                }
+            }
+            // Si c'est à Recito de parler, on parle et on écrit le texte
+            else {
+                String textADire = fullOriginalTextList.get(indToRead).first;
+                toWrite = "Recito : " + textADire;
+                // Recito doit parler
+                Toast.makeText(getApplicationContext(), textADire,Toast.LENGTH_SHORT).show();
+                tts.speak(textADire, TextToSpeech.QUEUE_FLUSH, null);
+
+                // Si la prochaine phrase est à dire par l'utilisateur, on change le bouton
+                if (indToRead+1 < fullOriginalTextList.size() && fullOriginalTextList.get(indToRead+1).second==0){
+                    texteBouton.setText("C'est à vous");
+                    bouton.setImageResource(R.drawable.ic_mic_black_50dp);
+                }
+            }
+            writeHere.setText(toWrite);
+            indToRead++; // On passe à la réplique suivante
+            if (indToRead == fullOriginalTextList.size()){
+                texteBouton.setText("C'est terminé");
+            }
+        }
+    }
+
+
+    public String recordSpeechToText(){
+        String textSaid="";
         try {
             SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
             config.setSpeechRecognitionLanguage("fr-FR");
@@ -78,63 +230,98 @@ public class ReciterTexte extends AppCompatActivity {
             //        register for the event (see full samples)
             SpeechRecognitionResult result = task.get();
             if (result == null ) {
-                txt.setText("result == null");
+                textSaid="result == null";
             }
             assert(result != null);
 
             if (result.getReason() == ResultReason.RecognizedSpeech) {
-                txt.setText(result.getText());
+                textSaid=result.getText();
             }
             else {
-                txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
+                textSaid = "Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString();
             }
             reco.close();
         } catch (Exception ex) {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
             assert(false);
         }
+        return textSaid;
     }
-
 
     public void AfficherResultatSimple(View view) {
-        // Récupérer le texte original
-        Intent currentIntent = getIntent();
-        currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
 
-        // Récupérer le texte dit par l'utilisateur
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter);
-        String saidText = txt.getText().toString();
+        if (indToRead == 0) {
+            Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            // Récupérer le texte original
+            Intent currentIntent = getIntent();
+            if (originalTextList == null) {
+                originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+            }
 
-        // Calculer un résultat complet
-        Pair<Integer, String> fullResult = calculateFullResult(currentText,saidText);
+            // Récupérer le texte dit par l'utilisateur
+            if (saidTextList == null) {
+                saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
+            }
 
-        // Passer à l'activité suivante
-        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResult.first);
-        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResult.second);
-        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
-        setResult(RESULT_OK,ResultatSimpleActivity);
-        finish();
-        startActivity(ResultatSimpleActivity);
+            // Calculer un résultat complet
+            Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
+
+            // Passer à l'activité suivante
+            Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+            ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
+            ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
+            ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+            setResult(RESULT_OK, ResultatSimpleActivity);
+            finish();
+            startActivity(ResultatSimpleActivity);
+        }
     }
 
+    private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
+        int nbWordsOriginalText = 0;
+        int nbWordsSaidText = 0;
+        int nbAjouts = 0;
+        int nbCorrects;
+        int nbOublis;
+        String fullTextResult = "";
+        String resultTextBeforeHTML;
+        String saidText;
+        String originalText;
 
-    private Pair<Integer, String> calculateFullResult(String originalText, String saidText){
-        // Récupérer le résultat
-        String resultTextBeforeHTML=compareTexts(currentText,saidText);
+        for (int i = 0 ; i<sTL.size() ; i++) {
+            saidText = sTL.get(i);
+            originalText = oTL.get(i);
 
-        // Calculs nombres de mots
-        int nbWordsOriginalText = countWordsInText(currentText);
-        int nbWordsSaidText = countWordsInText(saidText);
-        int nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML,'~');
-        int nbCorrects = nbWordsSaidText-nbAjouts;
-        int nbOublis = nbWordsOriginalText-nbCorrects;
+            saidText = saidText.replace(".","");
+            saidText = saidText.replace(",","");
+            saidText = saidText.replace("?","");
+            saidText = saidText.replace("!","");
+            originalText = originalText.replace(".","");
+            originalText = originalText.replace(",","");
+            originalText = originalText.replace("?","");
+            originalText = originalText.replace("!","");
 
-        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots, vous en avez dit " + nbWordsSaidText+".<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
+            // Récupérer le résultat
+            resultTextBeforeHTML = compareTexts(originalText, saidText);
+
+            // Calculs nombres de mots
+            nbWordsOriginalText += countWordsInText(originalText);
+            nbWordsSaidText += countWordsInText(saidText);
+            nbAjouts += calculateNumberWrongWords(resultTextBeforeHTML, '~');
+
+            // Ajout au texte du résultat détaillé
+            fullTextResult += editToHtmlResult(resultTextBeforeHTML)+"<br/><br/>";
+
+        }
+        nbCorrects = nbWordsSaidText-nbAjouts;
+        nbOublis = nbWordsOriginalText-nbCorrects;
+
+        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots.<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
+        fullTextResult += nbMots;
 
         int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
-        String fullTextResult = editToHtmlResult(resultTextBeforeHTML)+nbMots;
-
         Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
         return fullResult;
     }
@@ -155,8 +342,8 @@ public class ReciterTexte extends AppCompatActivity {
         try {
             rows = generator.generateDiffRows(
 
-                    Arrays.asList(saidText),
-                    Arrays.asList(originalText));
+                    Arrays.asList(saidText.toLowerCase()),
+                    Arrays.asList(originalText.toLowerCase()));
         } catch (DiffException e) {
             e.printStackTrace();
         }
@@ -251,7 +438,7 @@ public class ReciterTexte extends AppCompatActivity {
 
     // Calcule un score en fonction du nombre de mots du texte original, du nombre de mots corrects, du nombre de mots ajoutés
     private int calculateScore(int nbWordsOriginalText, int nbCorrects, int nbAjouts){
-        int score = (int)(nbCorrects-nbAjouts)*100/nbWordsOriginalText;
+        int score = (int)(nbCorrects-nbAjouts/1.5)*100/nbWordsOriginalText;
         if (score<0){
             score = 0;
         }

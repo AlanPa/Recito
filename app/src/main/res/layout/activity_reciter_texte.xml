@@ -37,6 +37,60 @@
             android:layout_marginRight="20dp"
             android:textStyle="italic"
             android:text="Cliquez sur enregistrer, parlez et attendez quelques secondes." />
+        <TextView
+            android:id="@+id/TexteDit_Reciter2"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter3"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:textStyle="italic"/>
+        <TextView
+            android:id="@+id/TexteDit_Reciter4"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"/>
+        <TextView
+            android:id="@+id/TexteDit_Reciter5"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:textStyle="italic"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter6"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"/>
+        <TextView
+            android:id="@+id/TexteDit_Reciter7"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:textStyle="italic"
+            />
 
 
     </TableLayout>
