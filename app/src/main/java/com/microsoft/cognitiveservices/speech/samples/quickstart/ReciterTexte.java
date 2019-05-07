@@ -5,44 +5,21 @@ import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.difflib.algorithm.DiffException;
-import com.github.difflib.text.DiffRow;
-import com.github.difflib.text.DiffRowGenerator;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.RECORD_AUDIO;
-import static java.net.HttpURLConnection.HTTP_OK;
-
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +38,7 @@ public class ReciterTexte extends AppCompatActivity {
 
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
-    private String currentText = null;
+    private String currentText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +57,7 @@ public class ReciterTexte extends AppCompatActivity {
         catch (Exception ex) {
             Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
             TextView recognizedTextView = (TextView) this.findViewById(R.id.hello);
-            recognizedTextView.setText("Could not initialize SpeeckSDK: " + ex.toString());
+            recognizedTextView.setText("Could not initialize SpeechSDK: " + ex.toString());
         }
     }
 
@@ -134,27 +111,31 @@ public class ReciterTexte extends AppCompatActivity {
         CompareTask txtComparison = new CompareTask();
         txtComparison.execute(currentText,saidText);
         String response = "no response";
+        Integer score = -1;
+        String text = "";
         try {
             response = txtComparison.get();
+            JSONObject jsonObject = new JSONObject(response);
+            score = jsonObject.getInt("score");
+            text = jsonObject.getString("text");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        //Pair<Integer, String> fullResult = calculateFullResult(currentText,saidText);
 
         // Passer à l'activité suivante
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-        //ResultatSimpleActivity.putExtra(SCORE_KEY, fullResult.first);
-        ResultatSimpleActivity.putExtra(SCORE_KEY, 50);
-        //ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResult.second);
-        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,(CharSequence)response);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, score);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,text);
         ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
         setResult(RESULT_OK,ResultatSimpleActivity);
         finish();
         startActivity(ResultatSimpleActivity);
     }
-    private class CompareTask extends AsyncTask<String, String, String> {
+    private static class CompareTask extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -181,7 +162,7 @@ public class ReciterTexte extends AppCompatActivity {
                 //Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
-                return jsonObject.getString("text");
+                return jsonObject.toString();
             } catch (IOException | JSONException e) {
                 return "error in http post request";
             }
