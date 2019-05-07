@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="24698bf3-192f-43d8-bcda-a5ef9b0d7459" name="Default Changelist" comment="" />
+    <list default="true" id="24698bf3-192f-43d8-bcda-a5ef9b0d7459" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/Application.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/controller/Controleur.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/repositories/Client.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/repositories/ClientRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/repositories/Texte.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/repositories/TexteRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/recito/utils/PdfExtractor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/correct.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/correctAndEmpty.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/corrupted.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/recito/ControleurTest.class" beforeDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,8 +42,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="112">
+              <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -126,10 +144,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="65" />
-    <option name="y" value="24" />
-    <option name="width" value="651" />
-    <option name="height" value="716" />
+    <option name="x" value="678" />
+    <option name="y" value="-4" />
+    <option name="width" value="649" />
+    <option name="height" value="708" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -144,105 +162,6 @@
             <path>
               <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
               <item name="Recito" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-              <item name="repositories" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-              <item name="request" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Recito" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Recito" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="recito" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -378,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1557238606268</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Correct conflict">
+      <created>1557239046640</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1557239046640</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -390,12 +316,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25450000" />
+    <option name="totallyTimeSpent" value="25705000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
+    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2406672" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2406672" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -411,9 +338,9 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Spring" order="7" weight="0.17236255" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49928468" visible="true" weight="0.47399703" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.4988086" visible="true" weight="0.47399703" />
       <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.32914925" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50119144" side_tool="true" weight="0.47399703" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.32914925" />
       <window_info anchor="bottom" id="Java Enterprise" order="12" />
       <window_info anchor="bottom" id="Database Changes" order="13" />
@@ -470,7 +397,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Correction of Pair bug" />
     <MESSAGE value="Implements temporal solution to behave like a session" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implements temporal solution to behave like a session" />
+    <MESSAGE value="Correct conflict" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correct conflict" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/target/surefire-reports/2019-05-06T09-31-17_484.dumpstream" />
@@ -619,8 +547,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="112">
+          <caret line="7" column="18" lean-forward="true" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
         </state>
       </provider>
     </entry>
