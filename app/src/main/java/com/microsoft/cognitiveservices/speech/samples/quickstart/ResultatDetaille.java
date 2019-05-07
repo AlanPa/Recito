@@ -13,7 +13,6 @@ public class ResultatDetaille extends AppCompatActivity {
 
     private String resultText;
     private int score;
-    private String currentText;//TODO DELETE?
     private ArrayList<String> originalTextList;
 
     @Override
@@ -24,7 +23,6 @@ public class ResultatDetaille extends AppCompatActivity {
         Intent currentIntent = getIntent();
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
         score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
-        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY); //TODO DELETE?
         originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
 
         TextView correction = (TextView) this.findViewById(R.id.Correction_ResultatDetaille);
@@ -36,7 +34,6 @@ public class ResultatDetaille extends AppCompatActivity {
         Intent currentIntent = new Intent(ResultatDetaille.this,ResultatSimple.class);
         currentIntent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         currentIntent.putExtra(ReciterTexte.SCORE_KEY,score);
-        currentIntent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText); //TODO DELETE?
         currentIntent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
 
         setResult(RESULT_OK,currentIntent);

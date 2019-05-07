@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class ResultatSimple extends AppCompatActivity {
     private String resultText;
     private int score;
-    private String currentText; //TODO DELETE?
     private ArrayList<String> originalTextList;
 
     @Override
@@ -27,7 +26,6 @@ public class ResultatSimple extends AppCompatActivity {
         Intent currentIntent = getIntent();
         score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
-        currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY); //TODO DELETE?
         originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
 
 
@@ -63,7 +61,6 @@ public class ResultatSimple extends AppCompatActivity {
 
     public void ReessayerRecitation(View view) {
         Intent intent = new Intent(ResultatSimple.this, ReciterTexte.class);
-        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);//TODO DELETE?
         intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         setResult(RESULT_OK,intent);
         finish();
@@ -79,7 +76,6 @@ public class ResultatSimple extends AppCompatActivity {
         Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
         intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         intent.putExtra(ReciterTexte.SCORE_KEY,score);
-        intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText); //TODO DELETE?
         intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
 
         setResult(RESULT_OK,intent);

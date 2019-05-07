@@ -45,7 +45,9 @@ public class ReciterTexte extends AppCompatActivity {
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
     private ArrayList<String> originalTextList;
     private ArrayList<String> saidTextList;
+
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
+    private int nbLinesToRead;
 
     private TextToSpeech tts;
 
@@ -58,6 +60,7 @@ public class ReciterTexte extends AppCompatActivity {
         Intent currentIntent = getIntent();
         fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
         fullOriginalTextList = dialogLines(fullOriginalTextList);
+        nbLinesToRead = fullOriginalTextList.size()-1;
         //printStruct(fullOriginalTextList);
 
         originalTextList = new ArrayList<>();
@@ -124,6 +127,7 @@ public class ReciterTexte extends AppCompatActivity {
         ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
         TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
 
+
         if (indToRead<fullOriginalTextList.size()) {
             TextView writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter);
 
@@ -151,7 +155,7 @@ public class ReciterTexte extends AppCompatActivity {
 
                 // Si la prochaine phrase est à dire par Recito, on change le bouton
                 if(indToRead+1 < fullOriginalTextList.size() && fullOriginalTextList.get(indToRead+1).second!=0){
-                   bouton.setImageResource(R.drawable.ic_mic_red_50dp);
+                   bouton.setImageResource(R.drawable.ic_play_arrow_black_50dp);
                    texteBouton.setText("Appuyez pour entendre\nla phrase suivante");
                 }
             }
@@ -215,38 +219,34 @@ public class ReciterTexte extends AppCompatActivity {
     }
 
     public void AfficherResultatSimple(View view) {
-        //TODO : Modifier cette méthode. Il faut comparer originalTextList et saidTextList, élément par élément
-        //TODO : Calculer un résultat simple entre deux phrases
-        //TODO : Calculer un résultat global entre toutes les phrases
-        //TODO : Créer String de résultat détaillé
-        //TODO : (Ici la méthode ne fait qu'avec une seule phrase)
 
+        if (indToRead == 0) {
+            Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            // Récupérer le texte original
+            Intent currentIntent = getIntent();
+            if (originalTextList == null) {
+                originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+            }
 
+            // Récupérer le texte dit par l'utilisateur
+            if (saidTextList == null) {
+                saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
+            }
 
+            // Calculer un résultat complet
+            Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
 
-        // Récupérer le texte original
-        Intent currentIntent = getIntent();
-        currentText=currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY); //TODO delete ?
-        originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
-
-        // Récupérer le texte dit par l'utilisateur
-        TextView txt = (TextView) this.findViewById(R.id.TexteDit_Reciter); //TODO delete ?
-        String saidText = txt.getText().toString();//TODO delete ?
-        saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
-
-        // Calculer un résultat complet
-        Pair<Integer, String> fullResult = calculateSemiResult(currentText,saidText); //TODO delete?
-        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList,saidTextList);
-
-        // Passer à l'activité suivante
-        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
-        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY,fullResultList.second);
-        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText); //TODO delete?
-        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY,originalTextList);
-        setResult(RESULT_OK,ResultatSimpleActivity);
-        finish();
-        startActivity(ResultatSimpleActivity);
+            // Passer à l'activité suivante
+            Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+            ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
+            ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
+            ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+            setResult(RESULT_OK, ResultatSimpleActivity);
+            finish();
+            startActivity(ResultatSimpleActivity);
+        }
     }
 
     private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
@@ -257,15 +257,29 @@ public class ReciterTexte extends AppCompatActivity {
         int nbOublis;
         String fullTextResult = "";
         String resultTextBeforeHTML;
+        String saidText;
+        String originalText;
 
         for (int i = 0 ; i<sTL.size() ; i++) {
+            saidText = sTL.get(i);
+            originalText = oTL.get(i);
+
+            saidText = saidText.replace(".","");
+            saidText = saidText.replace(",","");
+            saidText = saidText.replace("?","");
+            saidText = saidText.replace("!","");
+            originalText = originalText.replace(".","");
+            originalText = originalText.replace(",","");
+            originalText = originalText.replace("?","");
+            originalText = originalText.replace("!","");
+
             // Récupérer le résultat
-            resultTextBeforeHTML = compareTexts(oTL.get(i), sTL.get(i));
+            resultTextBeforeHTML = compareTexts(originalText, saidText);
 
             // Calculs nombres de mots
-            nbWordsOriginalText += countWordsInText(oTL.get(i));
-            nbWordsSaidText += countWordsInText(sTL.get(i));
-            nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML, '~');
+            nbWordsOriginalText += countWordsInText(originalText);
+            nbWordsSaidText += countWordsInText(saidText);
+            nbAjouts += calculateNumberWrongWords(resultTextBeforeHTML, '~');
 
             // Ajout au texte du résultat détaillé
             fullTextResult += editToHtmlResult(resultTextBeforeHTML)+"<br/><br/>";
@@ -318,8 +332,8 @@ public class ReciterTexte extends AppCompatActivity {
         try {
             rows = generator.generateDiffRows(
 
-                    Arrays.asList(saidText),
-                    Arrays.asList(originalText));
+                    Arrays.asList(saidText.toLowerCase()),
+                    Arrays.asList(originalText.toLowerCase()));
         } catch (DiffException e) {
             e.printStackTrace();
         }
