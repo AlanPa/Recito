@@ -1,8 +1,9 @@
 package recito.repositories;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-
+@Document(collection = "Texte")
 public class Texte {
 
     @Id
@@ -21,7 +22,7 @@ public class Texte {
     @Override
     public String toString() {
         return String.format(
-                "Client[id=%s, Nom='%s', Contenu='%s']",
+                "Texte[id=%s, Nom='%s', Contenu='%s']",
                 id, nom, contenu);
     }
 
