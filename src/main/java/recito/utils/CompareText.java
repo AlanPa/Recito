@@ -15,7 +15,7 @@ public class CompareText {
 
     private CompareText(){}
 
-    public static Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL) {
+    public static Pair<Integer, String> calculateFullResult(List<String> oTL, List<String> sTL) {
         int nbWordsOriginalText = 0;
         int nbWordsSaidText = 0;
         int nbAjouts = 0;

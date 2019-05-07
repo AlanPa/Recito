@@ -214,18 +214,18 @@ public class Controleur {
     }
 
     @PostMapping("/RetrieveTextComparison")
-    public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
+    public Map<String, Object> calculateFullResults(@RequestBody Map<String, List<String>> textsToCompare){
         // TODO idText et idClient
-        ArrayList<String> originalTextList = (ArrayList<String>)textsToCompare.get("originalText");
-        ArrayList<String> textReadList = (ArrayList<String>)textsToCompare.get("textRead");
+        List<String> originalTextList = textsToCompare.get("originalText");
+        List<String> textReadList = textsToCompare.get("textRead");
         Pair<Integer, String> res = CompareText.calculateFullResult(originalTextList, textReadList);
-        Map<String,Object> m=new HashMap<>();
+        Map<String, Object> m = new HashMap<>();
         m.put("text",res.getValue());
         m.put("score",res.getKey());
         return m;
     }
 
-    @PostMapping("/RetrieveSpeechKey")
+    @GetMapping("/RetrieveSpeechKey")
     public Map<String,Object> getSpeechKeys(){
         Map<String,Object> m=new HashMap<>();
         m.put("speechSubscriptionKey",SPEECHSUBSCRIPTION_KEY);

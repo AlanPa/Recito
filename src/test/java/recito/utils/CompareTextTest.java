@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -13,9 +14,9 @@ public class CompareTextTest {
     @Test
     public void compareIdenticalTexts() {
         // given
-        ArrayList<String> originalText = new ArrayList<>();
+        List<String> originalText = new ArrayList<>();
         originalText.add("The text read is identical to the original one.");
-        ArrayList<String> textRead = new ArrayList<>();
+        List<String> textRead = new ArrayList<>();
         textRead.add("the text read is identical to the original one");
 
         // when
@@ -30,9 +31,9 @@ public class CompareTextTest {
     @Test
     public void compareTextsWithMissingWord() {
         // given
-        ArrayList<String> originalText = new ArrayList<>();
+        List<String> originalText = new ArrayList<>();
         originalText.add("The text read is identical to the original one.");
-        ArrayList<String> textRead = new ArrayList<>();
+        List<String> textRead = new ArrayList<>();
         textRead.add("the text read is to the original one");
 
         // when
@@ -47,9 +48,9 @@ public class CompareTextTest {
     @Test
     public void compareTextsWithAddedWord() {
         // given
-        ArrayList<String> originalText = new ArrayList<>();
+        List<String> originalText = new ArrayList<>();
         originalText.add("The text read is identical to the original one.");
-        ArrayList<String> textRead = new ArrayList<>();
+        List<String> textRead = new ArrayList<>();
         textRead.add("the text read is not identical to the original one");
 
         // when
