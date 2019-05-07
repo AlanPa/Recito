@@ -12,6 +12,7 @@ public class Texte {
     private String nom;
     private String contenu;
     private String auteur;
+    private int score;
 
     public Texte() {}
 
@@ -19,13 +20,14 @@ public class Texte {
         this.nom = nom;
         this.contenu = contenu;
         this.auteur = auteur;
+        this.score = 0;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Texte[id=%s, Nom='%s', Contenu='%s']",
-                id, nom, contenu);
+                "Texte[id=%s, Nom='%s', Contenu='%s', Score=%d]",
+                id, nom, contenu,score);
     }
 
     public String getId() {
@@ -58,5 +60,13 @@ public class Texte {
 
     public void setAuteur(String auteur) {
         this.auteur = auteur;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

@@ -15,9 +15,7 @@ import recito.utils.Pair;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class Controleur {
@@ -240,14 +238,28 @@ public class Controleur {
     }
 
     @PostMapping("/RetrieveTextComparison")
-    public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
-        //TODO idText et idClient
-        String originalText = textsToCompare.get("originalText").toString();
-        String textRead = textsToCompare.get("textRead").toString();
-        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+    public Map<String,Object> calculateFullResults(
+            @RequestParam String idTexte,
+            @RequestBody Map<String, List<String>> textsToCompare){
         Map<String,Object> m=new HashMap<>();
+        List<String> originalText = textsToCompare.get("originalText");
+        List<String> textRead = textsToCompare.get("textRead");
+        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+        m.put("Status","Succes");
         m.put("text",res.getValue());
         m.put("score",res.getKey());
+
+        Optional<Texte> ot=repositoryTexte.findById(idTexte);
+        if(ot.isPresent()){
+            Texte t=ot.get();
+            int score=(t.getScore()>Integer.parseInt(res.getValue()))?
+                    (t.getScore()):(Integer.parseInt(res.getValue()));
+            t.setScore(score);
+            repositoryTexte.save(t);
+        }else{
+            addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"text"));
+        }
+
         return m;
     }
 
