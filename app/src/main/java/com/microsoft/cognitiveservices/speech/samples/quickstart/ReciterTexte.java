@@ -357,7 +357,7 @@ public class ReciterTexte extends AppCompatActivity {
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                return response.message();
+                return response.body().string();
             } catch (IOException e) {
                 //return "error in http post text comparison results request";
                 return e.getMessage();
