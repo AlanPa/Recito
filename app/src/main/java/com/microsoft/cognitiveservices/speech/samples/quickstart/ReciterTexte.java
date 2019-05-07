@@ -54,7 +54,7 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String RESULT_TEXT_KEY="result_text_key";
     public static final String OTL_KEY = "originalTextList_key";
     public static final String STL_KEY = "saidTextList_key";
-    public static String idText;
+    public static String idText = "1234567890okjhgfcvbn123456789";
     private String currentText = "";
     private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
