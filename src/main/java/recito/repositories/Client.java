@@ -8,8 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Collection;
-
 @Document(collection = "Client")
 public class Client {
 
@@ -73,8 +71,11 @@ public class Client {
     }
 
     public void setPassword(String password) {
+        this.password = getEncodedString(password);
+    }
+
+    public String getEncodedString(String s){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        String encodedPassword = encoder.encode(password);
-        this.password = encodedPassword;
+        return encoder.encode(s);
     }
 }
