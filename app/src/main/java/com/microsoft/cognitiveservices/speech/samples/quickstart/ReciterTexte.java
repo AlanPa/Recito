@@ -1,6 +1,8 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.os.AsyncTask;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
@@ -102,16 +104,14 @@ public class ReciterTexte extends AppCompatActivity {
         saidTextList = new ArrayList<>();
 
         // Initialisation du bouton
-        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
-        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
-
         // Si la première phrase est à dire par l'utilisateur
         if (fullOriginalTextList.get(0).second == 0){
-            // Mettre le micro
+            // Mettre le bouton micro
             mettreBouton(1);
         }
         // Si elle est à dire par Recito
         else {
+            // Mettre le bouton play
             mettreBouton(2);
         }
 
@@ -156,22 +156,22 @@ public class ReciterTexte extends AppCompatActivity {
 
     public void onSpeechToTextButtonClicked(View v) {
         if (indToRead<fullOriginalTextList.size()) {
-            TextView writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter);
+            TextView writeHere = this.findViewById(R.id.TexteDit_Reciter);
 
             if (indToRead == 1) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter2);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter2);
             } else if (indToRead == 2) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter3);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter3);
             } else if (indToRead == 3) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter4);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter4);
             } else if (indToRead == 4) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter5);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter5);
             } else if (indToRead == 5) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter6);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter6);
             } else if (indToRead == 6) {
-                writeHere = (TextView) this.findViewById(R.id.TexteDit_Reciter7);
+                writeHere = this.findViewById(R.id.TexteDit_Reciter7);
             }
-            String toWrite = "";
+            String toWrite;
             // Si c'est à l'utilisateur de parler, on enregistre et on stocke ce qui est dit et l'original
             if (fullOriginalTextList.get(indToRead).second == 0) {
                 String said = recordSpeechToText();
@@ -210,11 +210,12 @@ public class ReciterTexte extends AppCompatActivity {
 
     // 0 c'est terminé / 1 mettre micro / 2 mettre play
     private void mettreBouton(int etat){
-        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
-        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
+        ImageButton bouton = this.findViewById(R.id.Mic_Button_Reciter);
+        TextView texteBouton = this.findViewById(R.id.Tour_Reciter);
 
         if (etat == 0)
-            texteBouton.setText("C'est terminé");
+            passerAResultatSimple();
+            //texteBouton.setText("C'est terminé");
         else if (etat==1){
             texteBouton.setText("C'est à vous");
             bouton.setImageResource(R.drawable.ic_mic_black_50dp);
@@ -230,12 +231,7 @@ public class ReciterTexte extends AppCompatActivity {
         try {
             SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
             config.setSpeechRecognitionLanguage("fr-FR");
-
-            assert(config != null);
-
             SpeechRecognizer reco = new SpeechRecognizer(config);
-            assert(reco != null);
-
             Future<SpeechRecognitionResult> task = reco.recognizeOnceAsync();
             assert(task != null);
 
@@ -267,11 +263,15 @@ public class ReciterTexte extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
-            // Récupérer le texte original
-            Intent currentIntent = getIntent();
-            if (originalTextList == null) {
-                originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
-            }
+            passerAResultatSimple();
+        }
+    }
+    private void passerAResultatSimple(){
+        // Récupérer le texte original
+        Intent currentIntent = getIntent();
+        if (originalTextList == null) {
+            originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+        }
 
             // Récupérer le texte dit par l'utilisateur
             if (saidTextList == null) {
@@ -302,17 +302,16 @@ public class ReciterTexte extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            // Passer à l'activité suivante
-            Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-            ResultatSimpleActivity.putExtra(SCORE_KEY, score);
-            ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, text);
-            ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
-            ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
-            ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
-            setResult(RESULT_OK, ResultatSimpleActivity);
-            finish();
-            startActivity(ResultatSimpleActivity);
-        }
+        // Passer à l'activité suivante
+        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, score);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, text);
+        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
+        setResult(RESULT_OK, ResultatSimpleActivity);
+        finish();
+        startActivity(ResultatSimpleActivity);
     }
 
     private static class CompareTask extends AsyncTask<Map<String,Object>, Void, String> {

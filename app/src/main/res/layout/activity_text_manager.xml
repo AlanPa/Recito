@@ -8,25 +8,13 @@
 
     <Button
         android:id="@+id/Start_Button_Item_Text"
+        style="@style/Bouton"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         android:text="@string/start_bouton_Item_Text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/Read_Button_Item_Text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Table_Text"
-        style="@style/Bouton"/>
-
-    <Button
-        android:id="@+id/Read_Button_Item_Text"
-        style="@style/Bouton"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="8dp"
-        android:background="#646262"
-        android:text="@string/read_bouton_Item_Text"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/Start_Button_Item_Text"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Table_Text" />
 
     <android.support.v7.widget.Toolbar
@@ -44,20 +32,49 @@
     </android.support.v7.widget.Toolbar>
 
 
+    <TextView
+        android:id="@+id/Titre_Text"
+        android:layout_width="0dp"
+        android:layout_height="50sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/titre_Text"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/Table_Text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
     <TableLayout
         android:id="@+id/Table_Text"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:scrollbars="vertical"
+        android:background="@drawable/back"
         app:layout_constraintBottom_toTopOf="@+id/Start_Button_Item_Text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/Titre_Text">
 
     </TableLayout>
+
+    <ImageButton
+        android:id="@+id/Read_Button_Item_Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="110dp"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/ic_play_circle_outline_black_50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
