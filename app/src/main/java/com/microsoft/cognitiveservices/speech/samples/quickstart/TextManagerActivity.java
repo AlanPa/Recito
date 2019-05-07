@@ -12,6 +12,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,14 +47,12 @@ public class TextManagerActivity extends AppCompatActivity {
     public static final String ORDER_TEXT_KEY="order_text_key";
    // private String title="Votre texte à apprendre :";
     private String currentText="Maître corbeau\nsur un arbre perché\ntenait dans son bec un fromage.";
-   // private TextView titleText=null;
-    //private TextView currentTextView=null;
     private TableLayout currentTable = null;
     private Button startReciteButton=null;
-    private Button readReciteButton=null;
+    private ImageButton readReciteButton=null;
     private long currentTextID=-1;
     private TextToSpeech tts;
-    private ArrayList<Integer> orderText=new ArrayList<Integer>();
+    private ArrayList<Integer> orderText=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,35 +69,29 @@ public class TextManagerActivity extends AppCompatActivity {
         //currentText=curIntent.getStringExtra("currentText");//AAAAA DECOMMENTER
         String[] repliques= currentText.split("\n");
         for (String laReplique:repliques) {
-            if(laReplique != "")
+            if(!laReplique.equals(""))
             {
                 TableRow row= new TableRow(this);
                 TextView leText = new TextView(this);
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                 row.setLayoutParams(lp);
-                leText.setText(laReplique);
+                String textTemporaire = laReplique.replace("\n","\n\n");
+                leText.setText(textTemporaire);
                 leText.setMovementMethod(new ScrollingMovementMethod());
                 leText.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,null));
                 leText.getBackground().setAlpha(0);
                 leText.setClickable(true);
-                leText.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
+                leText.setOnClickListener(v -> {
+                    if( leText.getBackground().getAlpha() == 0)
                     {
-                        if( leText.getBackground().getAlpha() == 0)
-                        {
-                            leText.getBackground().setAlpha(100);
-                        }
-                        else{
-
-                            leText.getBackground().setAlpha(0);
-                        }
-
+                        leText.getBackground().setAlpha(100);
                     }
+                    else{
+
+                        leText.getBackground().setAlpha(0);
+                    }
+
                 });
-
-
                 row.addView(leText);
                 currentTable.addView(row);
             }
@@ -108,56 +101,47 @@ public class TextManagerActivity extends AppCompatActivity {
         //new FetchTask().execute("http://localhost:4000/GetId?id=5", currentTextID);
 
 
-        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    tts.setLanguage(Locale.FRENCH);
-                }
+        tts=new TextToSpeech(getApplicationContext(), status -> {
+            if(status != TextToSpeech.ERROR) {
+                tts.setLanguage(Locale.FRENCH);
             }
         });
 
-        startReciteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
-                ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
-                ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
+        startReciteButton.setOnClickListener(view -> {
+            Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
+            ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
+            ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
 
-                for(int i=0; i< currentTable.getChildCount();i++)
+            for(int i=0; i< currentTable.getChildCount();i++)
+            {
+                TableRow tr = (TableRow) currentTable.getChildAt(i);
+                TextView tv = (TextView) tr.getChildAt(0);
+                if(tv.getBackground().getAlpha() == 99)
                 {
-                    TableRow tr = (TableRow) currentTable.getChildAt(i);
-                    TextView tv = (TextView) tr.getChildAt(0);
-                    if(tv.getBackground().getAlpha() == 99)
-                    {
-                        orderText.add(0);
-                    }
-                    else
-                    {
-                        orderText.add(1);
-                    }
+                    orderText.add(0);
                 }
-                ReciteTexteActivity.putExtra(ORDER_TEXT_KEY,orderText);
-                setResult(RESULT_OK,ReciteTexteActivity);
-                finish();
-                startActivity(ReciteTexteActivity);
+                else
+                {
+                    orderText.add(1);
+                }
             }
+            ReciteTexteActivity.putExtra(ORDER_TEXT_KEY,orderText);
+            setResult(RESULT_OK,ReciteTexteActivity);
+            finish();
+            startActivity(ReciteTexteActivity);
         });
 
-        readReciteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               // String toSpeak = currentText;
-                String toSpeak ="";
-                for(int i=0; i< currentTable.getChildCount();i++)
-                {
-                    TableRow tr = (TableRow) currentTable.getChildAt(i);
-                    TextView tv = (TextView) tr.getChildAt(0);
-                    toSpeak += tv.getText();
-                }
-                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+        readReciteButton.setOnClickListener(view -> {
+           // String toSpeak = currentText;
+            String toSpeak ="";
+            for(int i=0; i< currentTable.getChildCount();i++)
+            {
+                TableRow tr = (TableRow) currentTable.getChildAt(i);
+                TextView tv = (TextView) tr.getChildAt(0);
+                toSpeak += tv.getText();
             }
+            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
+            tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
         });
     }
 
