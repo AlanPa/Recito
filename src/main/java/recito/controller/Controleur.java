@@ -61,6 +61,53 @@ public class Controleur {
         return m;
     }
 
+    @PostMapping("/getText")
+    public Map<String,Object> getText(@RequestBody Map<String,Object> postData){
+        Map<String,Object> m=new HashMap<>();
+
+        if(postData.containsKey("idText")&&
+                postData.containsKey("idClient"))
+        {
+            String idText = (String)postData.get("idText");
+            Optional<Client> oc=repositoryClient.findById((String)postData.get("idClient"));
+            if(oc.isPresent()){
+                Client c=oc.get();
+                for(Texte t:c.getBiblio()){
+                    if(t.getId().equals(idText)){
+                        m.put("text",t);
+                        break;
+                    }
+                }
+            }else{
+                addErrorCustomMessage(m,"The user was not found in the database !");
+            }
+
+        }else{
+            addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
+        }
+        return m;
+    }
+
+    @PostMapping("/getLibrary")
+    public Map<String,Object> getLibrary(@RequestBody Map<String,Object> postData){
+        Map<String,Object> m=new HashMap<>();
+
+        if(postData.containsKey("idClient"))
+        {
+            Optional<Client> oc=repositoryClient.findById((String)postData.get("idClient"));
+            if(oc.isPresent()){
+                Client c=oc.get();
+                m.put("library",c.getBiblio());
+            }else{
+                addErrorCustomMessage(m,"The user was not found in the database !");
+            }
+
+        }else{
+            addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
+        }
+        return m;
+    }
+
     @GetMapping("/")
     public String index() {
         return "Greetings from Spring Boot!";
@@ -108,11 +155,18 @@ public class Controleur {
     @PostMapping("/signIn")
     public Map<String, Object> connexion(@RequestBody SignInRequest requestInfo) {
         Map<String,Object> m=new HashMap<>();
-        //TODO Implement login
+
         if(requestInfo.getLogin()==null||requestInfo.getPasswordClient()==null){
             return addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
         }
-        m.put("signIn",true);
+        Client c=repositoryClient.findByNom(requestInfo.getLogin());
+
+        m.put("signIn",false);
+        if(c!=null&&c.getPassword().equals(c.getEncodedString(requestInfo.getPasswordClient()))){
+            m.put("signIn",true);
+            m.put("client",c);
+        }
+
         return m;
     }
 
@@ -148,13 +202,13 @@ public class Controleur {
 
         repositoryClient.insert(new Client(pseudo,password,mail));
 
-        //Todo create user
         m.put("create",true);
         return m;
     }
 
     @PostMapping("/RetrieveFile")
-    public Map<String, Object> convertPdf(@RequestParam("file") MultipartFile file) {
+    public Map<String, Object> convertPdf(@RequestParam("idClient") String idClient,
+                                          @RequestParam("file") MultipartFile file) {
 
         Map<String,Object> m=new HashMap<>();
         m.put("Status","Succes");
@@ -164,7 +218,12 @@ public class Controleur {
         try{
             String text=PdfExtractor.extract(file);
             m.put("Text", text);
-            //TODO create text
+            //TODO add author and name
+            Texte t=new Texte(file.getOriginalFilename(),text);
+            repositoryTexte.insert(t);
+            m.put("idText", t.getId());
+
+            //TODO remove old line
             //m.put("Language", PdfExtractor.getLanguage(text));
         }catch (IOException e){
             return addErrorCustomMessage(m,e,"File exception : ");
@@ -175,6 +234,7 @@ public class Controleur {
 
     @PostMapping("/RetrieveTextComparison")
     public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
+        //TODO idText et idClient
         String originalText = textsToCompare.get("originalText").toString();
         String textRead = textsToCompare.get("textRead").toString();
         Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
