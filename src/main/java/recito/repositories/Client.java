@@ -3,11 +3,12 @@ package recito.repositories;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import java.util.Collection;
 
 @Document(collection = "Client")
 public class Client {
@@ -25,9 +26,9 @@ public class Client {
 
     public Client(String nom, String password,String email) {
         this.nom = nom;
-        this.password = password;
+        this.setPassword(password);
         this.email = email;
-        this.biblio = new ArrayList<Texte>();
+        this.biblio = new ArrayList<>();
     }
 
     @Override
@@ -38,10 +39,6 @@ public class Client {
     }
 
     public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
         return id;
     }
 
@@ -59,17 +56,27 @@ public class Client {
         this.nom = nom;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Texte> getBiblio() { return biblio; }
+
     public void addTexte(Texte texte) {
         this.biblio.add(texte);
     }
 
-
-    public String getPassword() {
-        return password;
-    }
-    
-
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        String encodedPassword = encoder.encode(password);
+        this.password = encodedPassword;
     }
 }
