@@ -15,14 +15,12 @@ import recito.utils.Pair;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class Controleur {
     private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
-    private static final String ERROR_MISSING_IN_DATABASE ="The {} was not found in the database !";
+    private static final String ERROR_MISSING_IN_DATABASE ="The %s was not found in the database !";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -156,7 +154,7 @@ public class Controleur {
         Client c=repositoryClient.findByNom(requestInfo.getLogin());
 
         m.put("signIn",false);
-        if(c!=null&&c.getPassword().equals(c.getEncodedString(requestInfo.getPasswordClient()))){
+        if(c!=null&&c.checkPassword(requestInfo.getPasswordClient())){
             m.put("signIn",true);
             m.put("client",c);
         }
@@ -181,7 +179,7 @@ public class Controleur {
         String pseudo=creationInfo.getLoginClient();
         String password=creationInfo.getPasswordClient();
         if(mail==null||
-                !mail.matches("/^[^\\W][a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\@[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\.[a-zA-Z]{2,4}$/")
+                !mail.matches("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
         ){
             return addErrorCustomMessage(m,"Check the fields of the JSON send, the mail adress is invalid or null !");
         }
@@ -240,14 +238,32 @@ public class Controleur {
     }
 
     @PostMapping("/RetrieveTextComparison")
-    public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
-        //TODO idText et idClient
-        String originalText = textsToCompare.get("originalText").toString();
-        String textRead = textsToCompare.get("textRead").toString();
-        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+    public Map<String,Object> calculateFullResults(
+            @RequestBody Map<String, List<String>> textsToCompare){
+
         Map<String,Object> m=new HashMap<>();
+
+        List<String> idText = textsToCompare.get("idText");
+        List<String> originalText = textsToCompare.get("originalText");
+        List<String> textRead = textsToCompare.get("textRead");
+
+        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+
+        m.put("Status","Succes");
         m.put("text",res.getValue());
         m.put("score",res.getKey());
+
+        Optional<Texte> ot=repositoryTexte.findById(idText.get(0));
+        if(ot.isPresent()){
+            Texte t=ot.get();
+            int score=(t.getScore()>Integer.parseInt(res.getValue()))?
+                    (t.getScore()):(Integer.parseInt(res.getValue()));
+            t.setScore(score);
+            repositoryTexte.save(t);
+        }else{
+            addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"text"));
+        }
+
         return m;
     }
 

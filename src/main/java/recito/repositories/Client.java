@@ -78,4 +78,9 @@ public class Client {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
         return encoder.encode(s);
     }
+
+    public boolean checkPassword(String passwordToCheck){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        return encoder.matches(passwordToCheck,password);
+    }
 }
