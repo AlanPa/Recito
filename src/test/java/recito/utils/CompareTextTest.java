@@ -1,6 +1,6 @@
 package recito.utils;
 
-import javafx.util.Pair;
+import recito.utils.Pair;
 
 import org.junit.Test;
 

@@ -1,7 +1,11 @@
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/controller/Controleur.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/utils/PdfExtractor.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/repositories/Client.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/Application.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/repositories/ClientRepository.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/repositories/Texte.java
-/Users/hirt/Desktop/INSA/2018,2019/SMART/Recito/src/main/java/recito/repositories/TexteRepository.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/controller/Controleur.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/request/CreateAccountRequest.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/utils/CompareText.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/Application.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/repositories/Texte.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/repositories/ClientRepository.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/request/SignInRequest.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/utils/PdfExtractor.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/repositories/Client.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/repositories/TexteRepository.java
+/home/halunka/Bureau/4if tp/Recito/src/main/java/recito/utils/Pair.java

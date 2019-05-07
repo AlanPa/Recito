@@ -1,6 +1,5 @@
 package recito.controller;
 
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +11,7 @@ import recito.repositories.TexteRepository;
 import recito.request.CreateAccountRequest;
 import recito.request.SignInRequest;
 import recito.utils.CompareText;
+import recito.utils.Pair;
 import recito.utils.PdfExtractor;
 
 import javax.swing.text.html.Option;
