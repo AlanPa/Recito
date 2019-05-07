@@ -109,7 +109,29 @@ public class LoadPdfActivity extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
-        new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        if (pdfFile!=null) {
+            new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        }
+        else
+        {
+            /*String defaultText ="Maître corbeau sur un arbre perché tenait en son bec un fromage.\n" +
+                    "Maître renard par l'odeur alléché lui tint à peu près ce langage.\n" +
+                    "Ceci est la deuxième phrase.\n" +
+                    "C'est bien, tu connais ton texte.\n" +
+                    "Ceci est la troisième phrase.\n" +
+                    "Bravo !\n" +
+                    "Ceci est la quatrième phrase.";*/
+            String defaultText ="Maître corbeau sur un arbre perché, tenait en son bec un fromage\n" +
+                    "Maître renard par l'odeur alléché lui tint à peu près ce langage\n" +
+                    "Et bonjour monsieur du corbeau\n"+
+                    "Que vous êtes joli, que vous me semblez beau\n"+
+                    "Sans mentir si votre ramage se rapporte à votre plumage\n"+
+                    "Vous êtes le phénix des hôtes de ces bois";
+            Intent intent = new Intent(LoadPdfActivity.this, TextManagerActivity.class);
+            intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, defaultText);
+            setResult(RESULT_OK,intent);
+            startActivity(intent);
+        }
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
