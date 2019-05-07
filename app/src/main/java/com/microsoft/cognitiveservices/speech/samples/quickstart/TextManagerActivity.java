@@ -46,19 +46,13 @@ public class TextManagerActivity extends AppCompatActivity {
     public static final String CURRENT_TEXT_KEY="current_text_key";
     public static final String ORDER_TEXT_KEY="order_text_key";
    // private String title="Votre texte à apprendre :";
-    private String currentText="Maître corbeau sur un arbre perché, tenait en son bec un fromage\n" +
-           "Maître renard par l'odeur alléché lui tint à peu près ce langage\n" +
-           "Et bonjour monsieur du corbeau\n"+
-           "Que vous êtes joli, que vous me semblez beau\n"+
-           "Sans mentir si votre ramage se rapporte à votre plumage\n"+
-           "Vous êtes le phénix des hôtes de ces bois";
+    private String currentText="Maître \ncorbeau\nsur un arbre perché\ntenait dans son bec un fromage.";
     private TableLayout currentTable = null;
     private Button startReciteButton=null;
     private ImageButton readReciteButton=null;
     private long currentTextID=-1;
     private TextToSpeech tts;
     private ArrayList<Integer> orderText=new ArrayList<>();
-    private boolean somethingIsSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +64,9 @@ public class TextManagerActivity extends AppCompatActivity {
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
         currentTable = findViewById(R.id.Table_Text);
 
+        //Je remplis le texte que l'utilisateur va devoir dire
+        Intent curIntent = getIntent();
+        //currentText=curIntent.getStringExtra("currentText");//AAAAA DECOMMENTER
         String[] repliques= currentText.split("\n");
         for (String laReplique:repliques) {
             if(!laReplique.equals(""))
@@ -78,7 +75,8 @@ public class TextManagerActivity extends AppCompatActivity {
                 TextView leText = new TextView(this);
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
                 row.setLayoutParams(lp);
-                leText.setText("  "+laReplique+"\n");
+                String textTemporaire = laReplique.replace("\n","\n\n");
+                leText.setText(textTemporaire);
                 leText.setMovementMethod(new ScrollingMovementMethod());
                 leText.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,null));
                 leText.getBackground().setAlpha(0);
@@ -109,9 +107,10 @@ public class TextManagerActivity extends AppCompatActivity {
             }
         });
 
-
-
         startReciteButton.setOnClickListener(view -> {
+            Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
+            ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
+            ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
 
             for(int i=0; i< currentTable.getChildCount();i++)
             {
@@ -120,27 +119,16 @@ public class TextManagerActivity extends AppCompatActivity {
                 if(tv.getBackground().getAlpha() == 99)
                 {
                     orderText.add(0);
-                    somethingIsSelected = true;
                 }
                 else
                 {
                     orderText.add(1);
                 }
             }
-
-            if (!somethingIsSelected){
-                orderText.clear();
-                Toast.makeText(getApplicationContext(), "Veuillez sélectionner au moins une réplique avant de commencer une répétition.",Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
-                ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
-                ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
-                ReciteTexteActivity.putExtra(ORDER_TEXT_KEY, orderText);
-                setResult(RESULT_OK, ReciteTexteActivity);
-                finish();
-                startActivity(ReciteTexteActivity);
-            }
+            ReciteTexteActivity.putExtra(ORDER_TEXT_KEY,orderText);
+            setResult(RESULT_OK,ReciteTexteActivity);
+            finish();
+            startActivity(ReciteTexteActivity);
         });
 
         readReciteButton.setOnClickListener(view -> {
@@ -152,6 +140,7 @@ public class TextManagerActivity extends AppCompatActivity {
                 TextView tv = (TextView) tr.getChildAt(0);
                 toSpeak += tv.getText();
             }
+            Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
             tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
         });
     }
