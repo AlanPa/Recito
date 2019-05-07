@@ -14,7 +14,6 @@ import recito.utils.CompareText;
 import recito.utils.Pair;
 import recito.utils.PdfExtractor;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +22,7 @@ import java.util.Optional;
 @RestController
 public class Controleur {
     private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
+    private static final String ERROR_MISSING_IN_DATABASE ="The {} was not found in the database !";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -34,17 +34,10 @@ public class Controleur {
         this.repositoryTexte = repositoryTexte;
     }
 
-    @GetMapping("/testSet")
-    public String insertDataIntoDb(){
-
+    @GetMapping("/testDelete")
+    public String deleteAllDataInDb(){
         repositoryClient.deleteAll();
-        repositoryClient.save(new Client("Gasiuk", "reci", "lol@lol.com"));
-        repositoryClient.save(new Client("Gasiuk2", "reci2","lol@lol.com"));
-        repositoryClient.save(new Client("Gasiuk3", "reci3","lol@lol.com"));
-
         repositoryTexte.deleteAll();
-        repositoryTexte.save(new Texte("jdr", "texte du jdr"));
-
         return "OK";
     }
 
@@ -79,7 +72,7 @@ public class Controleur {
                     }
                 }
             }else{
-                addErrorCustomMessage(m,"The user was not found in the database !");
+                addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"user"));
             }
 
         }else{
@@ -99,7 +92,7 @@ public class Controleur {
                 Client c=oc.get();
                 m.put("library",c.getBiblio());
             }else{
-                addErrorCustomMessage(m,"The user was not found in the database !");
+                addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"user"));
             }
 
         }else{
@@ -127,23 +120,24 @@ public class Controleur {
     public Map<String,Object> insertNewText(@RequestBody Map<String,Object> postData){
         Map<String,Object> m=new HashMap<>();
 
-        if(postData.containsKey("title")&&
-                postData.containsKey("text")&&
+        if(postData.containsKey("textTitle")&&
+                postData.containsKey("textAuthor")&&
+                postData.containsKey("textContent")&&
                 postData.containsKey("idClient"))
         {
-            String o = (String)postData.get("title");
-            String ot = (String)postData.get("text");
+            String title = (String)postData.get("textTitle");
+            String author = (String)postData.get("textAuthor");
+            String content = (String)postData.get("textContent");
             Optional<Client> oc=repositoryClient.findById((String)postData.get("idClient"));
             if(oc.isPresent()){
                 Client c=oc.get();
-                //If texte doesn't exist
-                Texte t = new Texte(o,ot);
+                Texte t = new Texte(title,content,author);
                 repositoryTexte.save(t);
                 c.addTexte(t);
                 repositoryClient.save(c);
                 m.put("create",true);
             }else{
-                addErrorCustomMessage(m,"The user was not found in the database !");
+                addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"user"));
             }
 
         }else{
@@ -174,7 +168,7 @@ public class Controleur {
     public Map<String, Object> deconnexion() {
         Map<String,Object> m=new HashMap<>();
         boolean status=true;
-        //TODO Implement logout
+        //TODO Implement logout with session
         m.put("logout",status);
         return m;
     }
@@ -208,6 +202,8 @@ public class Controleur {
 
     @PostMapping("/RetrieveFile")
     public Map<String, Object> convertPdf(@RequestParam("idClient") String idClient,
+                                          @RequestParam("textTitle") String titre,
+                                          @RequestParam("textAuthor") String auteur,
                                           @RequestParam("file") MultipartFile file) {
 
         Map<String,Object> m=new HashMap<>();
@@ -218,8 +214,7 @@ public class Controleur {
         try{
             String text=PdfExtractor.extract(file);
             m.put("Text", text);
-            //TODO add author and name
-            Texte t=new Texte(file.getOriginalFilename(),text);
+            Texte t=new Texte(titre,text,auteur);
             repositoryTexte.insert(t);
             m.put("idText", t.getId());
 
@@ -243,13 +238,6 @@ public class Controleur {
         m.put("score",res.getKey());
         return m;
     }
-
-    /*private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
-        LOG.error("An exception was encountered : {}",e.getMessage());
-        m.put("Status","Error");
-        m.put("Message","An exception was encountered : "+e.getMessage());
-        return m;
-    }*/
 
     private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
         log.error(message);

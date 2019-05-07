@@ -8,8 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Collection;
-
 @Document(collection = "Client")
 public class Client {
 
