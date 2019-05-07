@@ -1,31 +1,62 @@
 package recito.utils;
 
+import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
-import javafx.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CompareText {
-    public static Pair<Integer, String> calculateFullResult(String originalText, String saidText){
-        // Récupérer le résultat
-        String resultTextBeforeHTML=compareTexts(originalText,saidText);
+    private static final Logger log = LoggerFactory.getLogger(PdfExtractor.class);
 
-        // Calculs nombres de mots
-        int nbWordsOriginalText = countWordsInText(originalText);
-        int nbWordsSaidText = countWordsInText(saidText);
-        int nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML,'~');
-        int nbCorrects = nbWordsSaidText-nbAjouts;
-        int nbOublis = nbWordsOriginalText-nbCorrects;
+    private CompareText(){}
 
-        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots, vous en avez dit " + nbWordsSaidText+".<br/><br/> Parmi ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
+    public static Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL) {
+        int nbWordsOriginalText = 0;
+        int nbWordsSaidText = 0;
+        int nbAjouts = 0;
+        int nbCorrects;
+        int nbOublis;
+        StringBuilder fullTextResult = new StringBuilder();
+        String resultTextBeforeHTML;
+        String saidText;
+        String originalText;
+
+        for (int i = 0; i < sTL.size(); i++) {
+            saidText = sTL.get(i);
+            originalText = oTL.get(i);saidText = saidText.replace(".","");
+            saidText = saidText.replace(",","");
+            saidText = saidText.replace("?","");
+            saidText = saidText.replace("!","");
+            originalText = originalText.replace(".","");
+            originalText = originalText.replace(",","");
+            originalText = originalText.replace("?","");
+            originalText = originalText.replace("!","");
+
+            // Récupérer le résultat
+            resultTextBeforeHTML = compareTexts(originalText, saidText);
+
+            // Calculs nombres de mots
+            nbWordsOriginalText += countWordsInText(originalText);
+            nbWordsSaidText += countWordsInText(saidText);
+            nbAjouts += calculateNumberWrongWords(resultTextBeforeHTML, '~');
+
+            // Ajout au texte du résultat détaillé
+            fullTextResult.append(editToHtmlResult(resultTextBeforeHTML)+"<br/><br/>");
+
+        }
+        nbCorrects = nbWordsSaidText-nbAjouts;
+        nbOublis = nbWordsOriginalText-nbCorrects;
+
+        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots.<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
+        fullTextResult.append(nbMots);
 
         int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
-        String fullTextResult = editToHtmlResult(resultTextBeforeHTML)+nbMots;
-
-        Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
-        return fullResult;
+        return new Pair<>(score,fullTextResult.toString());
     }
 
     // Compare deux chaînes de caractères et renvoie les mots oubliés entre '*' et les mots ajoutés entre '~'
@@ -43,55 +74,48 @@ public class CompareText {
         List<DiffRow> rows = null;
         try {
             rows = generator.generateDiffRows(
-
-                    Arrays.asList(saidText),
-                    Arrays.asList(originalText));
-        } catch (Exception e) {
-            e.printStackTrace();
+                    Arrays.asList(saidText.toLowerCase()),
+                    Arrays.asList(originalText.toLowerCase()));
+            return (rows.get(0).getOldLine());
+        } catch (DiffException e) {
+            log.error("La comparaison a engendré une erreur : ",e);
+            return "";
         }
-
-        return (rows.get(0).getOldLine());
     }
 
     // Passe en html une chaîne de caractère où le gras est indiqué entre '*' et le barré entre '~'
     private static String editToHtmlResult(String resultLine){
-        String newResult="";
+        StringBuilder newResult = new StringBuilder();
 
         char gras = '*';
         char barre = '~';
         boolean baliseOuvrante = true;
-        //int nbOublis = 0;
-        //int nbAjouts = 0;
 
         for (int i=0; i < resultLine.length(); i++)
         {
             if (resultLine.charAt(i) == gras ) {
                 if (baliseOuvrante) {
-                    newResult += "<b> ";
-                    //nbOublis++;
+                    newResult.append("<b> ");
                 } else {
-                    newResult += "</b> ";
+                    newResult.append("</b> ");
                 }
                 baliseOuvrante=!baliseOuvrante;
             }
             else if (resultLine.charAt(i) == barre) {
                 if (baliseOuvrante) {
-                    newResult += "<strike> ";
+                    newResult.append("<strike> ");
                     //nbAjouts++;
                 } else {
-                    newResult += "</strike>" ;
+                    newResult.append("</strike>");
                 }
                 baliseOuvrante=!baliseOuvrante;
 
             }
             else {
-                newResult += resultLine.charAt(i);
+                newResult.append(resultLine.charAt(i));
             }
         }
-
-        //String resFautes = "<br/><br/> Il y a eu "+nbAjouts+" ajouts, et "+nbOublis+" oublis.";
-        //score = nbAjouts+nbOublis;
-        return newResult;
+        return newResult.toString();
     }
 
     // Compte le nombre de mots dans une chaîne de caractères
@@ -99,15 +123,14 @@ public class CompareText {
         int nbWords = 0;
         int previousChar='.';
         boolean onlyOneWord = true;
-        String charlus="";
-
+        StringBuilder charlus=new StringBuilder();
 
         for (int i=0; i < text.length(); i++)
         {
-            charlus += text.charAt(i);
+            charlus.append(text.charAt(i));
 
             if (text.charAt(i) == ' ' && previousChar!=' ' && i!=0) {
-                System.out.println("/////// Char lus quand ++ ="+charlus);
+                log.debug("/////// Char lus quand ++ = {}",charlus);
                 nbWords++;
                 if (onlyOneWord){
                     onlyOneWord=false;
@@ -124,30 +147,29 @@ public class CompareText {
     // Donne le nombre de mots compris entre deux caractères "limit" dans un String
     private static int calculateNumberWrongWords(String resultText, char limit){
         boolean correctPart = false;
-        String words="";
+        StringBuilder words=new StringBuilder();
 
         for (int i=0; i < resultText.length(); i++) {
             if (resultText.charAt(i) == limit){
                 correctPart = !correctPart;
-                words += " ";
+                words.append(" ");
             }
             else if (correctPart && resultText.charAt(i)!='.' && resultText.charAt(i)!=','){
-                words += resultText.charAt(i);
+                words.append(resultText.charAt(i));
             }
         }
-        return countWordsInText(words);
+        return countWordsInText(words.toString());
     }
 
     // Calcule un score en fonction du nombre de mots du texte original, du nombre de mots corrects, du nombre de mots ajoutés
     private static int calculateScore(int nbWordsOriginalText, int nbCorrects, int nbAjouts){
-        int score = (int)((nbCorrects-nbAjouts/1.5)*100/nbWordsOriginalText);
+        int score = (int)(nbCorrects-nbAjouts/1.5)*100/nbWordsOriginalText;
         if (score<0){
             score = 0;
         }
         else if (score > 100){
             score = 100;
         }
-
         return score;
     }
 }

@@ -1,29 +1,39 @@
 package recito.repositories;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
 
+@Document(collection = "Client")
 public class Client {
 
     @Id
     private String id;
 
     private String nom;
-    // TODO set encryption with SHA256
     private String password;
+    private String email;
+    @DBRef
+    private List<Texte> biblio;
 
     public Client() {}
 
-    public Client(String nom, String password) {
+    public Client(String nom, String password,String email) {
         this.nom = nom;
-        this.password = password;
+        this.setPassword(password);
+        this.email = email;
+        this.biblio = new ArrayList<>();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Client[id=%s, Nom='%s', PasswordC='%s']",
-                id, nom, password);
+                "Client[id=%s, Nom='%s', PasswordC='%s',Email='%s',Biblio:'%s']",
+                id, nom, password,email,biblio);
     }
 
     public String getId() {
@@ -46,7 +56,23 @@ public class Client {
         return password;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Texte> getBiblio() { return biblio; }
+
+    public void addTexte(Texte texte) {
+        this.biblio.add(texte);
+    }
+
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        String encodedPassword = encoder.encode(password);
+        this.password = encodedPassword;
     }
 }

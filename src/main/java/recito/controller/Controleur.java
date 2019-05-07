@@ -1,6 +1,5 @@
 package recito.controller;
 
-import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -9,20 +8,26 @@ import recito.repositories.Client;
 import recito.repositories.ClientRepository;
 import recito.repositories.Texte;
 import recito.repositories.TexteRepository;
+import recito.request.CreateAccountRequest;
+import recito.request.SignInRequest;
 import recito.utils.CompareText;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import recito.utils.Pair;
 
 @RestController
 public class Controleur {
-
+    private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
     private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private final ClientRepository repositoryClient;
     private final TexteRepository repositoryTexte;
+
+    private static final String SPEECHSUBSCRIPTION_KEY = "5eae85560bb241b884f09a170d1a3214";
+    private static String SERVICE_REGION = "francecentral";
 
     public Controleur(ClientRepository repositoryClient, TexteRepository repositoryTexte) {
         this.repositoryClient = repositoryClient;
@@ -33,9 +38,9 @@ public class Controleur {
     public String insertDataIntoDb(){
 
         repositoryClient.deleteAll();
-        repositoryClient.save(new Client("Gasiuk", "reci"));
-        repositoryClient.save(new Client("Gasiuk2", "reci2"));
-        repositoryClient.save(new Client("Gasiuk3", "reci3"));
+        repositoryClient.save(new Client("Gasiuk", "reci", "lol@lol.com"));
+        repositoryClient.save(new Client("Gasiuk2", "reci2","lol@lol.com"));
+        repositoryClient.save(new Client("Gasiuk3", "reci3","lol@lol.com"));
 
         repositoryTexte.deleteAll();
         repositoryTexte.save(new Texte("jdr", "texte du jdr"));
@@ -60,12 +65,99 @@ public class Controleur {
     public String index() {
         return "Greetings from Spring Boot!";
     }
-
     //Spring se lance sur localhost:8080
     @PostMapping("/Connexion")
     public Map<String, String> connexion() {
         Map<String,String> m=new HashMap<>();
         m.put("Status","Set");
+        return m;
+    }
+
+    @PostMapping("/GetProfil")
+    public Optional<Client> getProfil(@RequestBody Map<String,Object> postData){
+        if(postData.containsKey("idClient")&&postData.get("idClient")!=null){
+            Object o = postData.get("idClient");
+            String os = (String)o;
+            return repositoryClient.findById(os);
+        }
+        return Optional.empty();
+    }
+
+    @PostMapping("/InsertNewText")
+    public Map<String,Object> insertNewText(@RequestBody Map<String,Object> postData){
+        Map<String,Object> m=new HashMap<>();
+
+        if(postData.containsKey("title")&&
+                postData.containsKey("text")&&
+                postData.containsKey("idClient"))
+        {
+            String o = (String)postData.get("title");
+            String ot = (String)postData.get("text");
+            Optional<Client> oc=repositoryClient.findById((String)postData.get("idClient"));
+            if(oc.isPresent()){
+                Client c=oc.get();
+                //If texte doesn't exist
+                Texte t = new Texte(o,ot);
+                repositoryTexte.save(t);
+                c.addTexte(t);
+                repositoryClient.save(c);
+                m.put("create",true);
+            }else{
+                addErrorCustomMessage(m,"The user was not found in the database !");
+            }
+
+        }else{
+            addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
+        }
+        return m;
+    }
+
+    @PostMapping("/signIn")
+    public Map<String, Object> connexion(@RequestBody SignInRequest requestInfo) {
+        Map<String,Object> m=new HashMap<>();
+        //TODO Implement login
+        if(requestInfo.getLogin()==null||requestInfo.getPasswordClient()==null){
+            return addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
+        }
+        m.put("signIn",true);
+        return m;
+    }
+
+    @PostMapping("/createAccount")
+    public Map<String, Object> createUser(@RequestBody CreateAccountRequest creationInfo) {
+        Map<String,Object> m=new HashMap<>();
+
+        String mail=creationInfo.getEmailClient();
+        String pseudo=creationInfo.getLoginClient();
+        String password=creationInfo.getPasswordClient();
+        if(mail==null||
+                !mail.matches("/^[^\\W][a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\@[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\.[a-zA-Z]{2,4}$/")
+        ){
+            return addErrorCustomMessage(m,"Check the fields of the JSON send, the mail adress is invalid or null !");
+        }
+
+        if(pseudo==null||password==null){
+            return addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
+        }
+
+        if(repositoryClient.findByEmail(mail)!=null||repositoryClient.findByNom(pseudo)!=null){
+            return addErrorCustomMessage(m,"An user with the same mail or pseudonyme was found in the database !");
+        }
+
+        repositoryClient.insert(new Client(pseudo,password,mail));
+
+        //Todo create user
+        m.put("create",true);
+        return m;
+    }
+
+
+    @PostMapping("/signOut")
+    public Map<String, Object> deconnexion() {
+        Map<String,Object> m=new HashMap<>();
+        boolean status=true;
+        //TODO Implement logout
+        m.put("logout",status);
         return m;
     }
 
@@ -123,12 +215,43 @@ public class Controleur {
 
     @PostMapping("/RetrieveTextComparison")
     public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
-        String originalText = textsToCompare.get("originalText").toString();
-        String textRead = textsToCompare.get("textRead").toString();
-        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+        // TODO idText et idClient
+        ArrayList<String> originalTextList = (ArrayList<String>)textsToCompare.get("originalText");
+        ArrayList<String> textReadList = (ArrayList<String>)textsToCompare.get("textRead");
+        Pair<Integer, String> res = CompareText.calculateFullResult(originalTextList, textReadList);
         Map<String,Object> m=new HashMap<>();
         m.put("text",res.getValue());
         m.put("score",res.getKey());
+        return m;
+    }
+
+    @PostMapping("/RetrieveSpeechKey")
+    public Map<String,Object> getSpeechKeys(){
+        Map<String,Object> m=new HashMap<>();
+        m.put("speechSubscriptionKey",SPEECHSUBSCRIPTION_KEY);
+        m.put("serviceRegion",SERVICE_REGION);
+
+        return m;
+    }
+
+    /*private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
+        LOG.error("An exception was encountered : {}",e.getMessage());
+        m.put("Status","Error");
+        m.put("Message","An exception was encountered : "+e.getMessage());
+        return m;
+    }*/
+
+    private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
+        LOG.error(message);
+        m.put("Status","Error");
+        m.put("Message",message);
+        return m;
+    }
+
+    private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, Exception e, String header){
+        LOG.error(header,e.getMessage());
+        m.put("Status","Error");
+        m.put("Message",header+e.getMessage());
         return m;
     }
 }
