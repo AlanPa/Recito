@@ -22,7 +22,7 @@ import java.util.Optional;
 @RestController
 public class Controleur {
     private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
-    private static final String ERROR_MISSING_IN_DATABASE ="The {} was not found in the database !";
+    private static final String ERROR_MISSING_IN_DATABASE ="The %s was not found in the database !";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -181,7 +181,7 @@ public class Controleur {
         String pseudo=creationInfo.getLoginClient();
         String password=creationInfo.getPasswordClient();
         if(mail==null||
-                !mail.matches("/^[^\\W][a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\@[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*\\.[a-zA-Z]{2,4}$/")
+                !mail.matches("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
         ){
             return addErrorCustomMessage(m,"Check the fields of the JSON send, the mail adress is invalid or null !");
         }
