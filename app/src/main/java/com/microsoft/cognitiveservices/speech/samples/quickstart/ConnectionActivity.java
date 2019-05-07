@@ -38,7 +38,6 @@ public class ConnectionActivity extends AppCompatActivity {
     public void ConnexionButtonClicked(View view) {
         //String idClientInput = idClient.getText().toString();
         //String passwordClientInput = passwordClient.getText().toString();
-        //temporaire
         Intent intent = new Intent(ConnectionActivity.this, TextManagerActivity.class);
         startActivity(intent);
         //new FetchTask().execute("url", idClientInput,passwordClientInput);
