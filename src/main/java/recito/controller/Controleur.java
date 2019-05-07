@@ -212,11 +212,23 @@ public class Controleur {
         m.put("Nom",file.getOriginalFilename());
 
         try{
-            String text=PdfExtractor.extract(file);
-            m.put("Text", text);
-            Texte t=new Texte(titre,text,auteur);
-            repositoryTexte.insert(t);
-            m.put("idText", t.getId());
+            Optional<Client> oc=repositoryClient.findById(idClient);
+            if(oc.isPresent()){
+                String text=PdfExtractor.extract(file);
+                m.put("Text", text);
+
+                Texte t=new Texte(titre,text,auteur);
+                repositoryTexte.insert(t);
+                m.put("idText", t.getId());
+
+                Client c=oc.get();
+                c.addTexte(t);
+                repositoryClient.save(c);
+
+                m.put("create",true);
+            }else{
+                addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"user"));
+            }
 
             //TODO remove old line
             //m.put("Language", PdfExtractor.getLanguage(text));
