@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -20,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.google.gson.Gson;
@@ -39,7 +41,6 @@ import org.json.JSONObject;
 
 
 public class TextManagerActivity extends AppCompatActivity {
-    private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
     public static final String ORDER_TEXT_KEY="order_text_key";
@@ -64,7 +65,7 @@ public class TextManagerActivity extends AppCompatActivity {
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
         currentTable = findViewById(R.id.Table_Text);
 
-        //Je remplis le currentText
+        //Je remplis le texte que l'utilisateur va devoir dire
         Intent curIntent = getIntent();
         //currentText=curIntent.getStringExtra("currentText");//AAAAA DECOMMENTER
         String[] repliques= currentText.split("\n");
@@ -190,7 +191,6 @@ public class TextManagerActivity extends AppCompatActivity {
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                //Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
                 System.out.println("---------------------------------"+jsonObject.toString());

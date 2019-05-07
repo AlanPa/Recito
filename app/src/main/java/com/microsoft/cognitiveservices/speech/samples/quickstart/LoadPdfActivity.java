@@ -2,6 +2,7 @@ package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -49,7 +50,7 @@ public class LoadPdfActivity extends AppCompatActivity {
 
     public void onChooseFileButton(View view) {
 
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
         //intent.setType("text/*");
@@ -64,8 +65,17 @@ public class LoadPdfActivity extends AppCompatActivity {
         {
             if(data!=null)
             {
+                Context context = this.getApplicationContext();
+                String path = context.getExternalFilesDir(null).getPath();
                 uri =data.getData();
-                pathUri=uri.getPath();
+                if(uri.getPath().contains(path.split("/")[0]))
+                {
+                    pathUri=uri.getPath().substring(uri.getPath().indexOf(":")+1);
+                }
+                else
+                {
+                    pathUri=path.split("Android")[0].substring(1)+ uri.getPath().substring(uri.getPath().indexOf(":")+1);
+                }
                 String uriElements []= pathUri.split("/");
                 uriFileLabel.setText(uriElements[uriElements.length-1]);
             }
@@ -75,7 +85,7 @@ public class LoadPdfActivity extends AppCompatActivity {
     public void onValidationButton(View view) {
 
         try{
-            pdfFile = new File(uri.getPath().substring(pathUri.indexOf(":")+1));
+            pdfFile = new File(pathUri);
             /*BufferedReader br = new BufferedReader((new FileReader(pdfFile)));
             String line;
             while((line=br.readLine())!=null)
@@ -99,7 +109,29 @@ public class LoadPdfActivity extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
-        new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        if (pdfFile!=null) {
+            new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        }
+        else
+        {
+            /*String defaultText ="Maître corbeau sur un arbre perché tenait en son bec un fromage.\n" +
+                    "Maître renard par l'odeur alléché lui tint à peu près ce langage.\n" +
+                    "Ceci est la deuxième phrase.\n" +
+                    "C'est bien, tu connais ton texte.\n" +
+                    "Ceci est la troisième phrase.\n" +
+                    "Bravo !\n" +
+                    "Ceci est la quatrième phrase.";*/
+            String defaultText ="Maître corbeau sur un arbre perché, tenait en son bec un fromage\n" +
+                    "Maître renard par l'odeur alléché lui tint à peu près ce langage\n" +
+                    "Et bonjour monsieur du corbeau\n"+
+                    "Que vous êtes joli, que vous me semblez beau\n"+
+                    "Sans mentir si votre ramage se rapporte à votre plumage\n"+
+                    "Vous êtes le phénix des hôtes de ces bois";
+            Intent intent = new Intent(LoadPdfActivity.this, TextManagerActivity.class);
+            intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, defaultText);
+            setResult(RESULT_OK,intent);
+            startActivity(intent);
+        }
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
