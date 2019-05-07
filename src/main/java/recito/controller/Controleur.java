@@ -122,8 +122,13 @@ public class Controleur {
     }
 
     @PostMapping("/RetrieveTextComparison")
-    public Pair<Integer,String> calculateFullResults(@RequestBody String originalText, @RequestBody String textRead){
+    public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
+        String originalText = textsToCompare.get("originalText").toString();
+        String textRead = textsToCompare.get("textRead").toString();
         Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
-        return res;
+        Map<String,Object> m=new HashMap<>();
+        m.put("text",res.getValue());
+        m.put("score",res.getKey());
+        return m;
     }
 }

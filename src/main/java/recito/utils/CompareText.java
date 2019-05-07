@@ -1,13 +1,11 @@
 package recito.utils;
 
-import com.github.difflib.algorithm.DiffException;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import javafx.util.Pair;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Future;
 
 public class CompareText {
     public static Pair<Integer, String> calculateFullResult(String originalText, String saidText){
