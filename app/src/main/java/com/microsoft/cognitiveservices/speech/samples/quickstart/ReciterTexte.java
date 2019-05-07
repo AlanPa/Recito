@@ -5,7 +5,6 @@ import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -42,6 +41,7 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String OTL_KEY = "originalTextList_key";
     public static final String STL_KEY = "saidTextList_key";
     private String currentText = null;
+    private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
     private ArrayList<String> originalTextList;
     private ArrayList<String> saidTextList;
@@ -57,8 +57,23 @@ public class ReciterTexte extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
 
+
         Intent currentIntent = getIntent();
+        /*TODO ADD : whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+        if (whoReads == null){
+            whoReads = new ArrayList<>();
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+            whoReads.add(1);
+            whoReads.add(0);
+        }
+        */
         fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY));
+        //TODO ADD : fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
+
         fullOriginalTextList = dialogLines(fullOriginalTextList);
         nbLinesToRead = fullOriginalTextList.size()-1;
         //printStruct(fullOriginalTextList);
@@ -90,6 +105,9 @@ public class ReciterTexte extends AppCompatActivity {
                 }
             }
         });
+
+
+
     }
 
     // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist, avec des 0 = c'est l'utilisateur qui doit parler par défaut
@@ -101,6 +119,18 @@ public class ReciterTexte extends AppCompatActivity {
         for (int i = 0 ; i<tabTexte.length ; i++){
             // dans la structure de base, tout doit être lu par l'utilisateur
             toAdd = new Pair (tabTexte[i],0);
+            fullText.add(toAdd);
+        }
+        return fullText;
+    }
+
+    private ArrayList<Pair<String, Integer>> toCorrectStructure(String text,ArrayList<Integer> quiDoitLire){
+        String[] tabTexte = text.split("\n");
+        ArrayList<Pair<String, Integer>> fullText = new ArrayList<>();
+        Pair<String, Integer> toAdd ;
+        for (int i = 0 ; i<tabTexte.length ; i++){
+            // dans la structure de base, tout doit être lu par l'utilisateur
+            toAdd = new Pair (tabTexte[i],quiDoitLire.get(i));
             fullText.add(toAdd);
         }
         return fullText;
@@ -292,26 +322,6 @@ public class ReciterTexte extends AppCompatActivity {
         fullTextResult += nbMots;
 
         int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
-        Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
-        return fullResult;
-    }
-
-    private Pair<Integer, String> calculateSemiResult(String originalText, String saidText){
-        // Récupérer le résultat
-        String resultTextBeforeHTML=compareTexts(currentText,saidText);
-
-        // Calculs nombres de mots
-        int nbWordsOriginalText = countWordsInText(currentText);
-        int nbWordsSaidText = countWordsInText(saidText);
-        int nbAjouts = calculateNumberWrongWords(resultTextBeforeHTML,'~');
-        int nbCorrects = nbWordsSaidText-nbAjouts;
-        int nbOublis = nbWordsOriginalText-nbCorrects;
-
-        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots, vous en avez dit " + nbWordsSaidText+".<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
-
-        int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
-        String fullTextResult = editToHtmlResult(resultTextBeforeHTML)+nbMots;
-
         Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
         return fullResult;
     }
