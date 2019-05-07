@@ -42,8 +42,6 @@ public class Client {
         return id;
     }
 
-    public List<Texte> getBiblio() { return biblio; }
-
     public void setId(String id) {
         this.id = id;
     }

@@ -7,14 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gs-spring-boot" />
+        <module name="Recito" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="gs-spring-boot" target="1.8" />
+      <module name="Recito" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Recito" options="-parameters" />
       <module name="gs-spring-boot" options="-parameters" />
     </option>
   </component>
