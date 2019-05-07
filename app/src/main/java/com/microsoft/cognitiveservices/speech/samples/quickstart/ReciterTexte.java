@@ -71,9 +71,6 @@ public class ReciterTexte extends AppCompatActivity {
         saidTextList = new ArrayList<>();
 
         // Initialisation du bouton
-        ImageButton bouton = (ImageButton) this.findViewById(R.id.Mic_Button_Reciter);
-        TextView texteBouton = (TextView) this.findViewById(R.id.Tour_Reciter);
-
         // Si la première phrase est à dire par l'utilisateur
         if (fullOriginalTextList.get(0).second == 0){
             // Mettre le micro
