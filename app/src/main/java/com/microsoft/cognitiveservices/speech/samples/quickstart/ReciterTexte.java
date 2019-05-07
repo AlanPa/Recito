@@ -1,5 +1,7 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
@@ -229,31 +231,47 @@ public class ReciterTexte extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
-            // Récupérer le texte original
-            Intent currentIntent = getIntent();
-            if (originalTextList == null) {
-                originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+            boolean arreter = true;
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("En cliquant ici, vous allez vers la correction de votre répétition.\n" +
+                        "Avez-vous vraiment terminé ?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Récupérer le texte original
+                        Intent currentIntent = getIntent();
+                        if (originalTextList == null) {
+                            originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+                        }
+
+                        // Récupérer le texte dit par l'utilisateur
+                        if (saidTextList == null) {
+                            saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
+                        }
+
+                        // Calculer un résultat complet
+                        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
+
+                        // Passer à l'activité suivante
+                        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+                        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
+                        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
+                        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+                        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
+                        ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
+                        setResult(RESULT_OK, ResultatSimpleActivity);
+                        finish();
+                        startActivity(ResultatSimpleActivity); }
+                });
+                builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                      }
+                });
+                builder.show();
             }
 
-            // Récupérer le texte dit par l'utilisateur
-            if (saidTextList == null) {
-                saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
-            }
-
-            // Calculer un résultat complet
-            Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
-
-            // Passer à l'activité suivante
-            Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-            ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
-            ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
-            ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
-            ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
-            ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
-            setResult(RESULT_OK, ResultatSimpleActivity);
-            finish();
-            startActivity(ResultatSimpleActivity);
-        }
     }
 
     private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
