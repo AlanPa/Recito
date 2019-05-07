@@ -239,17 +239,21 @@ public class Controleur {
 
     @PostMapping("/RetrieveTextComparison")
     public Map<String,Object> calculateFullResults(
-            @RequestParam String idTexte,
             @RequestBody Map<String, List<String>> textsToCompare){
+
         Map<String,Object> m=new HashMap<>();
+
+        List<String> idText = textsToCompare.get("idText");
         List<String> originalText = textsToCompare.get("originalText");
         List<String> textRead = textsToCompare.get("textRead");
+
         Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+
         m.put("Status","Succes");
         m.put("text",res.getValue());
         m.put("score",res.getKey());
 
-        Optional<Texte> ot=repositoryTexte.findById(idTexte);
+        Optional<Texte> ot=repositoryTexte.findById(idText.get(0));
         if(ot.isPresent()){
             Texte t=ot.get();
             int score=(t.getScore()>Integer.parseInt(res.getValue()))?
