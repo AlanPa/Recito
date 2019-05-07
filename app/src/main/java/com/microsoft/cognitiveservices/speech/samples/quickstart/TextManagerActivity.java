@@ -46,7 +46,7 @@ public class TextManagerActivity extends AppCompatActivity {
     public static final String CURRENT_TEXT_KEY="current_text_key";
     public static final String ORDER_TEXT_KEY="order_text_key";
    // private String title="Votre texte à apprendre :";
-    private String currentText="Maître corbeau\nsur un arbre perché\ntenait dans son bec un fromage.";
+    private String currentText="Maître \ncorbeau\nsur un arbre perché\ntenait dans son bec un fromage.";
     private TableLayout currentTable = null;
     private Button startReciteButton=null;
     private ImageButton readReciteButton=null;

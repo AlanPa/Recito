@@ -49,6 +49,7 @@ public class ReciterTexte extends AppCompatActivity {
     private ArrayList<String> saidTextList;
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
     private int nbLinesToRead;
+    private boolean stopRecitation = false;
     private boolean somethingHasBeenSaid = false;
 
     private TextToSpeech tts;
@@ -108,6 +109,7 @@ public class ReciterTexte extends AppCompatActivity {
             }
         });
     }
+
 
     // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist en indiquant qui parle
     // 0 : utilisateur | 1 : Recito
@@ -182,8 +184,10 @@ public class ReciterTexte extends AppCompatActivity {
         ImageButton bouton = this.findViewById(R.id.Mic_Button_Reciter);
         TextView texteBouton = this.findViewById(R.id.Tour_Reciter);
 
-        if (etat == 0)
+        if (etat == 0) {
+            goToResultat();
             texteBouton.setText("C'est terminé");
+        }
         else if (etat==1){
             texteBouton.setText("C'est à vous");
             bouton.setImageResource(R.drawable.ic_mic_black_50dp);
@@ -231,7 +235,7 @@ public class ReciterTexte extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
-            boolean arreter = true;
+            if (!stopRecitation) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("En cliquant ici, vous allez vers la correction de votre répétition.\n" +
                         "Avez-vous vraiment terminé ?");
@@ -239,39 +243,47 @@ public class ReciterTexte extends AppCompatActivity {
                 builder.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Récupérer le texte original
-                        Intent currentIntent = getIntent();
-                        if (originalTextList == null) {
-                            originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
-                        }
-
-                        // Récupérer le texte dit par l'utilisateur
-                        if (saidTextList == null) {
-                            saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
-                        }
-
-                        // Calculer un résultat complet
-                        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
-
-                        // Passer à l'activité suivante
-                        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-                        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
-                        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
-                        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
-                        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
-                        ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
-                        setResult(RESULT_OK, ResultatSimpleActivity);
-                        finish();
-                        startActivity(ResultatSimpleActivity); }
+                        goToResultat();
+                    }
                 });
                 builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                      }
+                    }
                 });
                 builder.show();
+            } else {
+                goToResultat();
             }
+        }
 
+    }
+
+    private void goToResultat() {
+        // Récupérer le texte original
+        Intent currentIntent = getIntent();
+        if (originalTextList == null) {
+            originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
+        }
+
+        // Récupérer le texte dit par l'utilisateur
+        if (saidTextList == null) {
+            saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
+        }
+
+        // Calculer un résultat complet
+        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
+
+        // Passer à l'activité suivante
+        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
+        ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
+        setResult(RESULT_OK, ResultatSimpleActivity);
+        finish();
+        startActivity(ResultatSimpleActivity);
     }
 
     private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
