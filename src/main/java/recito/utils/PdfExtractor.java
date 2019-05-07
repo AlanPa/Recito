@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.squareup.okhttp.*;
+import okhttp3.*;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
@@ -21,14 +21,14 @@ public class PdfExtractor {
     @Value("${azure.token.translator:}")
     private static String tokenAzure;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PdfExtractor.class);
+    private static final Logger log = LoggerFactory.getLogger(PdfExtractor.class);
 
     private PdfExtractor(){}
 
     public static String getLanguage(String text) throws IOException{
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
-        com.squareup.okhttp.RequestBody body = RequestBody.create(mediaType,
+        RequestBody body = RequestBody.create(mediaType,
                 "[{\n\t\"Text\": \""+text+"\"\n}]");
         final String SERVER_ADRESS = "https://api.cognitive.microsofttranslator.com/detect?api-version=3.0";
 
@@ -81,8 +81,8 @@ public class PdfExtractor {
 
         try {
             pd = PDDocument.load(is);
-            LOG.info("PDF have "+pd.getNumberOfPages()+" pages !");
-            LOG.info("PDF is encrypted ? -> "+pd.isEncrypted());
+            log.info("PDF have {} pages !",pd.getNumberOfPages());
+            log.info("PDF is encrypted ? -> {}",pd.isEncrypted());
 
             PDFTextStripper stripper = new PDFTextStripper();
             stripper.setStartPage(1); //Start extracting from page 2
@@ -94,8 +94,8 @@ public class PdfExtractor {
             throw new IOException("La lecture du PDF a rencontrée l'erreur suivante : "+e.getMessage());
         }
 
-        LOG.debug("-----------------Content---------------");
-        LOG.debug(textFromPdf);
+        log.debug("-----------------Content---------------");
+        log.debug(textFromPdf);
 
         pd.close();
         is.close();

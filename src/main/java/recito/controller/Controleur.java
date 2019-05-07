@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 public class Controleur {
 
-    private final Logger LOG = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final ClientRepository repositoryClient;
     private final TexteRepository repositoryTexte;
@@ -119,22 +119,22 @@ public class Controleur {
         return m;
     }
 
-    private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
+    /*private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
         LOG.error("An exception was encountered : "+e.getMessage());
         m.put("Status","Error");
         m.put("Message","An exception was encountered : "+e.getMessage());
         return m;
-    }
+    }*/
 
     private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
-        LOG.error(message);
+        log.error(message);
         m.put("Status","Error");
         m.put("Message",message);
         return m;
     }
 
     private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, Exception e, String header){
-        LOG.error(header+e.getMessage());
+        log.error(header,e.getMessage());
         m.put("Status","Error");
         m.put("Message",header+e.getMessage());
         return m;

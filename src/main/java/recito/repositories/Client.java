@@ -1,6 +1,7 @@
 package recito.repositories;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 public class Client {
@@ -15,7 +16,7 @@ public class Client {
 
     public Client(String nom, String password) {
         this.nom = nom;
-        this.password = password;
+        this.setPassword(password);
     }
 
     @Override
@@ -46,6 +47,8 @@ public class Client {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        String encodedPassword = encoder.encode(password);
+        this.password = encodedPassword;
     }
 }
