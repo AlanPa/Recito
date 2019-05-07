@@ -21,11 +21,13 @@ import java.util.Locale;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -38,9 +40,8 @@ public class TextManagerActivity extends AppCompatActivity {
     private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
-   // private String title="Votre texte à apprendre :";
-    private String currentText="Maître corbeau sur un arbre perché tenait dans son bec un fromage.";
-   // private TextView titleText=null;
+    private final String urlTORequest = "https://recitoback.azurewebsites.net/getText";
+    private String currentText="Chargement...";
     private TextView currentTextView=null;
     private Button startReciteButton=null;
     private Button readReciteButton=null;
@@ -58,12 +59,10 @@ public class TextManagerActivity extends AppCompatActivity {
 
         //Je remplis le currentText
         Intent curIntent = getIntent();
-        currentText=curIntent.getStringExtra("currentText");
 
+        new FetchTask().execute(urlTORequest, curIntent.getStringExtra("idClient"), curIntent.getStringExtra("idText"));
 
-        //new FetchTask().execute("http://localhost:4000/GetId?id=5", currentTextID);
-
-        currentTextView.setText(currentText);
+        //currentTextView.setText(currentText);
         currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -106,7 +105,7 @@ public class TextManagerActivity extends AppCompatActivity {
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
-
+        private String errorMessage="Error : Texte non trouvé";
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -115,15 +114,14 @@ public class TextManagerActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             OkHttpClient client = new OkHttpClient();
-            String stringUrl = strings[0];
-            String idText = strings[1];
-            RequestBody body = new FormBody.Builder()
-                    .add("idText", idText)
-                    .build();
+            MediaType JSON =MediaType.parse("application/json; charset=utf-8");
+            JsonObject json = new JsonObject();
+            json.addProperty("idClient", strings[1]);
+            json.addProperty("idText", strings[2]);
+
             Request request = new Request.Builder()
-                    .url(stringUrl)
-                    .addHeader("Content-type","application/json")
-                    .post(body)
+                    .url(strings[0])
+                    .post(RequestBody.create(JSON, json.toString()))
                     .build();
             try {
                 Response response = client.newCall(request).execute();
@@ -131,20 +129,34 @@ public class TextManagerActivity extends AppCompatActivity {
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
                 System.out.println("---------------------------------"+jsonObject.toString());
-                return jsonObject.getString("text");
+                if(jsonObject.has("text"))
+                {
+                    currentText=jsonObject.getJSONObject("text").getString("contenu");
+                    return "true";
+                }
+                else
+                {
+                    if(jsonObject.has("Message"))
+                    {
+                        errorMessage=jsonObject.getString("Message");
+                    }
+                    currentText="Error : Texte non trouvé";
+                    return "false";
+                }
+
             } catch (IOException | JSONException e) {
-                return null;
+                return "false";
             }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (s == null) {
-                currentText=null;
-            } else {
-                currentTextView.setText(s);
+            if (s.compareTo("false")==0) {
+                Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             }
+            currentTextView.setText(currentText);
+
         }
     }
 }

@@ -7,20 +7,20 @@
     tools:context=".LoadPdfActivity">
 
     <Button
-        android:id="@+id/voirDetail_Button_ResultatSimple"
+        android:id="@+id/voirDetail_Button_Load_Page"
         style="@style/Bouton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/button_for_load_page"
         android:onClick="onValidationButton"
+        android:text="@string/button_for_load_page"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConstraintLoyout55" />
+        app:layout_constraintTop_toBottomOf="@+id/Name_File_Text_Load_Page" />
 
     <TextView
-        android:id="@+id/titre_ResultatSimple"
+        android:id="@+id/titre_Load_Page"
         style="@style/titre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,25 +35,22 @@
         android:id="@+id/Image_Button_For_Load_Page"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="8dp"
-        android:onClick="onChooseFileButton"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/content_description_image_button_for_load_page"
-        app:layout_constraintBottom_toTopOf="@+id/voirDetail_Button_ResultatSimple"
+        android:onClick="onChooseFileButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ConstraintLoyout55"
-        app:layout_constraintTop_toBottomOf="@+id/titre_ResultatSimple"
+        app:layout_constraintStart_toEndOf="@+id/Name_File_Text_Load_Page"
+        app:layout_constraintTop_toBottomOf="@+id/Layout_Input_Author_Load_Page"
         app:srcCompat="@drawable/ic_load_file" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/ConstraintLoyout55"
-        android:layout_width="160sp"
+        android:id="@+id/Name_File_Text_Load_Page"
+        android:layout_width="0dp"
         android:layout_height="30sp"
         android:background="#E2DDDD"
         app:layout_constraintBottom_toBottomOf="@+id/Image_Button_For_Load_Page"
         app:layout_constraintEnd_toStartOf="@+id/Image_Button_For_Load_Page"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout6"
+        app:layout_constraintStart_toEndOf="@+id/Layout_Label_Choose_Load_Page"
         app:layout_constraintTop_toTopOf="@+id/Image_Button_For_Load_Page">
 
         <TextView
@@ -72,27 +69,108 @@
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout6"
+        android:id="@+id/Layout_Label_Choose_Load_Page"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ConstraintLoyout55"
-        app:layout_constraintEnd_toStartOf="@+id/ConstraintLoyout55"
+        app:layout_constraintBottom_toBottomOf="@+id/Name_File_Text_Load_Page"
+        app:layout_constraintEnd_toStartOf="@+id/Name_File_Text_Load_Page"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ConstraintLoyout55">
+        app:layout_constraintTop_toTopOf="@+id/Name_File_Text_Load_Page">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/Label_Choose_Load_Page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/label_for_load_page"
             android:textColor="#C4000000"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/Layout_Input_Title_Load_Page"
+        android:layout_width="0dp"
+        android:layout_height="53sp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Layout_Label_Title_Load_Page"
+        app:layout_constraintTop_toBottomOf="@+id/titre_Load_Page">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/Input_Title_In_Load_Page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Romeo et Juliette" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/Layout_Input_Author_Load_Page"
+        android:layout_width="0dp"
+        android:layout_height="53sp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Layout_Label_Author_Load_Page"
+        app:layout_constraintTop_toBottomOf="@+id/Layout_Input_Title_Load_Page">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/Input_Author_Load_Page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Shakespeare" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/Layout_Label_Title_Load_Page"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Layout_Input_Title_Load_Page"
+        app:layout_constraintEnd_toStartOf="@+id/Layout_Input_Title_Load_Page"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Layout_Input_Title_Load_Page">
+
+        <TextView
+            android:id="@+id/Label_Title_Load_Page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="Titre du texte :"
+            android:textColor="#C4000000"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/Layout_Label_Author_Load_Page"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Layout_Input_Author_Load_Page"
+        app:layout_constraintEnd_toStartOf="@+id/Layout_Input_Author_Load_Page"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/Layout_Input_Author_Load_Page">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:text="Auteur du texte :"
+            android:textColor="#C4000000"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 

@@ -1,6 +1,8 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,25 +18,58 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class LibraryActivity extends AppCompatActivity {
-    ListView listView;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+public class LibraryActivity extends AppCompatActivity {
+    private ListView listView;
+    private String idClient;
+    private final String urlTORequest = "https://recitoback.azurewebsites.net/getLibrary";
+
+    String libTitles[];
+    String libAuthors[];
+    String libScores[];
+    String libIdText[];
+    String libImages[];
+    Context curContext = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
         listView = findViewById(R.id.Main_Library);
-        String titles[]={"a", "b", "c"};
-        String authors[]={"A", "B", "C"};
-        String scores[]={"77", "120", "550"};
+        idClient = getIntent().getStringExtra("idClient");
+        //String titles[]={"a", "b", "c"};
+        //String authors[]={"A", "B", "C"};
+        //String scores[]={"77", "120", "550"};
         //int images[]={"a1", "b2", "c3"};
-        MyAdapter adapter = new MyAdapter(this, titles, authors, scores/*, images*/);
-        listView.setAdapter(adapter);
+
+        new FetchTask().execute(urlTORequest,idClient);
+
+        //MyAdapter adapter = new MyAdapter(curContext, titles, authors, scores/*, images*/);
+        //listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                String curTextId = libIdText[position];
+                Intent libraryIntent = new Intent(LibraryActivity.this, TextManagerActivity.class);
+                libraryIntent.putExtra("idClient", idClient);
+                libraryIntent.putExtra("idText", curTextId);
+                setResult(RESULT_OK, libraryIntent);
+                startActivity(libraryIntent);
             }
         });
     }
@@ -48,6 +83,10 @@ public class LibraryActivity extends AppCompatActivity {
     }
 
     public void onAddTextButton(View view) {
+        Intent loadPDFIntent = new Intent(LibraryActivity.this, LoadPdfActivity.class);
+        loadPDFIntent.putExtra("idClient",idClient);
+        setResult(RESULT_OK, loadPDFIntent);
+        startActivity(loadPDFIntent);
     }
 
     class MyAdapter extends ArrayAdapter<String> {
@@ -55,6 +94,7 @@ public class LibraryActivity extends AppCompatActivity {
         String rTitle[];
         String rAuthor[];
         String rScore[];
+        String rImages[];
 
         MyAdapter(Context c, String title[], String author[], String score[]) {
             super(c, R.layout.library_row, R.id.Title_Text_Library_Row, title);
@@ -72,6 +112,7 @@ public class LibraryActivity extends AppCompatActivity {
                 TextView curTitle = row.findViewById(R.id.Title_Text_Library_Row);
                 TextView curAuthor = row.findViewById(R.id.Author_Text_Library_Row);
                 TextView curScore = row.findViewById(R.id.Score_Text_Library_Row);
+                //pourajouter des images si on a le temps
                 ImageView curImage = row.findViewById(R.id.Image_Library_Row);
 
                 curTitle.setText(rTitle[position]);
@@ -82,4 +123,61 @@ public class LibraryActivity extends AppCompatActivity {
 
             }
         }
+
+    private class FetchTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            OkHttpClient client = new OkHttpClient();
+
+            MediaType JSON =MediaType.parse("application/json; charset=utf-8");
+            JsonObject json = new JsonObject();
+            json.addProperty("idClient", strings[1]);
+
+            Request request = new Request.Builder()
+                    .url(strings[0])
+                    .post(RequestBody.create(JSON, json.toString()))
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String jsonTest = response.body().string();
+                JSONObject jsonObject = new JSONObject(jsonTest);
+                System.out.println("---------------------------------"+jsonObject.toString());
+                JSONArray jsonArray = jsonObject.getJSONArray("library");
+                int librarySize= jsonArray.length();
+                libTitles = new String[librarySize];
+                libAuthors = new String[librarySize];
+                libScores = new String[librarySize];
+                libIdText = new String[librarySize];
+                libImages = new String[librarySize];
+                for (int i = 0; i < librarySize; i++) {
+                    JSONObject curJsonObject = jsonArray.getJSONObject(i);
+                    libTitles[i]=curJsonObject.getString("nom");
+                    libAuthors[i]=curJsonObject.getString("auteur");
+                    libScores[i]="0"/*curJsonObject.getString("score")*/;
+                    libIdText[i]=curJsonObject.getString("id");
+                }
+                return "Ok";
+            } catch (IOException | JSONException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            if (s == null) {
+               //faire un Toast
+            } else {
+                MyAdapter adapter = new MyAdapter(curContext, libTitles, libAuthors, libScores/*, images*/);
+                listView.setAdapter(adapter);
+            }
+        }
+    }
     }

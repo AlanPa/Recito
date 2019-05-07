@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,15 @@ public class LoadPdfActivity extends AppCompatActivity {
     public static final int PERMISSION_REQUEST_STORAGE=1000;
     private File pdfFile = null;
     private String pathUri = null;
-    private String currentText;
+    private String currentText="none";
+    private String idClient="none";
+    private String curTextTitle="none";
+    private String curTextAuthor="none";
     private Uri uri=null;
     private TextView uriFileLabel = null;
+    private EditText textTitle;
+    private EditText textAuthor;
+    private String urlToRequest = "https://recitoback.azurewebsites.net/RetrieveFile";
 
 
     @Override
@@ -44,8 +51,10 @@ public class LoadPdfActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
         }
         setContentView(R.layout.activity_load_pdf);
+        textTitle = findViewById(R.id.Input_Title_In_Load_Page);
+        textAuthor = findViewById(R.id.Input_Author_Load_Page);
         uriFileLabel=findViewById(R.id.Hint_For_Load_Page);
-
+        idClient = getIntent().getStringExtra("idClient");
     }
 
     public void onChooseFileButton(View view) {
@@ -86,6 +95,8 @@ public class LoadPdfActivity extends AppCompatActivity {
 
         try{
             pdfFile = new File(pathUri);
+            curTextTitle=textTitle.getText().toString();
+            curTextAuthor=textAuthor.getText().toString();
             /*BufferedReader br = new BufferedReader((new FileReader(pdfFile)));
             String line;
             while((line=br.readLine())!=null)
@@ -109,11 +120,11 @@ public class LoadPdfActivity extends AppCompatActivity {
         }catch(Exception e){
             e.printStackTrace();
         }
-        new FetchTask().execute("https://recitoback.azurewebsites.net/RetrieveFile");
+        new FetchTask().execute(urlToRequest, idClient,curTextTitle, curTextAuthor);
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
-
+        private String errorMessage="Une erreur s'est produite";
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -123,10 +134,15 @@ public class LoadPdfActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             OkHttpClient client = new OkHttpClient();
             String stringUrl = strings[0];
-            //String pdfFile = strings[1];
+            String idClientSring = strings[1];
+            String textTitleString = strings[2];
+            String textAuthorString = strings[3];
 
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
+                    .addFormDataPart("idClient", idClientSring)
+                    .addFormDataPart("textTitle", textTitleString)
+                    .addFormDataPart("textAuthor", textAuthorString)
                     .addFormDataPart("file", pdfFile.getName(),
                             RequestBody.create(MediaType.parse("application/pdf"), pdfFile))
                     .build();
@@ -145,23 +161,32 @@ public class LoadPdfActivity extends AppCompatActivity {
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
                 System.out.println("---------------------------------"+jsonObject.toString());
-                return jsonObject.getString("Text");
+                if(jsonObject.has("create")&&jsonObject.getBoolean("create"))
+                {
+                    return "true";
+                }
+                else
+                {
+                    if(jsonObject.has("Message"))
+                    {
+                        errorMessage=jsonObject.getString("Message");
+                    }
+                    return "false";
+                }
             } catch (IOException | JSONException e) {
-                return null;
+                return "false";
             }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (s == null) {
+            if (s.compareTo("false")==0) {
                 currentText=null;
-                Toast.makeText(getApplicationContext(),"Une erreur s'est produite",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             } else {
                 //Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
-                Intent intentLoadFile = new Intent(LoadPdfActivity.this, TextManagerActivity.class);
-                intentLoadFile.putExtra("currentText", s);
-                setResult(RESULT_OK,intentLoadFile);
+                Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
                 startActivity(intentLoadFile);
             }
         }
