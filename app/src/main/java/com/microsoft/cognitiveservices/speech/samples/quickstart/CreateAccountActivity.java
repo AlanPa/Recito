@@ -119,6 +119,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             if (s.compareTo("true")==0)
             {
                 Intent intent = new Intent(CreateAccountActivity.this, ConnectionActivity.class);
+                finish();
                 startActivity(intent);
             }
             else

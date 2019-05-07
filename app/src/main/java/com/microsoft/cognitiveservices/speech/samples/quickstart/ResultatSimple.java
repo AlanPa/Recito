@@ -9,11 +9,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class ResultatSimple extends AppCompatActivity {
     private String resultText;
     private int score;
+    private ArrayList<String> originalTextList;
     private String currentText;
+    private ArrayList<Integer> whoReads;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +31,10 @@ public class ResultatSimple extends AppCompatActivity {
         Intent currentIntent = getIntent();
         score =currentIntent.getIntExtra(ReciterTexte.SCORE_KEY,-1);
         resultText = currentIntent.getStringExtra(ReciterTexte.RESULT_TEXT_KEY);
+        originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
         currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
+        whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
         scoreSur100.setText(score+"%");
@@ -58,7 +68,9 @@ public class ResultatSimple extends AppCompatActivity {
 
     public void ReessayerRecitation(View view) {
         Intent intent = new Intent(ResultatSimple.this, ReciterTexte.class);
+        intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        intent.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
         setResult(RESULT_OK,intent);
         finish();
         startActivity(intent);
@@ -73,10 +85,17 @@ public class ResultatSimple extends AppCompatActivity {
         Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
         intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         intent.putExtra(ReciterTexte.SCORE_KEY,score);
+        intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
+        intent.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
 
         setResult(RESULT_OK,intent);
         finish();
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
     }
 }

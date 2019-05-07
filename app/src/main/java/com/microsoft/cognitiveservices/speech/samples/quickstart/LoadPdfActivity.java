@@ -187,6 +187,7 @@ public class LoadPdfActivity extends AppCompatActivity {
             } else {
                 //Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
                 Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
+                finish();
                 startActivity(intentLoadFile);
             }
         }

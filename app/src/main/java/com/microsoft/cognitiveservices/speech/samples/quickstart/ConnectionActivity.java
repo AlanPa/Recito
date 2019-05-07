@@ -37,7 +37,6 @@ public class ConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connection);
         loginClient = findViewById(R.id.Id_User_Connection);
         passwordClient = findViewById(R.id.Password_User_Connection);
-
     }
     public void ConnexionButtonClicked(View view) {
         String loginClientInput = loginClient.getText().toString();

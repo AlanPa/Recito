@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -123,6 +124,12 @@ public class LibraryActivity extends AppCompatActivity {
 
             }
         }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
+    }
+
 
     private class FetchTask extends AsyncTask<String, Void, String> {
 

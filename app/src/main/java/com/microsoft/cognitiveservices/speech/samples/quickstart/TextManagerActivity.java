@@ -1,6 +1,7 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.net.ConnectivityManager;
@@ -8,14 +9,20 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import com.google.gson.Gson;
@@ -37,62 +44,115 @@ import org.json.JSONObject;
 
 
 public class TextManagerActivity extends AppCompatActivity {
-    private static final int RECITE_TEXT_ACTIVITY = 4;
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
+    public static final String ORDER_TEXT_KEY="order_text_key";
     private final String urlTORequest = "https://recitoback.azurewebsites.net/getText";
     private String currentText="Chargement...";
+    private TableLayout currentTable = null;
     private TextView currentTextView=null;
     private Button startReciteButton=null;
-    private Button readReciteButton=null;
+    private ImageButton readReciteButton=null;
     private long currentTextID=-1;
     private TextToSpeech tts;
+    private ArrayList<Integer> orderText=new ArrayList<>();
+    private boolean somethingIsSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_manager);
 
-        currentTextView = findViewById(R.id.Text_Item_Text);
+        //currentTextView = findViewById(R.id.Text_Item_Text);
         startReciteButton = findViewById(R.id.Start_Button_Item_Text);
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
+        currentTable = findViewById(R.id.Table_Text);
 
-        //Je remplis le currentText
+        String[] repliques= currentText.split("\n");
+        for (String laReplique:repliques) {
+            if(!laReplique.equals(""))
+            {
+                TableRow row= new TableRow(this);
+                TextView leText = new TextView(this);
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                row.setLayoutParams(lp);
+                leText.setText("  "+laReplique+"\n");
+                leText.setMovementMethod(new ScrollingMovementMethod());
+                leText.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,null));
+                leText.getBackground().setAlpha(0);
+                leText.setClickable(true);
+                leText.setOnClickListener(v -> {
+                    if( leText.getBackground().getAlpha() == 0)
+                    {
+                        leText.getBackground().setAlpha(100);
+                    }
+                    else{
+
+                        leText.getBackground().setAlpha(0);
+                    }
+
+                });
+                row.addView(leText);
+                currentTable.addView(row);
+            }
+        }
+
         Intent curIntent = getIntent();
-
         new FetchTask().execute(urlTORequest, curIntent.getStringExtra("idClient"), curIntent.getStringExtra("idText"));
 
         //currentTextView.setText(currentText);
-        currentTextView.setMovementMethod(new ScrollingMovementMethod());
+        //currentTextView.setMovementMethod(new ScrollingMovementMethod());
 
-        tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    tts.setLanguage(Locale.FRENCH);
-                }
+        tts=new TextToSpeech(getApplicationContext(), status -> {
+            if(status != TextToSpeech.ERROR) {
+                tts.setLanguage(Locale.FRENCH);
             }
         });
 
-        startReciteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+
+        startReciteButton.setOnClickListener(view -> {
+
+            for(int i=0; i< currentTable.getChildCount();i++)
+            {
+                TableRow tr = (TableRow) currentTable.getChildAt(i);
+                TextView tv = (TextView) tr.getChildAt(0);
+                if(tv.getBackground().getAlpha() == 99)
+                {
+                    orderText.add(0);
+                    somethingIsSelected = true;
+                }
+                else
+                {
+                    orderText.add(1);
+                }
+            }
+
+            if (!somethingIsSelected){
+                orderText.clear();
+                Toast.makeText(getApplicationContext(), "Veuillez sélectionner au moins une réplique avant de commencer une répétition.",Toast.LENGTH_SHORT).show();
+            }
+            else {
                 Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
-                setResult(RESULT_OK,ReciteTexteActivity);
+                ReciteTexteActivity.putExtra(ORDER_TEXT_KEY, orderText);
+                setResult(RESULT_OK, ReciteTexteActivity);
                 finish();
                 startActivity(ReciteTexteActivity);
             }
         });
 
-        readReciteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String toSpeak = currentTextView.getText().toString();
-                Toast.makeText(getApplicationContext(), toSpeak,Toast.LENGTH_SHORT).show();
-                tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+        readReciteButton.setOnClickListener(view -> {
+           // String toSpeak = currentText;
+            String toSpeak ="";
+            for(int i=0; i< currentTable.getChildCount();i++)
+            {
+                TableRow tr = (TableRow) currentTable.getChildAt(i);
+                TextView tv = (TextView) tr.getChildAt(0);
+                toSpeak += tv.getText();
             }
+            tts.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
         });
     }
 
@@ -125,7 +185,6 @@ public class TextManagerActivity extends AppCompatActivity {
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                //Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
                 System.out.println("---------------------------------"+jsonObject.toString());
