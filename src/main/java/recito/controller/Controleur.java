@@ -1,5 +1,6 @@
 package recito.controller;
 
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import recito.repositories.Texte;
 import recito.repositories.TexteRepository;
 import recito.request.CreateAccountRequest;
 import recito.request.SignInRequest;
+import recito.utils.CompareText;
 import recito.utils.PdfExtractor;
 
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.util.Optional;
 
 @RestController
 public class Controleur {
-    private final static String errorMissingJsonAttribute="Check the fields of the JSON send, some fields are missing or have a null value !";
+    private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -97,7 +99,7 @@ public class Controleur {
             }
 
         }else{
-            addErrorCustomMessage(m,errorMissingJsonAttribute);
+            addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
         }
         return m;
     }
@@ -107,7 +109,7 @@ public class Controleur {
         Map<String,Object> m=new HashMap<>();
         //TODO Implement login
         if(requestInfo.getLogin()==null||requestInfo.getPasswordClient()==null){
-            return addErrorCustomMessage(m,errorMissingJsonAttribute);
+            return addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
         }
         m.put("signIn",true);
         return m;
@@ -136,7 +138,7 @@ public class Controleur {
         }
 
         if(pseudo==null||password==null){
-            return addErrorCustomMessage(m,errorMissingJsonAttribute);
+            return addErrorCustomMessage(m, ERROR_MISSING_JSON_ATTRIBUTE);
         }
 
         if(repositoryClient.findByEmail(mail)!=null||repositoryClient.findByNom(pseudo)!=null){
@@ -169,12 +171,16 @@ public class Controleur {
         return m;
     }
 
-    /*private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
-        LOG.error("An exception was encountered : "+e.getMessage());
-        m.put("Status","Error");
-        m.put("Message","An exception was encountered : "+e.getMessage());
+    @PostMapping("/RetrieveTextComparison")
+    public Map<String,Object> calculateFullResults(@RequestParam Map<String, Object> textsToCompare){
+        String originalText = textsToCompare.get("originalText").toString();
+        String textRead = textsToCompare.get("textRead").toString();
+        Pair<Integer, String> res = CompareText.calculateFullResult(originalText, textRead);
+        Map<String,Object> m=new HashMap<>();
+        m.put("text",res.getValue());
+        m.put("score",res.getKey());
         return m;
-    }*/
+    }
 
     private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
         log.error(message);
