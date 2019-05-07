@@ -49,7 +49,6 @@ public class ReciterTexte extends AppCompatActivity {
     private ArrayList<String> saidTextList;
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
     private int nbLinesToRead;
-    private boolean stopRecitation = false;
     private boolean somethingHasBeenSaid = false;
 
     private TextToSpeech tts;
@@ -109,7 +108,6 @@ public class ReciterTexte extends AppCompatActivity {
             }
         });
     }
-
 
     // Fait en sorte de mettre la chaîne de caractères dans l'Arraylist en indiquant qui parle
     // 0 : utilisateur | 1 : Recito
@@ -184,10 +182,9 @@ public class ReciterTexte extends AppCompatActivity {
         ImageButton bouton = this.findViewById(R.id.Mic_Button_Reciter);
         TextView texteBouton = this.findViewById(R.id.Tour_Reciter);
 
-        if (etat == 0) {
-            goToResultat();
-            texteBouton.setText("C'est terminé");
-        }
+        if (etat == 0)
+            passerAResultatSimple();
+            //texteBouton.setText("C'est terminé");
         else if (etat==1){
             texteBouton.setText("C'est à vous");
             bouton.setImageResource(R.drawable.ic_mic_black_50dp);
@@ -235,31 +232,10 @@ public class ReciterTexte extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
-            if (!stopRecitation) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("En cliquant ici, vous allez vers la correction de votre répétition.\n" +
-                        "Avez-vous vraiment terminé ?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        goToResultat();
-                    }
-                });
-                builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                builder.show();
-            } else {
-                goToResultat();
-            }
+            passerAResultatSimple();
         }
-
     }
-
-    private void goToResultat() {
+    private void passerAResultatSimple(){
         // Récupérer le texte original
         Intent currentIntent = getIntent();
         if (originalTextList == null) {
