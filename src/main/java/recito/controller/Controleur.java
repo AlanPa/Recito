@@ -14,6 +14,7 @@ import recito.request.SignInRequest;
 import recito.utils.CompareText;
 import recito.utils.PdfExtractor;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -147,6 +148,7 @@ public class Controleur {
 
         repositoryClient.insert(new Client(pseudo,password,mail));
 
+        //Todo create user
         m.put("create",true);
         return m;
     }
@@ -181,6 +183,13 @@ public class Controleur {
         m.put("score",res.getKey());
         return m;
     }
+
+    /*private Map<String,Object> addErrorMessage(Map<String,Object> m, Exception e){
+        LOG.error("An exception was encountered : {}",e.getMessage());
+        m.put("Status","Error");
+        m.put("Message","An exception was encountered : "+e.getMessage());
+        return m;
+    }*/
 
     private Map<String,Object> addErrorCustomMessage(Map<String,Object> m, String message){
         log.error(message);
