@@ -1,7 +1,6 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.content.Intent;
@@ -13,36 +12,44 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.github.difflib.algorithm.DiffException;
-import com.github.difflib.text.DiffRow;
-import com.github.difflib.text.DiffRowGenerator;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.Locale;
 import java.util.concurrent.Future;
 
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.RECORD_AUDIO;
-import android.view.View;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import android.widget.Toast;
 
 public class ReciterTexte extends AppCompatActivity {
-    // Replace below with your own subscription key
-    private static String speechSubscriptionKey = "5eae85560bb241b884f09a170d1a3214";
-    // Replace below with your own service region (e.g., "westus").
-    private static String serviceRegion = "francecentral";
-
+    private static String speechSubscriptionKey;
+    private static String serviceRegion;
     public static final String SCORE_KEY="score_key";
     public static final String RESULT_TEXT_KEY="result_text_key";
     public static final String OTL_KEY = "originalTextList_key";
     public static final String STL_KEY = "saidTextList_key";
-    private String currentText = null;
+    public static String idText = "1234567890okjhgfcvbn123456789";
+    private String currentText = "";
     private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
     private ArrayList<String> originalTextList;
@@ -53,11 +60,27 @@ public class ReciterTexte extends AppCompatActivity {
 
     private TextToSpeech tts;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reciter_texte);
+
+        KeyTask keyTask = new KeyTask();
+        keyTask.execute();
+
+        String response = "no response";
+        try {
+            response = keyTask.get();
+            JSONObject jsonObject = new JSONObject(response);
+            speechSubscriptionKey = jsonObject.get("speechSubscriptionKey").toString();
+            serviceRegion = jsonObject.get("serviceRegion").toString();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // Récupérer le texte à dire et qui doit le dire
         Intent currentIntent = getIntent();
@@ -96,7 +119,7 @@ public class ReciterTexte extends AppCompatActivity {
         catch (Exception ex) {
             Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
             TextView recognizedTextView = (TextView) this.findViewById(R.id.hello);
-            recognizedTextView.setText("Could not initialize SpeeckSDK: " + ex.toString());
+            recognizedTextView.setText("Could not initialize SpeechSDK: " + ex.toString());
         }
 
         tts=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -242,18 +265,39 @@ public class ReciterTexte extends AppCompatActivity {
             originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
         }
 
-        // Récupérer le texte dit par l'utilisateur
-        if (saidTextList == null) {
-            saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
-        }
+            // Récupérer le texte dit par l'utilisateur
+            if (saidTextList == null) {
+                saidTextList = currentIntent.getStringArrayListExtra(ReciterTexte.STL_KEY);
+            }
+            // Calculer un résultat complet
 
-        // Calculer un résultat complet
-        Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
+            CompareTask txtComparison = new CompareTask();
+
+            Map<String,Object> m=new HashMap<>();
+            m.put("originalText",originalTextList);
+            m.put("textRead",saidTextList);
+            txtComparison.execute(m);
+
+            String response = "no response";
+            Integer score = -1;
+            String text = "";
+            try {
+                response = txtComparison.get();
+                JSONObject jsonObject = new JSONObject(response);
+                score = jsonObject.getInt("score");
+                text = jsonObject.getString("text");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         // Passer à l'activité suivante
         Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
-        ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
-        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
+        ResultatSimpleActivity.putExtra(SCORE_KEY, score);
+        ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, text);
         ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
         ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
         ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
@@ -262,174 +306,88 @@ public class ReciterTexte extends AppCompatActivity {
         startActivity(ResultatSimpleActivity);
     }
 
-    private Pair<Integer, String> calculateFullResult(ArrayList<String> oTL, ArrayList<String> sTL){
-        int nbWordsOriginalText = 0;
-        int nbWordsSaidText = 0;
-        int nbAjouts = 0;
-        int nbCorrects;
-        int nbOublis;
-        String fullTextResult = "";
-        String resultTextBeforeHTML;
-        String saidText;
-        String originalText;
-
-        for (int i = 0 ; i<sTL.size() ; i++) {
-            saidText = sTL.get(i);
-            originalText = oTL.get(i);
-
-            saidText = saidText.replace(".","");
-            saidText = saidText.replace(",","");
-            saidText = saidText.replace("?","");
-            saidText = saidText.replace("!","");
-            originalText = originalText.replace(".","");
-            originalText = originalText.replace(",","");
-            originalText = originalText.replace("?","");
-            originalText = originalText.replace("!","");
-
-            // Récupérer le résultat
-            resultTextBeforeHTML = compareTexts(originalText, saidText);
-
-            // Calculs nombres de mots
-            nbWordsOriginalText += countWordsInText(originalText);
-            nbWordsSaidText += countWordsInText(saidText);
-            nbAjouts += calculateNumberWrongWords(resultTextBeforeHTML, '~');
-
-            // Ajout au texte du résultat détaillé
-            fullTextResult += editToHtmlResult(resultTextBeforeHTML)+"<br/><br/>";
-
-        }
-        nbCorrects = nbWordsSaidText-nbAjouts;
-        nbOublis = nbWordsOriginalText-nbCorrects;
-
-        String nbMots = "<br/><br/><br/> Vous deviez dire " + nbWordsOriginalText+" mots.<br/><br/> Parmis ceux-ci, "+nbCorrects+" étaient corrects. <br/> Vous avez ajouté "+nbAjouts+" mot(s) et vous en avez oublié "+nbOublis+".";
-        fullTextResult += nbMots;
-
-        int score = calculateScore(nbWordsOriginalText, nbCorrects, nbAjouts);
-        Pair<Integer, String> fullResult = new Pair<>(score,fullTextResult);
-        return fullResult;
-    }
-
-    // Compare deux chaînes de caractères et renvoie les mots oubliés entre '*' et les mots ajoutés entre '~'
-    private String compareTexts(String originalText, String saidText){
-        //create a configured DiffRowGenerator
-        DiffRowGenerator generator = DiffRowGenerator.create()
-                .showInlineDiffs(true)
-                .mergeOriginalRevised(true)
-                .inlineDiffByWord(true)
-                .oldTag(f -> "~")      //introduce markdown style for strikethrough
-                .newTag(f -> "*")     //introduce markdown style for bold
-                .build();
-
-        //compute the differences for two test texts.
-        List<DiffRow> rows = null;
-        try {
-            rows = generator.generateDiffRows(
-
-                    Arrays.asList(saidText.toLowerCase()),
-                    Arrays.asList(originalText.toLowerCase()));
-        } catch (DiffException e) {
-            e.printStackTrace();
+    private static class CompareTask extends AsyncTask<Map<String,Object>, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
-        return (rows.get(0).getOldLine());
-    }
+        @Override
+        protected String doInBackground(Map<String, Object>... mapList) {
+            OkHttpClient client = new OkHttpClient();
+            String stringUrl = "https://recitoback.azurewebsites.net/RetrieveTextComparison";
 
-    // Passe en html une chaîne de caractère où le gras est indiqué entre '*' et le barré entre '~'
-    private String editToHtmlResult(String resultLine){
-        String newResult="";
+            String json = "";
+            JSONObject jo=new JSONObject();
+            JSONObject textId = new JSONObject();
 
-        char gras = '*';
-        char barre = '~';
-        boolean baliseOuvrante = true;
-        //int nbOublis = 0;
-        //int nbAjouts = 0;
-
-        for (int i=0; i < resultLine.length(); i++)
-        {
-            if (resultLine.charAt(i) == gras ) {
-                if (baliseOuvrante) {
-                    newResult += "<b> ";
-                    //nbOublis++;
-                } else {
-                    newResult += "</b> ";
+            try{
+                textId.put("idText", idText);
+                for(Map<String, Object> m: mapList){
+                    for(String s : m.keySet()){
+                        List<String> ls=(List<String>)m.get(s);
+                        JSONArray ja=new JSONArray();
+                        for(String stringList : ls){
+                            ja.put(stringList);
+                        }
+                        jo.put(s,ja);
+                    }
                 }
-                baliseOuvrante=!baliseOuvrante;
+                json=jo.toString();
+            }catch(JSONException je){
+                return je.getMessage();
             }
-            else if (resultLine.charAt(i) == barre) {
-                if (baliseOuvrante) {
-                    newResult += "<strike> ";
-                    //nbAjouts++;
-                } else {
-                    newResult += "</strike>" ;
-                }
-                baliseOuvrante=!baliseOuvrante;
 
-            }
-            else {
-                newResult += resultLine.charAt(i);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+            // TODO add param : idText
+            RequestBody body = RequestBody.create(JSON, json);
+            Request request = new Request.Builder()
+                    .url(stringUrl)
+                    .post(body)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().string();
+            } catch (IOException e) {
+                //return "error in http post text comparison results request";
+                return e.getMessage();
             }
         }
 
-        //String resFautes = "<br/><br/> Il y a eu "+nbAjouts+" ajouts, et "+nbOublis+" oublis.";
-        //score = nbAjouts+nbOublis;
-        return newResult;
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
     }
-
-    // Compte le nombre de mots dans une chaîne de caractères
-    private int countWordsInText(String text){
-        int nbWords = 0;
-        int previousChar='.';
-        boolean onlyOneWord = true;
-        String charlus="";
-
-
-        for (int i=0; i < text.length(); i++)
-        {
-            charlus += text.charAt(i);
-
-           if (text.charAt(i) == ' ' && previousChar!=' ' && i!=0) {
-               System.out.println("/////// Char lus quand ++ ="+charlus);
-                nbWords++;
-                if (onlyOneWord){
-                    onlyOneWord=false;
-                }
-           }
-           previousChar=text.charAt(i);
+    private static class KeyTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
-        if (!onlyOneWord && text.charAt(text.length()-1)!=' '){
-            nbWords++;
-        }
-        return (nbWords);
-    }
 
-    // Donne le nombre de mots compris entre deux caractères "limit" dans un String
-    private int calculateNumberWrongWords(String resultText, char limit){
-        boolean correctPart = false;
-        String words="";
+        @Override
+        protected String doInBackground(String... params) {
+            OkHttpClient client = new OkHttpClient();
+            String stringUrl = "https://recitoback.azurewebsites.net/RetrieveSpeechKey";
 
-        for (int i=0; i < resultText.length(); i++) {
-            if (resultText.charAt(i) == limit){
-                correctPart = !correctPart;
-                words += " ";
-            }
-            else if (correctPart && resultText.charAt(i)!='.' && resultText.charAt(i)!=','){
-                words += resultText.charAt(i);
+            Request request = new Request.Builder()
+                    .url(stringUrl)
+                    .build();
+            try {
+                Response response = client.newCall(request).execute();
+                String jsonTest = response.body().string();
+                JSONObject jsonObject = new JSONObject(jsonTest);
+                return jsonObject.toString();
+            } catch (IOException | JSONException e) {
+                //return "error in http get speech subscription key request";
+                return e.getMessage();
             }
         }
-        return countWordsInText(words);
-    }
 
-    // Calcule un score en fonction du nombre de mots du texte original, du nombre de mots corrects, du nombre de mots ajoutés
-    private int calculateScore(int nbWordsOriginalText, int nbCorrects, int nbAjouts){
-        int score = (int)(nbCorrects-nbAjouts/1.5)*100/nbWordsOriginalText;
-        if (score<0){
-            score = 0;
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
-        else if (score > 100){
-            score = 100;
-        }
-
-        return score;
     }
-
 }
