@@ -138,14 +138,14 @@ public class LoadPdfActivity extends AppCompatActivity {
             OkHttpClient client = new OkHttpClient();
             String stringUrl = strings[0];
             String idClientSring = strings[1];
-            String textTitleString = strings[2];
-            String textAuthorString = strings[3];
+            lastTextTitle = strings[2];
+            lastTextAuthor = strings[3];
 
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("idClient", idClientSring)
-                    .addFormDataPart("textTitle", textTitleString)
-                    .addFormDataPart("textAuthor", textAuthorString)
+                    .addFormDataPart("textTitle", lastTextTitle)
+                    .addFormDataPart("textAuthor", lastTextAuthor)
                     .addFormDataPart("file", pdfFile.getName(),
                             RequestBody.create(MediaType.parse("application/pdf"), pdfFile))
                     .build();
@@ -167,8 +167,6 @@ public class LoadPdfActivity extends AppCompatActivity {
                 if(jsonObject.has("create")&&jsonObject.getBoolean("create"))
                 {
                     lastTextId=jsonObject.getString("idText");
-                    lastTextTitle=jsonObject.getString("Nom");
-                    lastTextAuthor=jsonObject.getString("Nom");
                     return "true";
                 }
                 else

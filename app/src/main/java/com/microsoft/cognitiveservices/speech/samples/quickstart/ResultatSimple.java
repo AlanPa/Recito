@@ -98,7 +98,6 @@ public class ResultatSimple extends AppCompatActivity {
         intent.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
 
         setResult(RESULT_OK,intent);
-        finish();
         startActivity(intent);
     }
 

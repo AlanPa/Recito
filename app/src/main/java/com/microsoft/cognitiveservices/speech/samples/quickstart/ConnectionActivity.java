@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import okhttp3.Response;
 public class ConnectionActivity extends AppCompatActivity {
     private EditText loginClient;
     private EditText  passwordClient;
+    private Button connexionButton;
     private final String urlTORequest = "https://recitoback.azurewebsites.net/signIn";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,11 @@ public class ConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_connection);
         loginClient = findViewById(R.id.Id_User_Connection);
         passwordClient = findViewById(R.id.Password_User_Connection);
+        connexionButton = findViewById(R.id.Connection_Button_Connection);
     }
     public void ConnexionButtonClicked(View view) {
+        connexionButton.setEnabled(false);
+        connexionButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         String loginClientInput = loginClient.getText().toString();
         String passwordClientInput = passwordClient.getText().toString();
         //temporaire
@@ -90,12 +95,15 @@ public class ConnectionActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            connexionButton.setEnabled(true);
+            connexionButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             if (s.compareTo("false")==0) {
                 Toast.makeText(getApplicationContext(),"identifiant et/ou mot de passe est incorrecte",Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(ConnectionActivity.this, LibraryActivity.class);
                 intent.putExtra("idClient", idClientString);
                 setResult(RESULT_OK, intent);
+                finish();
                 startActivity(intent);
             }
         }

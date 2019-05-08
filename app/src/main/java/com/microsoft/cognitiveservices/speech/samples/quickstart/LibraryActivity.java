@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,6 +38,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LibraryActivity extends AppCompatActivity {
+    private Toolbar toolbar;
     private ListView listView;
     private String idClient;
     private TextView lastItemScoreView;
@@ -52,8 +55,13 @@ public class LibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
+        toolbar = findViewById(R.id.toolbar);
+        //toolbar.setTitleTextColor(0xFFFFFFFF);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Bibliothèque");
         listView = findViewById(R.id.Main_Library);
         idClient = getIntent().getStringExtra("idClient");
+
         //String titles[]={"a", "b", "c"};
         //String authors[]={"A", "B", "C"};
         //String scores[]={"77", "120", "550"};
@@ -83,8 +91,22 @@ public class LibraryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.option_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.Deconexion_Item_Menu:
+                Intent intent = new Intent(LibraryActivity.this, ConnectionActivity.class);
+                finish();
+                startActivity(intent);
+                break;
+            default:
+                Toast.makeText(this, "Une erreur s'est prodite lors de la déconnexion",Toast.LENGTH_SHORT);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onAddTextButton(View view) {
@@ -190,6 +212,8 @@ public class LibraryActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     private class FetchTask extends AsyncTask<String, Void, String> {
 

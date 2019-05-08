@@ -44,6 +44,5 @@ public class ResultatDetaille extends AppCompatActivity {
 
         setResult(RESULT_OK,currentIntent);
         finish();
-        startActivity(currentIntent);
     }
 }
