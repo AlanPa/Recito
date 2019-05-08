@@ -327,6 +327,8 @@ public class ReciterTexte extends AppCompatActivity {
         return fullResult;
     }
 
+
+    // TODO change with merge of master front
     // Compare deux chaînes de caractères et renvoie les mots oubliés entre '*' et les mots ajoutés entre '~'
     private String compareTexts(String originalText, String saidText){
         //create a configured DiffRowGenerator
