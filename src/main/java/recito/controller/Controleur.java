@@ -2,6 +2,7 @@ package recito.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import recito.repositories.Client;
@@ -22,6 +23,11 @@ public class Controleur {
     private static final String ERROR_MISSING_JSON_ATTRIBUTE ="Check the fields of the JSON send, some fields are missing or have a null value !";
     private static final String ERROR_MISSING_IN_DATABASE ="The %s was not found in the database !";
 
+    @Value("${azure.token.speech:}")
+    private static String SPEECHSUBSCRIPTION_KEY="5eae85560bb241b884f09a170d1a3214";
+    @Value("${azure.service.region:francecentral}")
+    private static String SERVICE_REGION="francecentral";
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final ClientRepository repositoryClient;
@@ -37,6 +43,11 @@ public class Controleur {
         repositoryClient.deleteAll();
         repositoryTexte.deleteAll();
         return "OK";
+    }
+
+    @GetMapping("/testInfo")
+    public String toDelete(){
+        return "Déployé par Mirabelle";
     }
 
     @GetMapping("/testGet")
@@ -263,7 +274,14 @@ public class Controleur {
         }else{
             addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"text"));
         }
+        return m;
+    }
 
+    @GetMapping("/RetrieveSpeechKey")
+    public Map<String,Object> getSpeechKeys(){
+        Map<String,Object> m=new HashMap<>();
+        m.put("speechSubscriptionKey",SPEECHSUBSCRIPTION_KEY);
+        m.put("serviceRegion",SERVICE_REGION);
         return m;
     }
 
