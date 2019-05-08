@@ -274,7 +274,6 @@ public class Controleur {
         }else{
             addErrorCustomMessage(m,String.format(ERROR_MISSING_IN_DATABASE,"text"));
         }
-
         return m;
     }
 
@@ -283,7 +282,6 @@ public class Controleur {
         Map<String,Object> m=new HashMap<>();
         m.put("speechSubscriptionKey",SPEECHSUBSCRIPTION_KEY);
         m.put("serviceRegion",SERVICE_REGION);
-
         return m;
     }
 
