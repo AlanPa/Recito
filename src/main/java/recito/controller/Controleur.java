@@ -254,7 +254,7 @@ public class Controleur {
 
         Map<String,Object> m=new HashMap<>();
 
-        List<String> idText = textsToCompare.get("idText");
+        List<String> idTextList = textsToCompare.get("idText");
         List<String> originalText = textsToCompare.get("originalText");
         List<String> textRead = textsToCompare.get("textRead");
 
@@ -264,11 +264,11 @@ public class Controleur {
         m.put("text",res.getValue());
         m.put("score",res.getKey());
 
-        Optional<Texte> ot=repositoryTexte.findById(idText.get(0));
+        Optional<Texte> ot=repositoryTexte.findById(idTextList.get(0));
         if(ot.isPresent()){
             Texte t=ot.get();
-            int score=(t.getScore()>Integer.parseInt(res.getValue()))?
-                    (t.getScore()):(Integer.parseInt(res.getValue()));
+            int score=(t.getScore()>res.getKey())?
+                    (t.getScore()):(res.getKey());
             t.setScore(score);
             repositoryTexte.save(t);
         }else{
