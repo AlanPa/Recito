@@ -1,5 +1,6 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.speech.tts.TextToSpeech;
@@ -50,13 +51,14 @@ public class TextManagerActivity extends AppCompatActivity {
     private final String urlTORequest = "https://recitoback.azurewebsites.net/getText";
     private String currentText="Chargement...";
     private TableLayout currentTable = null;
-    private TextView currentTextView=null;
     private Button startReciteButton=null;
     private ImageButton readReciteButton=null;
-    private long currentTextID=-1;
+    private String currentTextID="none";
     private TextToSpeech tts;
     private ArrayList<Integer> orderText=new ArrayList<>();
     private boolean somethingIsSelected = false;
+    private Context curContext;
+    Intent ReciteTexteActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,37 +70,10 @@ public class TextManagerActivity extends AppCompatActivity {
         readReciteButton = findViewById(R.id.Read_Button_Item_Text);
         currentTable = findViewById(R.id.Table_Text);
 
-        String[] repliques= currentText.split("\n");
-        for (String laReplique:repliques) {
-            if(!laReplique.equals(""))
-            {
-                TableRow row= new TableRow(this);
-                TextView leText = new TextView(this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
-                row.setLayoutParams(lp);
-                leText.setText("  "+laReplique+"\n");
-                leText.setMovementMethod(new ScrollingMovementMethod());
-                leText.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,null));
-                leText.getBackground().setAlpha(0);
-                leText.setClickable(true);
-                leText.setOnClickListener(v -> {
-                    if( leText.getBackground().getAlpha() == 0)
-                    {
-                        leText.getBackground().setAlpha(100);
-                    }
-                    else{
-
-                        leText.getBackground().setAlpha(0);
-                    }
-
-                });
-                row.addView(leText);
-                currentTable.addView(row);
-            }
-        }
-
         Intent curIntent = getIntent();
-        new FetchTask().execute(urlTORequest, curIntent.getStringExtra("idClient"), curIntent.getStringExtra("idText"));
+        curContext=getApplicationContext();
+        currentTextID = curIntent.getStringExtra("idText");
+        new FetchTask().execute(urlTORequest, curIntent.getStringExtra("idClient"), currentTextID);
 
         //currentTextView.setText(currentText);
         //currentTextView.setMovementMethod(new ScrollingMovementMethod());
@@ -133,13 +108,13 @@ public class TextManagerActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Veuillez sélectionner au moins une réplique avant de commencer une répétition.",Toast.LENGTH_SHORT).show();
             }
             else {
-                Intent ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
+                ReciteTexteActivity = new Intent(TextManagerActivity.this, ReciterTexte.class);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
                 ReciteTexteActivity.putExtra(ORDER_TEXT_KEY, orderText);
+                //ReciteTexteActivity.putExtras(getIntent());
                 setResult(RESULT_OK, ReciteTexteActivity);
-                finish();
-                startActivity(ReciteTexteActivity);
+                startActivityForResult(ReciteTexteActivity,1111);
             }
         });
 
@@ -162,6 +137,21 @@ public class TextManagerActivity extends AppCompatActivity {
             tts.shutdown();
         }
         super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            int textScore = data.getIntExtra("textScore", -1);
+            String idText = data.getStringExtra("idText");
+            ReciteTexteActivity.putExtra("textScore", textScore);
+            ReciteTexteActivity.putExtra("idText", idText);
+            setResult(RESULT_OK, ReciteTexteActivity);
+            finish();
+
+        }
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
@@ -214,7 +204,34 @@ public class TextManagerActivity extends AppCompatActivity {
             if (s.compareTo("false")==0) {
                 Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             }
-            currentTextView.setText(currentText);
+            String[] repliques= currentText.split("\n");
+            for (String laReplique:repliques) {
+                if(!laReplique.equals(""))
+                {
+                    TableRow row= new TableRow(curContext);
+                    TextView leText = new TextView(curContext);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                    row.setLayoutParams(lp);
+                    leText.setText("  "+laReplique+"\n");
+                    leText.setMovementMethod(new ScrollingMovementMethod());
+                    leText.setBackgroundColor(getResources().getColor(android.R.color.holo_orange_light,null));
+                    leText.getBackground().setAlpha(0);
+                    leText.setClickable(true);
+                    leText.setOnClickListener(v -> {
+                        if( leText.getBackground().getAlpha() == 0)
+                        {
+                            leText.getBackground().setAlpha(100);
+                        }
+                        else{
+
+                            leText.getBackground().setAlpha(0);
+                        }
+
+                    });
+                    row.addView(leText);
+                    currentTable.addView(row);
+                }
+            }
 
         }
     }

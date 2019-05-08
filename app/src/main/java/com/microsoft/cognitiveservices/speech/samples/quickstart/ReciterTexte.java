@@ -51,6 +51,7 @@ public class ReciterTexte extends AppCompatActivity {
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
     private int nbLinesToRead;
     private boolean somethingHasBeenSaid = false;
+    private Intent ResultatSimpleActivity;
 
     private TextToSpeech tts;
 
@@ -259,15 +260,15 @@ public class ReciterTexte extends AppCompatActivity {
                         Pair<Integer, String> fullResultList = calculateFullResult(originalTextList, saidTextList);
 
                         // Passer à l'activité suivante
-                        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+                        ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
                         ResultatSimpleActivity.putExtra(SCORE_KEY, fullResultList.first);
                         ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, fullResultList.second);
                         ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
                         ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
                         ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
-                        setResult(RESULT_OK, ResultatSimpleActivity);
-                        finish();
-                        startActivity(ResultatSimpleActivity); }
+                        ResultatSimpleActivity.putExtra("idText", currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_ID));
+                        //setResult(RESULT_OK, ResultatSimpleActivity);
+                        startActivityForResult(ResultatSimpleActivity,1111); }
                 });
                 builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
                     @Override
@@ -454,4 +455,18 @@ public class ReciterTexte extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            int textScore = data.getIntExtra("textScore", -1);
+            String idText = data.getStringExtra("idText");
+            ResultatSimpleActivity.putExtra("textScore", textScore);
+            ResultatSimpleActivity.putExtra("idText", idText);
+            setResult(RESULT_OK, ResultatSimpleActivity);
+            finish();
+
+        }
+    }
 }

@@ -38,14 +38,16 @@ import okhttp3.Response;
 public class LibraryActivity extends AppCompatActivity {
     private ListView listView;
     private String idClient;
+    private TextView lastItemScoreView;
+    private int lastItemPosition;
     private final String urlTORequest = "https://recitoback.azurewebsites.net/getLibrary";
 
-    String libTitles[];
-    String libAuthors[];
-    String libScores[];
-    String libIdText[];
-    String libImages[];
-    Context curContext = this;
+    private String libTitles[];
+    private String libAuthors[];
+    private String libScores[];
+    private String libIdText[];
+    private String libImages[];
+    private Context curContext = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +67,14 @@ public class LibraryActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                lastItemScoreView = view.findViewById(R.id.Score_Text_Library_Row);
+                lastItemPosition = position;
                 String curTextId = libIdText[position];
                 Intent libraryIntent = new Intent(LibraryActivity.this, TextManagerActivity.class);
                 libraryIntent.putExtra("idClient", idClient);
                 libraryIntent.putExtra("idText", curTextId);
                 setResult(RESULT_OK, libraryIntent);
-                startActivity(libraryIntent);
+                startActivityForResult(libraryIntent, 122);
             }
         });
     }
@@ -87,7 +91,7 @@ public class LibraryActivity extends AppCompatActivity {
         Intent loadPDFIntent = new Intent(LibraryActivity.this, LoadPdfActivity.class);
         loadPDFIntent.putExtra("idClient",idClient);
         setResult(RESULT_OK, loadPDFIntent);
-        startActivity(loadPDFIntent);
+        startActivityForResult(loadPDFIntent, 123);
     }
 
     class MyAdapter extends ArrayAdapter<String> {
@@ -130,6 +134,62 @@ public class LibraryActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==122 && resultCode==RESULT_OK)
+        {
+            int textScore = data.getIntExtra("textScore", -1);
+            String idText = data.getStringExtra("idText");
+            if(textScore!=-1 && libIdText[lastItemPosition].compareTo(idText)==0)
+            {
+                lastItemScoreView.setText(Integer.toString(textScore));
+                libScores[lastItemPosition]=Integer.toString(textScore);
+            }
+            else
+            {
+                Toast.makeText(this, "Une erreur s'est produite", Toast.LENGTH_SHORT
+                );
+            }
+
+        }
+        else if(requestCode==123 && resultCode==RESULT_OK)
+        {
+            String tmpTitle[] = new String[libTitles.length+1];
+            String tmpAuthor[] = new String[libAuthors.length+1];
+            String tmpScore[] = new String[libScores.length+1];
+            String tmpImages[] = new String[libImages.length+1];
+            String tmpIdText[] = new String[libIdText.length+1];
+            String author = data.getStringExtra("author");
+            String title = data.getStringExtra("title");
+            String id = data.getStringExtra("id");
+
+            for(int i=0; i<libIdText.length; i++)
+            {
+                tmpTitle[i]=libTitles[i];
+                tmpAuthor[i]=libAuthors[i];
+                tmpScore[i]=libScores[i];
+                tmpImages[i]=libImages[i];
+                tmpIdText[i]=libIdText[i];
+            }
+            tmpTitle[tmpTitle.length-1]=title;
+            tmpAuthor[tmpAuthor.length-1]=author;
+            tmpScore[tmpScore.length-1]="0";
+            tmpImages[tmpImages.length-1]="0";
+            tmpIdText[tmpIdText.length-1]=id;
+
+            libTitles = tmpTitle;
+            libAuthors = tmpAuthor;
+            libScores = tmpScore;
+            libIdText = tmpIdText;
+            libImages = tmpImages;
+
+
+            MyAdapter adapter = new MyAdapter(curContext, libTitles, libAuthors, libScores/*, images*/);
+            listView.setAdapter(adapter);
+        }
+
+    }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
 

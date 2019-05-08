@@ -77,7 +77,7 @@ public class LoadPdfActivity extends AppCompatActivity {
                 Context context = this.getApplicationContext();
                 String path = context.getExternalFilesDir(null).getPath();
                 uri =data.getData();
-                if(uri.getPath().contains(path.split("/")[0]))
+                if(uri.getPath().contains(path.split("/")[1]))
                 {
                     pathUri=uri.getPath().substring(uri.getPath().indexOf(":")+1);
                 }
@@ -124,6 +124,9 @@ public class LoadPdfActivity extends AppCompatActivity {
     }
 
     private class FetchTask extends AsyncTask<String, Void, String> {
+        private String lastTextId;
+        private String lastTextTitle;
+        private String lastTextAuthor;
         private String errorMessage="Une erreur s'est produite";
         @Override
         protected void onPreExecute() {
@@ -163,6 +166,9 @@ public class LoadPdfActivity extends AppCompatActivity {
                 System.out.println("---------------------------------"+jsonObject.toString());
                 if(jsonObject.has("create")&&jsonObject.getBoolean("create"))
                 {
+                    lastTextId=jsonObject.getString("idText");
+                    lastTextTitle=jsonObject.getString("Nom");
+                    lastTextAuthor=jsonObject.getString("Nom");
                     return "true";
                 }
                 else
@@ -185,10 +191,12 @@ public class LoadPdfActivity extends AppCompatActivity {
                 currentText=null;
                 Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             } else {
-                //Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
-                Intent intentLoadFile = new Intent(LoadPdfActivity.this, LibraryActivity.class);
+                Intent intentLoadFile = new Intent();
+                intentLoadFile.putExtra("title", lastTextTitle);
+                intentLoadFile.putExtra("author", lastTextAuthor);
+                intentLoadFile.putExtra("id", lastTextId);
+                setResult(RESULT_OK, intentLoadFile);
                 finish();
-                startActivity(intentLoadFile);
             }
         }
     }

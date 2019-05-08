@@ -69,10 +69,8 @@ public class ConnectionActivity extends AppCompatActivity {
                     .build();
             try {
                 Response response = client.newCall(request).execute();
-                //Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
-                System.out.println("---------------------------------"+jsonObject.toString());
 
                 if(jsonObject.getBoolean("signIn"))
                 {
@@ -96,7 +94,6 @@ public class ConnectionActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"identifiant et/ou mot de passe est incorrecte",Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(ConnectionActivity.this, LibraryActivity.class);
-                //intent.putExtra("loginClient", loginClientString);
                 intent.putExtra("idClient", idClientString);
                 setResult(RESULT_OK, intent);
                 startActivity(intent);

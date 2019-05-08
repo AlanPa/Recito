@@ -21,6 +21,7 @@ public class ResultatSimple extends AppCompatActivity {
     private ArrayList<String> originalTextList;
     private String currentText;
     private ArrayList<Integer> whoReads;
+    private String currentTextId="none";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class ResultatSimple extends AppCompatActivity {
         originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
         currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
         whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+        currentTextId = currentIntent.getStringExtra("idText");
 
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
@@ -77,8 +79,14 @@ public class ResultatSimple extends AppCompatActivity {
     }
 
     public void RetournerBibliotheque(View view) {
-        Intent intent = new Intent(ResultatSimple.this, LibraryActivity.class);
-        startActivity(intent);
+        Intent backToLibraryIntent = new Intent();
+        //backToLibraryIntent.putExtras(getIntent().getSelector());
+        backToLibraryIntent.putExtra("idText", currentTextId);
+        backToLibraryIntent.putExtra("textScore", score);
+        setResult(RESULT_OK, backToLibraryIntent);
+        finish();
+        //Intent intent = new Intent(ResultatSimple.this, LibraryActivity.class);
+        //startActivity(intent);
     }
 
     public void VoirResultatDetaille(View view) {
