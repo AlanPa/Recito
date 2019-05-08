@@ -24,9 +24,9 @@ public class Controleur {
     private static final String ERROR_MISSING_IN_DATABASE ="The %s was not found in the database !";
 
     @Value("${azure.token.speech:}")
-    private static String SPEECHSUBSCRIPTION_KEY;
+    private static String SPEECHSUBSCRIPTION_KEY="5eae85560bb241b884f09a170d1a3214";
     @Value("${azure.service.region:francecentral}")
-    private static String SERVICE_REGION;
+    private static String SERVICE_REGION="francecentral";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
