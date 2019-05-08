@@ -1,5 +1,6 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +9,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -24,6 +32,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     private EditText  passwordClient;
     private EditText checkPasswordClient;
     private EditText  emailClient;
+    private final String urlTORequest = "https://recitoback.azurewebsites.net/createAccount";
+    private Context curContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +43,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         passwordClient = findViewById(R.id.Password_Input_Sign_Up);
         checkPasswordClient = findViewById(R.id.Check_Password_Input_Sign_Up);
         emailClient=findViewById(R.id.Email_Client_Input_Sign_Up);
+        curContext=getApplicationContext();
     }
 
     public void onClickSignUp(View view) {
@@ -46,16 +58,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
         else
         {
-            new FetchTask().execute("url", idClientInput,passwordInput,emailClientInput);
+            new FetchTask().execute(urlTORequest, idClientInput,passwordInput,emailClientInput);
         }
     }
 
 
     private class FetchTask extends AsyncTask<String, Void, String> {
-        String stringUrl;
-        String idClient;
-        String passwordClient;
-        String emailClient;
+        String errorMessage="Une erreur s'est produite";
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -64,42 +73,58 @@ public class CreateAccountActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             OkHttpClient client = new OkHttpClient();
-            stringUrl = strings[0];
-            idClient = strings[1];
-            passwordClient = strings[2];
-            emailClient = strings[3];
-            RequestBody body = new FormBody.Builder()
-                    .add("idClient", idClient)
-                    .add("passwordClient", passwordClient)
-                    .add("emailClient", emailClient)
-                    .build();
+
+            MediaType JSON =MediaType.parse("application/json; charset=utf-8");
+            JsonObject json = new JsonObject();
+            json.addProperty("idClient", strings[1]);
+            json.addProperty("passwordClient", strings[2]);
+            json.addProperty("emailClient", strings[3]);
+
             Request request = new Request.Builder()
-                    .url(stringUrl)
-                    .addHeader("Content-type","application/json")
-                    .post(body)
+                    .url(strings[0])
+                    .post(RequestBody.create(JSON, json.toString()))
                     .build();
             try {
                 Response response = client.newCall(request).execute();
                 //Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String jsonTest = response.body().string();
                 JSONObject jsonObject = new JSONObject(jsonTest);
-                System.out.println("---------------------------------"+jsonObject.toString());
-                return jsonObject.getString("text");
+                if(jsonObject.has("create"))
+                {
+                    if(jsonObject.getBoolean("create"))
+                    {
+                        return "true";
+                    }
+                    else
+                    {
+                        return "false";
+                    }
+                }
+                else
+                {
+                    if(jsonObject.has("Status") && jsonObject.getString("Status").compareTo("Error")==0)
+                    {
+                        errorMessage=jsonObject.getString("Message");
+                    }
+                    return "false";
+                }
             } catch (IOException | JSONException e) {
-                return null;
+                return "false";
             }
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if (s != "success") {
-                Toast.makeText(getApplicationContext(),"Une erreur s'est produite",Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(CreateAccountActivity.this, TextManagerActivity.class);
-                intent.putExtra("idClient", idClient);
-                setResult(RESULT_OK, intent);
+            if (s.compareTo("true")==0)
+            {
+                Intent intent = new Intent(CreateAccountActivity.this, ConnectionActivity.class);
+                finish();
                 startActivity(intent);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
             }
         }
     }

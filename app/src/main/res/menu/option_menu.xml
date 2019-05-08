@@ -2,17 +2,7 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <item
         android:id="@+id/Deconexion_Item_Menu"
-        android:title="@string/deconnexion_item_Menu"
-    />
-
-    <item
-        android:id="@+id/Help_Item_Menu"
-        android:title="@string/help_item_Menu"/>
-
-    <item
-        android:id="@+id/About_Item_Menu"
-        android:title="@string/about_item_Menu"/>
+        android:title="@string/deconnexion_item_Menu" />
 </menu>

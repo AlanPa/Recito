@@ -48,7 +48,8 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String RESULT_TEXT_KEY="result_text_key";
     public static final String OTL_KEY = "originalTextList_key";
     public static final String STL_KEY = "saidTextList_key";
-    public static String idText = "1234567890okjhgfcvbn123456789";
+    public static String idText;
+    public static String idClient;
     private String currentText = "";
     private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
@@ -57,6 +58,7 @@ public class ReciterTexte extends AppCompatActivity {
     private int indToRead = 0; // Pour l'enregistrement phrase par phrase
     private int nbLinesToRead;
     private boolean somethingHasBeenSaid = false;
+    private Intent ResultatSimpleActivity;
 
     private TextToSpeech tts;
 
@@ -84,8 +86,10 @@ public class ReciterTexte extends AppCompatActivity {
 
         // Récupérer le texte à dire et qui doit le dire
         Intent currentIntent = getIntent();
+        idText= currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_ID);
         currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
         whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
+        idClient = currentIntent.getStringExtra(TextManagerActivity.CLIENT_ID);
         fullOriginalTextList = toCorrectStructure(currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY),whoReads);
 
         // Nombre de lignes à lire au total dans le texte
@@ -95,16 +99,20 @@ public class ReciterTexte extends AppCompatActivity {
         originalTextList = new ArrayList<>();
         saidTextList = new ArrayList<>();
 
+        TextView textClue = (TextView) this.findViewById(R.id.TexteDit_Reciter);
         // Initialisation du bouton
         // Si la première phrase est à dire par l'utilisateur
         if (fullOriginalTextList.get(0).second == 0){
             // Mettre le bouton micro
             mettreBouton(1);
+            textClue.setText("Appuyez sur l'icone microphone et dites votre première réplique, pour commencer votre répétition.");
+
         }
         // Si elle est à dire par Recito
         else {
             // Mettre le bouton play
             mettreBouton(2);
+            textClue.setText("Appuyez sur l'icone play, pour que la première phrase soit dite et pour commencer votre répétition.");
         }
 
         // Initialize SpeechSDK and request required permissions.
@@ -301,9 +309,28 @@ public class ReciterTexte extends AppCompatActivity {
         ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
         ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
         ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
-        setResult(RESULT_OK, ResultatSimpleActivity);
-        finish();
-        startActivity(ResultatSimpleActivity);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CLIENT_ID, idClient);
+        startActivityForResult(ResultatSimpleActivity,1111);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            int textScore = data.getIntExtra("textScore", -1);
+            String idText = data.getStringExtra("idText");
+            ResultatSimpleActivity.putExtra("textScore", textScore);
+            ResultatSimpleActivity.putExtra("idText", idText);
+            setResult(RESULT_OK, ResultatSimpleActivity);
+            finish();
+
+        }
     }
 
     private static class CompareTask extends AsyncTask<Map<String,Object>, Void, String> {
@@ -319,10 +346,17 @@ public class ReciterTexte extends AppCompatActivity {
 
             String json = "";
             JSONObject jo=new JSONObject();
-            JSONObject textId = new JSONObject();
+            //JSONObject textId = new JSONObject();
 
             try{
-                textId.put("idText", idText);
+                JSONArray jaIdText=new JSONArray();
+                jaIdText.put(idText);
+                /*JSONArray jaIdClient=new JSONArray();
+                jaIdClient.put(idClient);
+                jo.put("idClient",jaIdClient);*/
+                jo.put("idText",jaIdText);
+
+
                 for(Map<String, Object> m: mapList){
                     for(String s : m.keySet()){
                         List<String> ls=(List<String>)m.get(s);
@@ -340,7 +374,6 @@ public class ReciterTexte extends AppCompatActivity {
 
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-            // TODO add param : idText
             RequestBody body = RequestBody.create(JSON, json);
             Request request = new Request.Builder()
                     .url(stringUrl)
@@ -360,6 +393,7 @@ public class ReciterTexte extends AppCompatActivity {
             super.onPostExecute(s);
         }
     }
+
     private static class KeyTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {

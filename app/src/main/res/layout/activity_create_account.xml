@@ -20,10 +20,10 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
-        style="@style/texte"/>
+        style="@style/texte"
+        tools:ignore="NotSibling" />
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/Id_Client_Input_Sign_Up"
         android:layout_width="180sp"
         android:layout_height="50sp"
         android:layout_below="@id/textView"
@@ -31,6 +31,7 @@
         android:layout_marginRight="20dp">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/Id_Client_Input_Sign_Up"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/login_hint_Sign_Up"
@@ -47,13 +48,11 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
-        style="@style/texte"/>
-
-
+        style="@style/texte"
+        tools:ignore="NotSibling" />
 
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/Email_Client_Input_Sign_Up"
         android:layout_width="180sp"
         android:layout_height="50sp"
         android:layout_below="@id/Login_Label_Sign_Up"
@@ -61,6 +60,7 @@
         android:layout_marginRight="20dp">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/Email_Client_Input_Sign_Up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/mail_hint_Sign_Up"
@@ -78,12 +78,11 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:text="@string/password_label_Sign_Up"
-        style="@style/texte"/>
-
+        style="@style/texte"
+        tools:ignore="NotSibling" />
 
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/Password_Input_Sign_Up"
         android:layout_width="180sp"
         android:layout_height="50sp"
         android:layout_below="@id/Email_Label_Sign_Up"
@@ -91,6 +90,7 @@
         android:layout_marginRight="20dp">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/Password_Input_Sign_Up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password_hint_Sign_Up"
@@ -107,11 +107,11 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:text="@string/verification_password_label_Sign_Up"
-        style="@style/texte"/>
+        style="@style/texte"
+        tools:ignore="NotSibling" />
 
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/Check_Password_Input_Sign_Up"
         android:layout_width="180sp"
         android:layout_height="50sp"
         android:layout_below="@id/Password_Label_Sign_Up"
@@ -119,6 +119,7 @@
         android:layout_marginRight="20dp">
 
         <android.support.design.widget.TextInputEditText
+            android:id="@+id/Check_Password_Input_Sign_Up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/verification_password_hint_Sign_Up"
@@ -132,6 +133,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="150dp"
+        android:onClick="onClickSignUp"
         style="@style/Bouton"/>
 
 
