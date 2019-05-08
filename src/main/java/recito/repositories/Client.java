@@ -71,8 +71,16 @@ public class Client {
     }
 
     public void setPassword(String password) {
+        this.password = getEncodedString(password);
+    }
+
+    public String getEncodedString(String s){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-        String encodedPassword = encoder.encode(password);
-        this.password = encodedPassword;
+        return encoder.encode(s);
+    }
+
+    public boolean checkPassword(String passwordToCheck){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+        return encoder.matches(passwordToCheck,password);
     }
 }
