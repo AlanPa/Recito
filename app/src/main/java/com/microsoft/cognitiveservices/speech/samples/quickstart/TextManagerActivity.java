@@ -48,6 +48,7 @@ public class TextManagerActivity extends AppCompatActivity {
     public static final String CURRENT_TEXT_ID="current_text_id";
     public static final String CURRENT_TEXT_KEY="current_text_key";
     public static final String ORDER_TEXT_KEY="order_text_key";
+    public static final String CLIENT_ID="id_client";
     private final String urlTORequest = "https://recitoback.azurewebsites.net/getText";
     private String currentText="Chargement...";
     private TableLayout currentTable = null;
@@ -112,6 +113,7 @@ public class TextManagerActivity extends AppCompatActivity {
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_ID, currentTextID);
                 ReciteTexteActivity.putExtra(CURRENT_TEXT_KEY, currentText);
                 ReciteTexteActivity.putExtra(ORDER_TEXT_KEY, orderText);
+                ReciteTexteActivity.putExtra(CLIENT_ID, curIntent.getStringExtra("idClient"));
                 //ReciteTexteActivity.putExtras(getIntent());
                 setResult(RESULT_OK, ReciteTexteActivity);
                 startActivityForResult(ReciteTexteActivity,1111);

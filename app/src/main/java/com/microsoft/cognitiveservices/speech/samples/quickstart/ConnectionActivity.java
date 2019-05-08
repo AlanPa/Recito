@@ -98,7 +98,7 @@ public class ConnectionActivity extends AppCompatActivity {
             connexionButton.setEnabled(true);
             connexionButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             if (s.compareTo("false")==0) {
-                Toast.makeText(getApplicationContext(),"identifiant et/ou mot de passe est incorrecte",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"identifiant et/ou mot de passe incorrect",Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(ConnectionActivity.this, LibraryActivity.class);
                 intent.putExtra("idClient", idClientString);
