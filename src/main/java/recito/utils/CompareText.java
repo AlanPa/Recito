@@ -6,7 +6,6 @@ import com.github.difflib.text.DiffRowGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -104,7 +103,6 @@ public class CompareText {
             else if (resultLine.charAt(i) == barre) {
                 if (baliseOuvrante) {
                     newResult.append("<strike> ");
-                    //nbAjouts++;
                 } else {
                     newResult.append("</strike>");
                 }
