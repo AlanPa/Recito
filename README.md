@@ -15,11 +15,11 @@ Guide de déploiement de l'application côté back-end.
  ## Déploiement de l'application
  Pour réaliser le déploiement de notre application, il vous suffit soit de :
  <ul>
- <li>Télécharger le fichier <code>Recito-server.Jar</code> disponible sur ce Git si vous ne souhaitez pas modifier la configuration de notre serveur.</li>
- <li>Cloner cette branche puis de vous placer dans un shell à la racine du projet. Vous pourrez, à ce moment, modifier la configuration du serveur comme décrit dans la section dédiée ci-dessous. Une fois cela réalisé, vous pourrez exécuter la commande <code>$ mvn clean package</code> afin de générer le <code>Recito-server.jar</code>.</li>
+ <li>Télécharger le fichier <code>Recito-server-1.0.Jar</code> disponible sur ce Git si vous ne souhaitez pas modifier la configuration de notre serveur.</li>
+ <li>Cloner cette branche puis de vous placer dans un shell à la racine du projet. Vous pourrez, à ce moment, modifier la configuration du serveur comme décrit dans la section dédiée ci-dessous. Une fois cela réalisé, vous pourrez exécuter la commande <code>$ mvn clean package</code> afin de générer le <code>Recito-server-1.0.jar</code>.</li>
  </ul>
  
- Il vous suffira d'exécuter la commande <code>$ java -jar {Répertoire contenant le .jar}/Recito-server.jar</code> pour démarrer le serveur.
+ Il vous suffira d'exécuter la commande <code>$ java -jar {Répertoire contenant le .jar}/Recito-server-1.0.jar</code> pour démarrer le serveur.
  Vous pourrez vérifier le bon fonctionnement de ce dernier en allant sur l'URL <code>http://localhost:8080/</code>. Cette dernière vous retournera un message vous confirmant la bonne mise en place du serveur.
  
  ##Configuration du serveur
