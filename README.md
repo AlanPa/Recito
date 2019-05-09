@@ -1,6 +1,6 @@
 # Recito
-[![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
-[![Jenkins](https://img.shields.io/jenkins/build/https/jenkins.qa.ubuntu.com/view%2FPrecise%2Fview%2FAll%2520Precise%2Fjob%2Fprecise-desktop-amd64_default.svg)]()
+[![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html) [![Jenkins](https://img.shields.io/jenkins/build/https/jenkins.qa.ubuntu.com/view%2FPrecise%2Fview%2FAll%2520Precise%2Fjob%2Fprecise-desktop-amd64_default.svg)]()
+
 ## Informations importantes
 Guide de déploiement de l'application côté front-end.
 
@@ -21,6 +21,32 @@ Guide de déploiement de l'application côté front-end.
  
  Il vous suffira d'exécuter la commande <code>$ java -jar {Répertoire contenant le .jar}/Recito-server-1.0.jar</code> pour démarrer le serveur.
  Vous pourrez vérifier le bon fonctionnement de ce dernier en allant sur l'URL <code>http://localhost:8080/</code>. Cette dernière vous retournera un message vous confirmant la bonne mise en place du serveur.
+ 
+ ## Configuration du serveur
+ Le serveur dispose d'un fichier de configuration situé à l'emplacement suivant : <code>src/main/resources/application.properties</code>.
+ Ce dernier dispose des champs suivants que vous pourrez modifier :
+ <ul>
+ <li><code>server.port</code> permet de configurer le port de démarrage de l'application, par défaut, ce port est 8080.</li>
+ <li><code>spring.data.mongodb.database</code> permet de configurer la connexion vers la base de données correspondante.</li>
+ <li><code>spring.data.mongodb.uri</code> permet de configurer la connexion vers l'instance MongoDB hébergeant la base de données via un lien utilisant le protocole <code>mongodb://</code>.</li>
+ </ul>
+ 
+ Le jeton pour l'API [Microsoft Speech](https://developer.microsoft.com/fr-fr/windows/speech) et [Microsoft Translator](https://www.microsoft.com/fr-fr/translator/) sont inscrits en dur dans la classe <code>Controleur.java</code> et <code>PDFExtractor.java</code> respectivement.
+ 
+ ## Liste succinte des différents endpoints du serveur 
+ Les endpoints suivants sont disponibles :
+ <ul>
+ <li><code>/</code> permet de vérifier le bon déploiement de l'application.</li>
+ <li><code>/getText</code> permet d'obtenir l'objet représentant un texte dans la base de données en fournissant l'id de l'utilisateur et du texte.</li>
+ <li><code>/getLibrary</code> permet d'obtenir l'ensemble des textes associés à un utilisateur en fournissant l'id de ce dernier.</li>
+ <li><code>/GetProfil</code> permet d'obtenir l'ensemble des objets associés à un utilisateur, dont lui-même, en fournissant l'id de ce dernier.</li>
+ <li><code>/signIn</code> permet de s'authentifier sur l'application en échange d'un couple pseudo/mot de passe.</li>
+ <li><code>/signOut</code> permet de se déconnecter de l'application.</li>
+ <li><code>/createAccount</code> permet de créer un utilisateur dans la base.</li>
+ <li><code>/RetrieveFile</code> permet de convertir un fichier <code>.pdf</code> et d'enregistrer son contenu dans la base de données. Il est nécessaire de fournir l'id du client pour utiliser ce dernier.</li>
+ <li><code>/RetrieveTextComparison</code> permet de réaliser la comparaison entre le texte prononcé et le texte attendu afin d'obtenir le score associé. Il sera nécesaire de fournir l'id du client et du texte afin de permettre la sauvegarde du score.</li>
+ <li><code>/RetrieveSpeechKey</code> permet de récuperer les clefs pour pouvoir utiliser le SDK Microsoft Speech.</li>
+ </ul>
  
  ## Déploiement d'une instance App Services Azure
  Pour réaliser le déploiement sur Azure, il vous faudra disposer d'un compte sur Azure pouvant créer des instances App Services et d'[Azure CLI](https://docs.microsoft.com/fr-fr/cli/azure/index?view=azure-cli-latest) sur votre ordinateur.
