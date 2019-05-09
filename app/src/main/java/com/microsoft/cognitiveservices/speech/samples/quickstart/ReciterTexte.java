@@ -1,5 +1,7 @@
 package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
@@ -50,6 +52,7 @@ public class ReciterTexte extends AppCompatActivity {
     public static final String STL_KEY = "saidTextList_key";
     public static String idText;
     public static String idClient;
+    private Integer score;
     private String currentText = "";
     private ArrayList<Integer> whoReads;
     private ArrayList<Pair<String, Integer>> fullOriginalTextList; // Le texte et le "qui doit parler"
@@ -263,7 +266,22 @@ public class ReciterTexte extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dites au moins une réplique avant de terminer la session",Toast.LENGTH_SHORT).show();
         }
         else {
-            passerAResultatSimple();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("En cliquant ici, vous allez vers la correction de votre répétition.\n" +
+                    "Avez-vous vraiment terminé ?");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    passerAResultatSimple(); }
+            });
+            builder.setNegativeButton("Non", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            builder.show();
+
         }
     }
     private void passerAResultatSimple(){
@@ -287,7 +305,7 @@ public class ReciterTexte extends AppCompatActivity {
             txtComparison.execute(m);
 
             String response = "no response";
-            Integer score = -1;
+            score = -1;
             String text = "";
             try {
                 response = txtComparison.get();
@@ -303,12 +321,13 @@ public class ReciterTexte extends AppCompatActivity {
             }
 
         // Passer à l'activité suivante
-        Intent ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
+        ResultatSimpleActivity = new Intent(ReciterTexte.this, ResultatSimple.class);
         ResultatSimpleActivity.putExtra(SCORE_KEY, score);
         ResultatSimpleActivity.putExtra(RESULT_TEXT_KEY, text);
         ResultatSimpleActivity.putExtra(ReciterTexte.OTL_KEY, originalTextList);
         ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_KEY, currentText);
         ResultatSimpleActivity.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
+        ResultatSimpleActivity.putExtra(TextManagerActivity.CURRENT_TEXT_ID,idText);
         ResultatSimpleActivity.putExtra(TextManagerActivity.CLIENT_ID, idClient);
         startActivityForResult(ResultatSimpleActivity,1111);
     }
