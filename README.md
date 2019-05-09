@@ -27,7 +27,7 @@ Guide de déploiement de l'application côté front-end.
  Si l'instance Azure est encore déployée, cette dernière sera accessible [ici](http://recitoback.azurewebsites.net/).
  Ouvrez un shell et utilisez les commandes suivantes :
  * `$ az login` pour vous connecter à Azure.
- * `$ az az ad sp create-for-rbac --name URL --password PASSWORD` pour créer l'instance et obtenir les informations nécessaires. Précisez les valeurs URL et PASSWORD correspondant à l'URL de l'instance et au mot de passe pour vous connecter à cette dernière via FTP si besoin.
+ * `$ az ad sp create-for-rbac --name URL --password PASSWORD` pour créer l'instance et obtenir les informations nécessaires. Précisez les valeurs URL et PASSWORD correspondant à l'URL de l'instance et au mot de passe pour vous connecter à cette dernière via FTP si besoin.
  
  Vous receverez en retour le JSON suivant :
  ```
