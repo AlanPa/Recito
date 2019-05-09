@@ -2,7 +2,7 @@
 [![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
 [![Jenkins](https://img.shields.io/jenkins/build/https/jenkins.qa.ubuntu.com/view%2FPrecise%2Fview%2FAll%2520Precise%2Fjob%2Fprecise-desktop-amd64_default.svg)]()
 ## Informations importantes
-Guide de déploiement de l'application côté back-end.
+Guide de déploiement de l'application côté front-end.
 
 <b>Attention : </b> Les instances Azure seront révoquées après la présentation de l'application,
  et les différentes API ayant besoin d'un jeton pour fonctionner verront leurs jetons révoqués.
@@ -22,32 +22,41 @@ Guide de déploiement de l'application côté back-end.
  Il vous suffira d'exécuter la commande <code>$ java -jar {Répertoire contenant le .jar}/Recito-server-1.0.jar</code> pour démarrer le serveur.
  Vous pourrez vérifier le bon fonctionnement de ce dernier en allant sur l'URL <code>http://localhost:8080/</code>. Cette dernière vous retournera un message vous confirmant la bonne mise en place du serveur.
  
- ##Configuration du serveur
- Le serveur dispose d'un fichier de configuration situé à l'emplacement suivant : <code>src/main/resources/application.properties</code>.
- Ce dernier dispose des champs suivants que vous pourrez modifier :
- <ul>
- <li><code>server.port</code> permet de configurer le port de démarrage de l'application, par défaut, ce port est 8080.</li>
- <li><code>spring.data.mongodb.database</code> permet de configurer la connexion vers la base de données correspondate.</li>
- <li><code>spring.data.mongodb.uri</code> permet de configurer la connexion vers l'instance MongoDB hébergeant la base de données via un lien utilisant le protocole <code>mongodb://</code>.</li>
- </ul>
+ ## Déploiement d'une instance App Services Azure
+ Pour réaliser le déploiement sur Azure, il vous faudra disposer d'un compte sur Azure pouvant créer des instances App Services et d'[Azure CLI](https://docs.microsoft.com/fr-fr/cli/azure/index?view=azure-cli-latest) sur votre ordinateur.
+ Si l'instance Azure est encore déployée, cette dernière sera accessible [ici](http://recitoback.azurewebsites.net/).
+ Ouvrez un shell et utilisez les commandes suivantes :
+ * `$ az login` pour vous connecter à Azure.
+ * `$ az az ad sp create-for-rbac --name URL --password PASSWORD` pour créer l'instance et obtenir les informations nécessaires. Précisez les valeurs URL et PASSWORD correspondant à l'URL de l'instance et au mot de passe pour vous connecter à cette dernière via FTP si besoin.
  
- Le jeton pour l'API [Microsoft Speech](https://developer.microsoft.com/fr-fr/windows/speech) et [Microsoft Translator](https://www.microsoft.com/fr-fr/translator/) sont inscrits en dur dans la classe <code>Controleur.java</code> et <code>PDFExtractor.java</code> respectivement.
+ Vous receverez en retour le JSON suivant :
+ ```
+ {
+  "appId": "AAAAAAAAAA",
+  "displayName": "BBBBBBBBBBB",
+  "name": "URL",
+  "password": "PASSWORD",
+  "tenant": "CCCCCCCCCCCC"
+ }
+ ```
  
- ##Liste succinte des différents endpoints du serveur 
- Les endpoints suivants sont disponibles :
- <ul>
- <li><code>/</code> permet de vérifier le bon déploiement de l'application.</li>
- <li><code>/getText</code> permet d'obtenir l'objet représentant un texte dans la base de données en fournissant l'id de l'utilisateur et du texte.</li>
- <li><code>/getLibrary</code> permet d'obtenir l'ensemble des textes associés à un utilisateur en fournissant l'id de ce dernier.</li>
- <li><code>/GetProfil</code> permet d'obtenir l'ensemble des objets associés à un utilisateur, dont lui-même, en fournissant l'id de ce dernier.</li>
- <li><code>/signIn</code> permet de s'authentifier sur l'application en échange d'un couple pseudo/mot de passe.</li>
- <li><code>/signOut</code> permet de se déconnecter de l'application.</li>
- <li><code>/createAccount</code> permet de créer un utilisateur dans la base.</li>
- <li><code>/RetrieveFile</code> permet de convertir un fichier <code>.pdf</code> et d'enregistrer son contenu dans la base de données. Il est nécessaire de fournir l'id du client pour utiliser ce dernier.</li>
- <li><code>/RetrieveTextComparison</code> permet de réaliser la comparaison entre le texte prononcé et le texte attendu afin d'obtenir le score associé. Il sera nécesaire de fournir l'id du client et du texte afin de permettre la sauvegarde du score.</li>
- <li><code>/RetrieveSpeechKey</code> permet de récuperer les clefs pour pouvoir utiliser le SDK Microsoft Speech.</li>
- </ul>
+ Ainsi vous pourrez modifier le fichier `settings.xml` situé à la racine du projet (ou de votre configuration maven) de sorte à avoir le contenu suivant :
+ ```
+    <server>
+        <id>azure-auth</id>
+        <configuration>
+            <client>AAAAAAAAAA</client>
+            <tenant>CCCCCCCCCCCC</tenant>
+            <key>PASSWORD</key>
+            <environment>AZURE</environment>
+        </configuration>
+    </server>
+   ```
+ Si vous ne souhaitez pas placer ce fichier de configuration ou modifier celui existant dans votre répertoire d'installation de maven (sous Ubuntu, par exemple, le dossier  `~/.m2`), il vous suffira de rajouter `-s settings.xml` à la commande maven située ci-dessous.
  
+ Pour lancer le déploiement sur l'instance App Services précédement créée, il vous suffit de vous placer à la racine du répertoire et d'exécuter la commande `$ mvn clean package azure-webapp:deploy`.
+ 
+
  ## Contributions
  
  Seuls les membres de l'hexanôme peuvent commit et push sur le repo git.
