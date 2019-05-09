@@ -27,7 +27,7 @@ Guide de déploiement de l'application côté front-end.
  Ce dernier dispose des champs suivants que vous pourrez modifier :
  <ul>
  <li><code>server.port</code> permet de configurer le port de démarrage de l'application, par défaut, ce port est 8080.</li>
- <li><code>spring.data.mongodb.database</code> permet de configurer la connexion vers la base de données correspondate.</li>
+ <li><code>spring.data.mongodb.database</code> permet de configurer la connexion vers la base de données correspondante.</li>
  <li><code>spring.data.mongodb.uri</code> permet de configurer la connexion vers l'instance MongoDB hébergeant la base de données via un lien utilisant le protocole <code>mongodb://</code>.</li>
  </ul>
  
