@@ -173,6 +173,37 @@ public class ReciterTexte extends AppCompatActivity {
                 writeHere = this.findViewById(R.id.TexteDit_Reciter6);
             } else if (indToRead == 6) {
                 writeHere = this.findViewById(R.id.TexteDit_Reciter7);
+            } else if (indToRead == 7) {
+                writeHere = this.findViewById(R.id.TexteDit_Reciter8);
+            } else if (indToRead == 8) {
+                writeHere = this.findViewById(R.id.TexteDit_Reciter9);
+            } else {
+
+                TextView toClear = this.findViewById(R.id.TexteDit_Reciter2);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter3);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter4);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter5);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter6);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter7);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter8);
+                toClear.setText("");
+                toClear = this.findViewById(R.id.TexteDit_Reciter9);
+                toClear.setText("");
+
+                if (indToRead == 9) {
+                    writeHere = this.findViewById(R.id.TexteDit_Reciter);
+                } else if (indToRead == 10) {
+                    writeHere = this.findViewById(R.id.TexteDit_Reciter2);
+
+                } else if (indToRead == 11) {
+                    writeHere = this.findViewById(R.id.TexteDit_Reciter3);
+                }
             }
             String toWrite;
             // Si c'est à l'utilisateur de parler, on enregistre et on stocke ce qui est dit et l'original

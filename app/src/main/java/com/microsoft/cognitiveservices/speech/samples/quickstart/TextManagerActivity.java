@@ -2,6 +2,7 @@ package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +12,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Pair;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -202,6 +205,9 @@ public class TextManagerActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
             super.onPostExecute(s);
             if (s.compareTo("false")==0) {
                 Toast.makeText(getApplicationContext(),errorMessage,Toast.LENGTH_SHORT).show();
@@ -212,7 +218,8 @@ public class TextManagerActivity extends AppCompatActivity {
                 {
                     TableRow row= new TableRow(curContext);
                     TextView leText = new TextView(curContext);
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
+                    leText.setWidth(size.x);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
                     row.setLayoutParams(lp);
                     leText.setText("  "+laReplique+"\n");
                     leText.setMovementMethod(new ScrollingMovementMethod());

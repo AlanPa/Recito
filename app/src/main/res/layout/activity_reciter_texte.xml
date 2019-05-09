@@ -87,6 +87,51 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             />
+        <TextView
+            android:id="@+id/TexteDit_Reciter8"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter9"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter10"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter11"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
+        <TextView
+            android:id="@+id/TexteDit_Reciter12"
+            style="@style/texte"
+            android:layout_width="367dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            />
 
 
     </TableLayout>
