@@ -18,7 +18,6 @@ Guide de déploiement de l'application côté front-end.
 ###Méthode 1
  
  Télécharger le fichier `.apk`, qui se trouve à la racine de la branche `master-front`, directement sur votre téléphone. Puis exécuter le fichier en acceptant l'installation d'une application en désactivant les services de sécurités proposées.
- 
 ###Méthode 2
   
   Télécharger la branche `master-front` sur votre ordinateur et ouvrir le projet dans Android Studio. Il vous suffira ensuite de `run`
