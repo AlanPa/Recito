@@ -11,11 +11,11 @@ Guide de déploiement de l'application côté front-end.
   
  Assurez-vous de disposer d'un environnement ayant Java 8, Gradle et Android Studio d'installés.
  
-##Déploiement de l'application
+## Déploiement de l'application
  Avant d'effectuer le deployement de la partie `front-end`, il est indispensable de deployer au préalable la partie `back-end`.
  Il y a deux façons de déployer l'application :
  
-###Méthode 1
+### Méthode 1
  
  Télécharger le fichier `.apk`, qui se trouve à la racine de la branche `master-front`, directement sur votre téléphone. Puis exécuter le fichier en acceptant l'installation d'une application en désactivant les services de sécurités proposées.
 ###Méthode 2
