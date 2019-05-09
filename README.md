@@ -6,7 +6,7 @@ Une application <i>Android</i> pour vous aider à apprendre !
 ## Informations importantes
 
 Cette application <i>Android</i> est consitituée de deux blocs à mettre en place :
- * d'un server Spring Boot pour la partie Back-end. Ce serveur est situé sur la branche <code>master-back</code>.
+ * d'un serveur Spring Boot pour la partie Back-end. Ce serveur est situé sur la branche <code>master-back</code>.
  * d'une application <i>Android</i> pour la partie Front-end. Cette application est située sur la branche <code>master-front</code>.
  
 ## Contributions
