@@ -56,7 +56,6 @@ public class LibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_library);
         toolbar = findViewById(R.id.toolbar);
-        //toolbar.setTitleTextColor(0xFFFFFFFF);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Bibliothèque");
         listView = findViewById(R.id.Main_Library);
@@ -196,7 +195,7 @@ public class LibraryActivity extends AppCompatActivity {
             }
             tmpTitle[tmpTitle.length-1]=title;
             tmpAuthor[tmpAuthor.length-1]=author;
-            tmpScore[tmpScore.length-1]="0";
+            tmpScore[tmpScore.length-1]="0%";
             tmpImages[tmpImages.length-1]="0";
             tmpIdText[tmpIdText.length-1]=id;
 
@@ -251,7 +250,7 @@ public class LibraryActivity extends AppCompatActivity {
                     JSONObject curJsonObject = jsonArray.getJSONObject(i);
                     libTitles[i]=curJsonObject.getString("nom");
                     libAuthors[i]=curJsonObject.getString("auteur");
-                    libScores[i]="0"/*curJsonObject.getString("score")*/;
+                    libScores[i]=curJsonObject.getString("score")+"%";
                     libIdText[i]=curJsonObject.getString("id");
                 }
                 return "Ok";

@@ -22,6 +22,8 @@ public class ResultatSimple extends AppCompatActivity {
     private String currentText;
     private ArrayList<Integer> whoReads;
     private String currentTextId="none";
+    private String idClient;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,8 @@ public class ResultatSimple extends AppCompatActivity {
         originalTextList = currentIntent.getStringArrayListExtra(ReciterTexte.OTL_KEY);
         currentText = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_KEY);
         whoReads = currentIntent.getIntegerArrayListExtra(TextManagerActivity.ORDER_TEXT_KEY);
-        currentTextId = currentIntent.getStringExtra("idText");
+        currentTextId = currentIntent.getStringExtra(TextManagerActivity.CURRENT_TEXT_ID);
+        idClient = currentIntent.getStringExtra(TextManagerActivity.CLIENT_ID);
 
 
         TextView scoreSur100 = (TextView) this.findViewById(R.id.Score_ResultatSimple);
@@ -68,14 +71,14 @@ public class ResultatSimple extends AppCompatActivity {
 
     }
 
-    public void ReessayerRecitation(View view) {
-        Intent intent = new Intent(ResultatSimple.this, ReciterTexte.class);
+    public void ReessayerRecitation(View view) { intent = new Intent(ResultatSimple.this, ReciterTexte.class);
         intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
         intent.putExtra(TextManagerActivity.CURRENT_TEXT_KEY,currentText);
         intent.putExtra(TextManagerActivity.ORDER_TEXT_KEY,whoReads);
+        intent.putExtra(TextManagerActivity.CURRENT_TEXT_ID, currentTextId);
+        intent.putExtra(TextManagerActivity.CLIENT_ID, idClient);
         setResult(RESULT_OK,intent);
-        finish();
-        startActivity(intent);
+        startActivityForResult(intent,1234);
     }
 
     public void RetournerBibliotheque(View view) {
@@ -90,7 +93,7 @@ public class ResultatSimple extends AppCompatActivity {
     }
 
     public void VoirResultatDetaille(View view) {
-        Intent intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
+        intent = new Intent(ResultatSimple.this, ResultatDetaille.class);
         intent.putExtra(ReciterTexte.RESULT_TEXT_KEY,resultText);
         intent.putExtra(ReciterTexte.SCORE_KEY,score);
         intent.putExtra(ReciterTexte.OTL_KEY,originalTextList);
@@ -104,5 +107,21 @@ public class ResultatSimple extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Toast.makeText(getApplicationContext(),"Vous ne pouvez pas revenir en arrière avant d'avoir terminé l'action en cours",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK)
+        {
+            int textScore = data.getIntExtra("textScore", -1);
+            String idText = data.getStringExtra("idText");
+            intent.putExtra("textScore", textScore);
+            intent.putExtra("idText", idText);
+            setResult(RESULT_OK, intent);
+            finish();
+
+        }
+
     }
 }
