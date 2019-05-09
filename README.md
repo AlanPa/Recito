@@ -3,6 +3,9 @@
 
 Une application <i>Android</i> pour vous aider à apprendre !
 
+## Lien vers la vidéo teaser
+[Recito vidéo Teaser](https://www.youtube.com/watch?v=WR4zEQW0FT4)
+
 ## Informations importantes
 
 Cette application <i>Android</i> est consitituée de deux blocs à mettre en place :
