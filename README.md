@@ -1,61 +1,57 @@
-# Quickstart: Recognize speech in Java on Android
+# Recito
+[![Licence GPL](http://img.shields.io/badge/license-GPL-green.svg)](http://www.gnu.org/licenses/quick-guide-gplv3.fr.html)
+[![Jenkins](https://img.shields.io/jenkins/build/https/jenkins.qa.ubuntu.com/view%2FPrecise%2Fview%2FAll%2520Precise%2Fjob%2Fprecise-desktop-amd64_default.svg)]()
+## Informations importantes
+Guide de déploiement de l'application côté front-end.
 
-This sample demonstrates how to recognize speech with Java using the Speech SDK for Android.
-See the [accompanying article](https://docs.microsoft.com/azure/cognitive-services/speech-service/quickstart-java-android) on the SDK documentation page which describes how to build this sample from scratch in Android Studio.
+<b>Attention : </b> Les instances Azure seront révoquées après la présentation de l'application,
+ et les différentes API ayant besoin d'un jeton pour fonctionner verront leurs jetons révoqués.
+ 
+ <b>Attention bis : </b> Il faut déployer le back-end d'abord.
+  
+ Assurez-vous de disposer d'un environnement ayant Java 8, Gradle et Android Studio d'installés.
+ 
+ ##Déploiement de l'application
+ Avant d'effectuer le deployement de la partie `front-end`, il est indispensable de deployer au préalable la partie `back-end`.
+ Il y a deux façons de déployer l'application :
+ 
+ ###Méthode 1
+ 
+ Télécharger le fichier `.apk`, qui se trouve à la racine de la branche `master-front`, directement sur votre téléphone. Puis exécuter le fichier en acceptant l'installation d'une application en désactivant les services de sécurités proposées.
+ 
+  ###Méthode 2
+  
+  Télécharger la branche `master-front` sur votre ordinateur et ouvrir le projet dans Android Studio. Il vous suffira ensuite de `run`
+  l'application sur un des émulateurs d'Android Studio ou sur votre téléphone en activant le mode `developpeur` au préalable.
+ 
 
-> **Note:**
-> this sample is *not* for the Speech Devices SDK and the Roobo device.
-> If you are looking for further information on these, visit the [Speech Devices SDK](https://docs.microsoft.com/azure/cognitive-services/speech-service/speech-devices-sdk) page.
-
-## Prerequisites
-
-* A subscription key for the Speech service. See [Try the speech service for free](https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started).
-* A PC (Windows, Linux, Mac) capable to run Android Studio.
-* Version 3.1 of [Android Studio](https://developer.android.com/studio/).
-* An ARM-based Android device (API 23: Android 6.0 Marshmallow or higher) [enabled for development](https://developer.android.com/studio/debug/dev-options) with a working microphone.
-
-## Build the sample
-
-> Note: more detailed step-by-step instructions are available [here](https://docs.microsoft.com/azure/cognitive-services/speech-service/quickstart-java-android).
-
-* **By building this sample you will download the Microsoft Cognitive Services Speech SDK. By downloading you acknowledge its license, see [Speech SDK license agreement](https://aka.ms/csspeech/license201809).**
-* [Download the sample code to your development PC.](../../README.md#get-the-samples)
-* Open this folder as a project in Android Studio.
-* Edit the `MainActivity` source:
-  * Replace the string `YourSubscriptionKey` with your own subscription key.
-  * Replace the string `YourServiceRegion` with the service region of your subscription.
-    For example, replace with `westus` if you are using the 30-day free trial subscription.
-* Press Ctrl+F9, or select **Build** \> **Make Project**.
-
-## Run the sample
-
-* Connect your Android device to your development PC.
-* Press Shift+F10, or select **Run** \> **Run 'app'**.
-* In the deployment target windows that comes up, pick your Android device.
-
-## Note on Android permission handling
-
-Please note that the Speech SDK requires two permissions, i.e., the INTERNET as well as the RECORD_AUDIO permission. As for Android API levels up to 22, requesting the permissions is handled at installation time but from API level 23 users are able to grant/revoke permissions at any time.
-
-Note that this quickstart targets minSdkVersion 21, so you need to add the following code if you want to retarget to minSdkVersion 23 or later:
-
-```java
-// Initialize SpeechSDK and request required permissions.
-try {
-    // a unique number within the application to allow
-    // correlating permission request responses with the request.
-    int permissionRequestId = 5;
-
-    // Request permissions needed for speech recognition
-    ActivityCompat.requestPermissions(MainActivity.this, new String[]{RECORD_AUDIO, INTERNET}, permissionRequestId);
-}
-catch (Exception ex) {
-    Log.e("SpeechSDK", "could not init sdk, " + ex.toString());
-    recognizedTextView.setText("Could not initialize: " + ex.toString());
-}
-```
-
-## References
-
-* [Quickstart article on the SDK documentation site](https://docs.microsoft.com/azure/cognitive-services/speech-service/quickstart-java-android)
-* [Speech SDK API reference for Java](https://aka.ms/csspeech/javaref)
+ ## Contributions
+ 
+ Seuls les membres de l'hexanôme peuvent commit et push sur le repo git.
+ 
+ ## Licence
+ 
+ [![GNU GPL v3.0](http://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl.html)
+ 
+ ```
+ PLD SMART - Une application pour vous aider à apprendre !
+ Copyright (C) 2019 Anatolii Gasiuk
+ Copyright (C) 2019 Christophe Hirt
+ Copyright (C) 2019 Clémentine Coquio-Lebresne
+ Copyright (C) 2019 Matthieu Halunka
+ Copyright (C) 2019 Tifenn Floch
+ Copyright (C) 2019 Alan Paugois
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ```
