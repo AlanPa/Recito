@@ -12,6 +12,8 @@ Cette application <i>Android</i> est consitituée de deux blocs à mettre en pla
  * d'un serveur Spring Boot pour la partie Back-end. Ce serveur est situé sur la branche <code>master-back</code>.
  * d'une application <i>Android</i> pour la partie Front-end. Cette application est située sur la branche <code>master-front</code>.
  
+Veuillez vous référer aux `ReadMe` de chaque branche pour les guides de déploiement et d'installation.
+ 
 ## Contributions
  
  Seuls les membres de l'hexanôme peuvent commit et push sur le repo git.
