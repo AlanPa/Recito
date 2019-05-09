@@ -52,7 +52,20 @@ Guide de déploiement de l'application côté front-end.
         </configuration>
     </server>
    ```
- Si vous ne souhaitez pas placer ce fichier de configuration ou modifier celui existant dans votre répertoire d'installation de maven (sous Ubuntu, par exemple, le dossier  `~/.m2`), il vous suffira de rajouter `-s settings.xml` à la commande maven située ci-dessous.
+  Il sera nécessaire de modifier le fichier `pom.xml` de la manière suivante :
+ * Trouvez le plugin `com.microsoft.azure`.
+ * Trouvez le bloc suivant dans le plugin :
+ ```
+    <!-- Web App information -->
+    <resourceGroup>${RESOURCEGROUP_NAME}</resourceGroup>
+    <appName>${WEBAPP_NAME}</appName>
+    <region>${REGION}</region>  
+```
+ * Remplacez `${RESOURCEGROUP_NAME}` par le groupe de ressource Azure où vous souhaitez voir votre instance.
+ * Remplacez `${WEBAPP_NAME}` par le nom que vous souhaitez donner à votre instance sur Azure.
+ * Remplacez `${REGION}` par la région Azure où vous souhaitez voir votre instance hébergée (utilisez la commande `$ az account list-locations` pour obtenir la liste des régions avec les identifiants correspondants).
+
+ Si vous ne souhaitez pas placer le fichier de configuration ou modifier celui existant dans votre répertoire d'installation de maven (sous Ubuntu, par exemple, le dossier  `~/.m2`), il vous suffira de rajouter `-s settings.xml` à la commande maven située ci-dessous.
  
  Pour lancer le déploiement sur l'instance App Services précédement créée, il vous suffit de vous placer à la racine du répertoire et d'exécuter la commande `$ mvn clean package azure-webapp:deploy`.
  
